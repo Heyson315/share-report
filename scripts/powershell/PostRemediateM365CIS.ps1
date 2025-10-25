@@ -87,4 +87,5 @@ try {
   Write-Warning "    SPO remediation skipped: $($_.Exception.Message)"
 }
 
-Write-Host "[+] Post-remediation steps attempted. Re-run the audit script to validate results." -ForegroundColor Cyan
+Write-Host "[+] Post-remediation steps attempted. Re-run the audit sc
+ript to validate results." -ForegroundColor Cyan
