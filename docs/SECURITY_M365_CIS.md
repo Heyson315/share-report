@@ -94,6 +94,30 @@ You can also pass the admin URL to the audit runner using `-SPOAdminUrl` and it 
 
 Total checks: 9 controls
 
+## Versioning audit evidence
+
+- Recommended to keep text-based evidence (JSON/CSV) under version control and exclude large Excel files to avoid repo bloat.
+- This repo includes a `.gitignore` that:
+  - Excludes `output/**` by default
+  - Re-includes `output/reports/security/*.json` and `*.csv`
+  - Keeps `*.xlsx` ignored (consider Git LFS if you need to track Excel)
+
+Suggested commit flow:
+
+```powershell
+# Commit code/docs updates separately
+git add scripts/powershell/modules/M365CIS.psm1 scripts/powershell/Invoke-M365CISAudit.ps1 docs/SECURITY_M365_CIS.md .gitignore
+git commit -m "fix(security): M365 CIS audit improvements (Graph connect, SPO support, absolute output paths, docs)"
+
+# Commit audit evidence (JSON/CSV)
+git add output/reports/security/m365_cis_audit_YYYYMMDD_HHMMSS.json output/reports/security/m365_cis_audit_YYYYMMDD_HHMMSS.csv
+git commit -m "chore(audit): add M365 CIS audit evidence YYYY-MM-DD HH:MM:SS"
+
+# Optionally tag and push
+git tag -a audit-YYYYMMDD-HHMMSS -m "M365 CIS audit evidence"
+git push --follow-tags
+```
+
 ## GLBA note
 
 GLBA is a legal and regulatory framework, not a technical benchmark. Many CIS controls support GLBA safeguards (e.g., access control, authentication, logging). Use this toolkit as a technical input into your GLBA compliance efforts, but coordinate with your legal/compliance teams for scoping, documentation, and risk management.

@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# VS Code
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Output artifacts (exclude by default)
+output/**
+
+# Re-include security reports folder
+!output/
+!output/reports/
+!output/reports/security/
+
+# Re-include only JSON/CSV evidence by default
+output/reports/security/**
+!output/reports/security/*.json
+!output/reports/security/*.csv
+
+# Keep Excel out of Git to avoid repo bloat; use Git LFS if needed
+output/reports/security/*.xlsx
