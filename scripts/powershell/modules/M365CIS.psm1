@@ -196,13 +196,39 @@ function Test-CIS-Defender-SafeLinks {
     $id='CIS-DEF-1'; $name='Ensure Safe Links policy is enabled'; $sev='High'; $ref='CIS M365 Foundations v3.0 L1; Defender for Office'
     try {
         if (-not (Get-Module ExchangeOnlineManagement)) { throw 'Not connected to EXO' }
-        $policies = Get-SafeLinksPolicy
-        if (-not $policies) { throw 'No Safe Links policies found' }
-        $enabled = ($policies | Where-Object { $_.Enabled -eq $true } | Measure-Object).Count
-        $expected = 'At least one Safe Links policy enabled'
-        $actual = "EnabledPolicies=$enabled"
-        $status = if ($enabled -gt 0) { 'Pass' } else { 'Fail' }
-        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected $expected -Actual $actual -Status $status -Evidence ($policies | Select-Object Name,Enabled | Out-String) -Reference $ref
+
+        # Prefer checking Safe Links RULES to reduce false negatives from preset policies that lack a simple Enabled flag
+        $rules = @()
+        try { $rules = Get-SafeLinksRule -ErrorAction Stop } catch { $rules = @() }
+
+        $enabledRules = @()
+        if ($rules) {
+            # Some environments expose State (Enabled/Disabled); others may expose Enabled:$true/$false
+            $enabledRules = $rules | Where-Object { $_.State -eq 'Enabled' -or $_.Enabled -eq $true }
+        }
+
+        $enabledRuleCount = ($enabledRules | Measure-Object).Count
+
+        # Fallback to policy check only if no rules are returned (older tenants or permission scope)
+        $polEnabledCount = 0
+        $polEvidence = $null
+        if ($enabledRuleCount -eq 0) {
+            $policies = @()
+            try { $policies = Get-SafeLinksPolicy -ErrorAction Stop } catch { $policies = @() }
+            if (-not $policies) { throw 'No Safe Links rules or policies found' }
+            $polEnabledCount = ($policies | Where-Object { $_.Enabled -eq $true } | Measure-Object).Count
+            $polEvidence = ($policies | Select-Object Name,Enabled)
+        }
+
+        $expected = 'At least one Safe Links rule or policy is enabled'
+        $actual = "EnabledRules=$enabledRuleCount; EnabledPolicies=$polEnabledCount"
+        $status = if ( ($enabledRuleCount -gt 0) -or ($polEnabledCount -gt 0) ) { 'Pass' } else { 'Fail' }
+
+        $evidence = @()
+        if ($rules) { $evidence += ($rules | Select-Object Name,State,Enabled) }
+        if ($polEvidence) { $evidence += $polEvidence }
+
+        New-CISResult -ControlId $id -Title $name -Severity $sev -Expected $expected -Actual $actual -Status $status -Evidence ($evidence | Out-String) -Reference $ref
     } catch {
         New-CISResult -ControlId $id -Title $name -Severity $sev -Expected 'Safe Links enabled' -Actual 'Unknown' -Status 'Manual' -Evidence $_.Exception.Message -Reference $ref
     }
