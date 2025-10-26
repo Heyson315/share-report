@@ -111,7 +111,12 @@ def test_save_results():
         output_path = td_path / "results.json"
 
         test_results = [
-            {"benchmark": "Test", "avg_elapsed_seconds": 1.0, "min_elapsed_seconds": 0.9, "max_elapsed_seconds": 1.1}
+            {
+                "benchmark": "Test",
+                "avg_elapsed_seconds": 1.0,
+                "min_elapsed_seconds": 0.9,
+                "max_elapsed_seconds": 1.1,
+            }
         ]
 
         save_results(test_results, output_path)
