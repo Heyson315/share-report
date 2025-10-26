@@ -29,6 +29,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from scripts.clean_csv import clean_csv
 from scripts.m365_cis_report import build_report
 
+# Dataset size configuration
+CSV_ROWS_BY_SIZE = {"small": 100, "medium": 1000, "large": 10000}
+CIS_CONTROLS_BY_SIZE = {"small": 15, "medium": 50, "large": 150}
+
 
 def generate_test_csv(path: Path, num_rows: int = 1000) -> None:
     """Generate a test CSV file for benchmarking."""
@@ -101,8 +105,7 @@ def generate_test_cis_json(path: Path, num_controls: int = 15) -> None:
 
 def benchmark_csv_cleaning(size: str) -> Dict[str, Any]:
     """Benchmark CSV cleaning operation."""
-    size_map = {"small": 100, "medium": 1000, "large": 10000}
-    num_rows = size_map.get(size, 1000)
+    num_rows = CSV_ROWS_BY_SIZE.get(size, 1000)
 
     with TemporaryDirectory() as td:
         td_path = Path(td)
@@ -131,8 +134,7 @@ def benchmark_csv_cleaning(size: str) -> Dict[str, Any]:
 
 def benchmark_cis_report_generation(size: str) -> Dict[str, Any]:
     """Benchmark M365 CIS report generation."""
-    size_map = {"small": 15, "medium": 50, "large": 150}
-    num_controls = size_map.get(size, 15)
+    num_controls = CIS_CONTROLS_BY_SIZE.get(size, 15)
 
     with TemporaryDirectory() as td:
         td_path = Path(td)
@@ -164,8 +166,7 @@ def benchmark_cis_report_generation(size: str) -> Dict[str, Any]:
 
 def benchmark_sharepoint_processing(size: str) -> Dict[str, Any]:
     """Benchmark SharePoint CSV processing and report generation."""
-    size_map = {"small": 100, "medium": 1000, "large": 10000}
-    num_rows = size_map.get(size, 1000)
+    num_rows = CSV_ROWS_BY_SIZE.get(size, 1000)
 
     with TemporaryDirectory() as td:
         td_path = Path(td)
@@ -277,7 +278,12 @@ def main():
         default="medium",
         help="Dataset size to use for benchmarking (default: medium)",
     )
-    parser.add_argument("--iterations", type=int, default=3, help="Number of iterations per benchmark (default: 3)")
+    parser.add_argument(
+        "--iterations",
+        type=int,
+        default=3,
+        help="Number of iterations per benchmark (default: 3)",
+    )
     parser.add_argument(
         "--output",
         type=Path,
