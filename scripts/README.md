@@ -54,6 +54,13 @@ This directory contains PowerShell and Python scripts for Microsoft 365 CIS secu
   - Converts audit JSON to formatted Excel workbook
   - Usage: `python scripts/m365_cis_report.py --input audit.json`
 
+### Performance & Testing Scripts
+- **`run_performance_benchmark.py`** - Performance benchmark for key operations
+  - Benchmarks CSV cleaning, CIS report generation, and SharePoint processing
+  - Supports small/medium/large dataset sizes
+  - Generates JSON results with timing statistics
+  - Usage: `python scripts/run_performance_benchmark.py --size medium --iterations 3`
+
 ### Utility Scripts
 - **`clean_csv.py`** - CSV cleanup utilities
 - **`sync_cis_csv.py`** - Sync CIS data with CSV
