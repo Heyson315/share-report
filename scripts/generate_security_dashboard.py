@@ -90,13 +90,20 @@ def load_historical_data(reports_dir: Path) -> List[Dict[str, Any]]:
                                 "manual": stats["manual"],
                             }
                         )
-                    except ValueError:
+                    except ValueError as e:
+                        print(f"Warning: Could not parse timestamp from {json_file.name}: {e}", file=sys.stderr)
                         continue
-        except (json.JSONDecodeError, FileNotFoundError) as e:
-            print(f"Warning: Could not process {json_file}: {e}", file=sys.stderr)
+        except json.JSONDecodeError as e:
+            print(f"Warning: Invalid JSON in {json_file.name}: {e}", file=sys.stderr)
+            continue
+        except FileNotFoundError:
+            print(f"Warning: File disappeared during processing: {json_file.name}", file=sys.stderr)
+            continue
+        except (KeyError, TypeError) as e:
+            print(f"Warning: Unexpected data structure in {json_file.name}: {e}", file=sys.stderr)
             continue
         except Exception as e:
-            print(f"Warning: Unexpected error processing {json_file}: {e}", file=sys.stderr)
+            print(f"Warning: Unexpected error processing {json_file.name}: {type(e).__name__}: {e}", file=sys.stderr)
             continue
 
     return historical[-10:]  # Return last 10 data points

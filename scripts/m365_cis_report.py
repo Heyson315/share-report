@@ -27,8 +27,11 @@ def build_report(json_path: Path, xlsx_path: Path = None) -> None:
     except json.JSONDecodeError as e:
         print(f"ERROR: Invalid JSON in {json_path}: {e}", file=sys.stderr)
         sys.exit(1)
+    except (PermissionError, UnicodeDecodeError) as e:
+        print(f"ERROR: Cannot read {json_path}: {e}", file=sys.stderr)
+        sys.exit(1)
     except Exception as e:
-        print(f"ERROR: Could not read {json_path}: {e}", file=sys.stderr)
+        print(f"ERROR: Unexpected error reading {json_path}: {e}", file=sys.stderr)
         sys.exit(1)
     if isinstance(data, dict):
         # In case it's a single object
