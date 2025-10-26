@@ -72,6 +72,7 @@ jobs:
           *This PR was created automatically by the dependency update workflow.*
         branch: chore/dependency-updates
         delete-branch: true
+      if: success()
 
   update-github-actions:
     name: Update GitHub Actions
