@@ -169,8 +169,8 @@ python scripts/generate_security_dashboard.py \
 
 **Solution**:
 ```powershell
-# Fix OneDrive PSModulePath if needed
-$env:PSModulePath += ";$env:USERPROFILE\OneDrive - Company\Documents\WindowsPowerShell\Modules"
+# Fix OneDrive PSModulePath if needed (replace 'YourCompany' with your organization name)
+$env:PSModulePath += ";$env:USERPROFILE\OneDrive - YourCompany\Documents\WindowsPowerShell\Modules"
 
 # Import with full path
 Import-Module "./scripts/powershell/modules/M365CIS.psm1" -Force
@@ -342,10 +342,11 @@ python scripts/run_performance_benchmark.py --validate-against-baseline
 {
   "ignorePatterns": [
     {"pattern": "^http://localhost"},
-    {"pattern": "^https://tenant"}
+    {"pattern": "^https://yourtenant"}
   ]
 }
 ```
+Note: Replace 'yourtenant' with patterns matching your environment (e.g., tenant-specific URLs).
 
 ---
 
@@ -406,7 +407,7 @@ python scripts/generate_security_dashboard.py
 
 ## Changelog of Fixes
 
-### 2025-10-27: CI/CD Configuration Issues
+### October 2025: CI/CD Configuration Issues
 - Fixed black formatting in `tests/test_clean_csv.py`
 - Created `.markdownlint.json` for markdown linting
 - Created `.markdown-link-check.json` for link validation
