@@ -4,6 +4,8 @@
 
 This guide shows how to create custom Model Context Protocol (MCP) servers that integrate AI assistants directly with your Microsoft 365 environment, enabling intelligent automation and analysis.
 
+> 🧠 **For AI Development**: This guide complements the comprehensive [`.github/copilot-instructions.md`](../.github/copilot-instructions.md) which contains essential project architecture, patterns, and workflows for AI coding agents working on this toolkit.
+
 ## 🏗️ Architecture Overview
 
 ```

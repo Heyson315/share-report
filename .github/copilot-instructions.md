@@ -19,7 +19,25 @@ This is a **hybrid Python/PowerShell toolkit** for Microsoft 365 security auditi
 - `tests/` - pytest-based tests using tempfiles and pandas validation
 - `docs/` - Workflow documentation (`SECURITY_M365_CIS.md`, `USAGE_SHAREPOINT.md`)
 - `config/benchmarks/` - CIS control metadata (JSON)
-- `config/audit_config.json` - Tenant configuration template (NEW v1.0.0)
+- `config/audit_config.json` - Tenant configuration template with scheduling/notification settings
+- `.github/workflows/` - CI/CD automation (quality checks, monthly audits, dependency updates)
+
+## Development & Testing Workflow
+
+### Python Development Pattern
+- **Code Quality**: Black formatter (120 chars), flake8 linting, mypy type checking configured in `pyproject.toml`
+- **Testing**: `pytest` with coverage reporting to `tests/` directory using `TemporaryDirectory()` for file I/O
+- **Dependencies**: Split into `requirements.txt` (runtime) and `requirements-dev.txt` (development tools)
+- **Performance**: Built-in benchmarking via `scripts/run_performance_benchmark.py --baseline`
+
+### GitHub Actions CI/CD (`main` branch: `evidence/2025-10-25`)
+```yaml
+# Trigger: Push to evidence/2025-10-25, feature/* branches, PR, manual dispatch
+# Jobs: python-quality-checks, powershell-security-scan, monthly-automated-audit
+```
+- **Quality Gates**: Python linting, code formatting checks, performance benchmarks, security scanning
+- **Automated Audits**: Monthly M365 security assessments with artifact preservation
+- **Dependency Management**: Automated dependency scanning and updates
 
 ## Critical Workflows
 
@@ -80,12 +98,19 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Setu
 5. Return statistics dict for validation
 
 ### PowerShell Module Pattern
-**`M365CIS.psm1` conventions**:
+**`M365CIS.psm1` conventions** (483+ lines of production audit functions):
 - Prefix all functions with verb (`Test-CIS-*`, `Connect-M365CIS`, `New-CISResult`)
 - Return `[PSCustomObject]` with standard fields: `ControlId`, `Title`, `Severity`, `Expected`, `Actual`, `Status`, `Evidence`, `Reference`, `Timestamp`
 - Always wrap in try/catch returning `Status='Manual'` on connection failures
 - Explicitly import modules with `-ErrorAction Stop` and provide clear warnings
-- Fix OneDrive PSModulePath: `$env:PSModulePath += ";$env:USERPROFILE\OneDrive - Rahman Finance and Accounting P.L.LC\Documents\WindowsPowerShell\Modules"`
+- **Critical**: Auto-fix OneDrive PSModulePath in `Connect-M365CIS` for synced modules
+- **Authentication**: Multi-service connection (EXO, Graph, SPO Admin, Purview) with graceful fallbacks
+
+### Module Execution Pattern
+**Scripts vs Modules**:
+- ❌ **Don't** use `python -m scripts.file` (scripts aren't a package) → Use `python scripts/file.py`
+- ✅ **Do** use `python -m src.integrations.sharepoint_connector` (src/ is a proper package)
+- ✅ **Do** use absolute paths for PowerShell: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Invoke-M365CISAudit.ps1"`
 
 ### Excel Report Generation
 **Pattern** (`src/core/excel_generator.py`, `src/integrations/sharepoint_connector.py`):
@@ -168,8 +193,11 @@ Always call `.parent.mkdir(parents=True, exist_ok=True)` before writing files to
 - ❌ **Don't** use `python -m scripts.file` (scripts aren't a package) → Use `python scripts/file.py`
 - ❌ **Don't** assume headers appear once in raw CSVs → Use `clean_csv.py` first
 - ❌ **Don't** hardcode tenant URLs → Accept as parameters with defaults
+- ❌ **Don't** use generic `Exception` handlers → Use specific types (`json.JSONDecodeError`, `PermissionError`)
 - ✅ **Do** run PowerShell scripts with absolute paths (use full path to `.ps1` file)
 - ✅ **Do** use `-Timestamped` flag for audit evidence versioning
 - ✅ **Do** validate JSON structure before Excel conversion (`inspect_cis_report.py`)
 - ✅ **Do** use `-WhatIf` for safe remediation previews before applying changes
 - ✅ **Do** leverage historical trending with multiple timestamped audit runs
+- ✅ **Do** configure development tools via `pyproject.toml` (Black 120 chars, pytest coverage)
+- ✅ **Do** use `TemporaryDirectory()` for all file I/O tests to avoid cleanup issues

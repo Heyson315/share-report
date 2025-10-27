@@ -4,7 +4,31 @@
 
 This guide provides comprehensive instructions for deploying the M365 Security & SharePoint Analysis Toolkit in production environments with enterprise-grade automation, monitoring, and security controls.
 
+**🏢 Development Foundation**: This toolkit has been developed and tested using a wholly owned registered CPA firm's enterprise M365 environment, ensuring real-world validation of enterprise patterns, compliance requirements, and professional services workflows before production deployment.
+
 ## 📋 Prerequisites
+
+### **Development vs Production Environment**
+
+| Aspect | **🧪 CPA Development Environment** | **🚀 Production Environment** |
+|--------|----------------------------------|-------------------------------|
+| **Purpose** | Testing, validation, feature development | Live enterprise deployment |
+| **Risk Level** | Low (controlled test environment) | High (business-critical operations) |
+| **Data** | Real patterns, non-production data | Live business data |
+| **Compliance** | CPA industry standards (SOX, AICPA) | Customer-specific requirements |
+| **Access** | Full administrative control | Controlled service principal access |
+
+### System Requirements
+- **Windows Server 2019+** or **Windows 10/11** with PowerShell 5.1+
+- **Python 3.9+** with virtual environment support
+- **Git** for version control and deployment
+- **Azure AD tenant** with appropriate administrative privileges
+
+**🏢 CPA Environment Benefits for Development**:
+- **Authentic enterprise security requirements**
+- **Real multi-user permission structures**
+- **Integration with accounting software (QuickBooks, Sage)**
+- **Compliance framework validation (SOX, PCI-DSS)**
 
 ### System Requirements
 - **Windows Server 2019+** or **Windows 10/11** with PowerShell 5.1+
