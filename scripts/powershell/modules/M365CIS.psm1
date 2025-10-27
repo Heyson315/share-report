@@ -469,8 +469,8 @@ function Invoke-M365CISAudit {
     # New enhanced controls (6)
     $results += Test-CIS-Purview-DLPPoliciesEnabled
     $results += Test-CIS-AAD-RiskPoliciesEnabled
-    $results += Test-CIS-Intune-CompliancePolicies
-    $results += Test-CIS-AAD-GuestUserRestrictions
+    $results += Test-CIS-Intune-CompliancePolicy
+    $results += Test-CIS-AAD-GuestUserRestriction
     $results += Test-CIS-Purview-AuditLogRetention
     $results += Test-CIS-Purview-SensitivityLabelsPublished
 
