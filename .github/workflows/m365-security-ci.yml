@@ -2,9 +2,9 @@ name: M365 Security Toolkit CI/CD
 
 on:
   push:
-    branches: [ evidence/2025-10-25, feature/* ]
+    branches: [ main, develop, feature/*, copilot/* ]
   pull_request:
-    branches: [ evidence/2025-10-25 ]
+    branches: [ main, develop ]
   workflow_dispatch:
 
 jobs:
@@ -20,6 +20,15 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
+        cache: 'pip'  # Cache pip dependencies for faster builds
+
+    - name: Cache Python packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
 
     - name: Install dependencies
       run: |
