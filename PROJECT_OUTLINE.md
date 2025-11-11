@@ -108,7 +108,7 @@ cat docs/CUSTOM_MCP_SERVER_GUIDE.md  # MCP integration patterns
 ### **1. M365 Security Audit** (CIS Compliance)
 ```powershell
 # Full automated audit with timestamping (CPA firm test environment)
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Invoke-M365CISAudit.ps1" -Timestamped -SPOAdminUrl "https://rahmancpa-admin.sharepoint.com"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Invoke-M365CISAudit.ps1" -Timestamped -SPOAdminUrl "https://rahmanfinanceandaccounting-admin.sharepoint.com"
 
 # Generate Excel report
 python scripts/m365_cis_report.py

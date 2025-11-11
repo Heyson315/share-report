@@ -68,8 +68,8 @@ This M365 Security Toolkit utilizes a **wholly owned registered CPA firm's enter
 ### **Environment Access**
 ```powershell
 # Connect to CPA firm M365 environment for development
-$TenantDomain = "rahmancpa.onmicrosoft.com"
-$SPOAdminUrl = "https://rahmancpa-admin.sharepoint.com"
+$TenantDomain = "rahmanfinanceandaccounting.onmicrosoft.com"
+$SPOAdminUrl = "https://rahmanfinanceandaccounting-admin.sharepoint.com"
 
 # Standard development connection
 Connect-M365CIS -SPOAdminUrl $SPOAdminUrl
