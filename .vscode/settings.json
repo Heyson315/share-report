@@ -61,5 +61,8 @@
   "python.analysis.autoImportCompletions": true,
   "python.analysis.aiHoverSummaries": true,
   "python.analysis.displayEnglishDiagnostics": false,
-  "python.analysis.enablePerfTelemetry": true
+  "python.analysis.enablePerfTelemetry": true,
+  "cSpell.words": [
+    "Imap"
+  ]
 }

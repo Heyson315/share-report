@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-This is a **hybrid Python/PowerShell toolkit** for Microsoft 365 security auditing and SharePoint permissions analysis. The project follows a domain-driven structure with distinct workflows:
+This is a **hybrid Python/PowerShell toolkit** for Microsoft 365 security auditing and SharePoint permissions analysis. The project follows a domain-driven structure with distinct workflows and **enterprise-ready automation**.
 
 ### Data Flow Pipeline
 1. **PowerShell** → M365 services (EXO, Graph, SPO, Purview, Intune) → Raw JSON/CSV (`output/reports/security/`)
@@ -12,6 +12,7 @@ This is a **hybrid Python/PowerShell toolkit** for Microsoft 365 security auditi
 ### Directory Structure
 - `scripts/` - Standalone utilities (Python CSV cleaners, PowerShell audit runners)
 - `scripts/powershell/modules/M365CIS.psm1` - Core audit functions (read-only checks)
+- `scripts/powershell/*.ps1` - Main audit runners (`Invoke-M365CISAudit.ps1`, `PostRemediateM365CIS.ps1`, comparison & scheduling utilities)
 - `src/` - Domain modules organized by function:
   - `core/` - Excel generation (`excel_generator.py`)
   - `integrations/` - External service connectors (`sharepoint_connector.py`)
@@ -19,7 +20,8 @@ This is a **hybrid Python/PowerShell toolkit** for Microsoft 365 security auditi
 - `tests/` - pytest-based tests using tempfiles and pandas validation
 - `docs/` - Workflow documentation (`SECURITY_M365_CIS.md`, `USAGE_SHAREPOINT.md`)
 - `config/benchmarks/` - CIS control metadata (JSON)
-- `config/audit_config.json` - Tenant configuration template (NEW v1.0.0)
+- `config/audit_config.json` - Tenant configuration template
+- `.github/workflows/` - **CI/CD automation** (monthly audits, quality checks, dependency updates)
 
 ## Critical Workflows
 
@@ -44,7 +46,7 @@ python scripts/m365_cis_report.py [--input "output/reports/security/m365_cis_aud
 python scripts/generate_security_dashboard.py [--input "output/reports/security/m365_cis_audit.json"] [--output "output/reports/security/dashboard.html"]
 ```
 
-### Safe Remediation Workflow (NEW v1.0.0)
+### Safe Remediation Workflow
 ```powershell
 # Preview remediation actions (safe mode)
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/PostRemediateM365CIS.ps1" -WhatIf
@@ -53,13 +55,28 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Post
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/PostRemediateM365CIS.ps1" -Force
 ```
 
-### Audit Comparison & Trending (NEW v1.0.0)
+### Audit Comparison & Trending
 ```powershell
 # Compare before/after audit results
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Compare-M365CISResults.ps1" -BeforeFile "before.json" -AfterFile "after.json" -OutputHtml "comparison.html"
 
 # Setup automated scheduling
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Setup-ScheduledAudit.ps1" -Schedule Weekly -DayOfWeek Monday -Time "09:00"
+```
+
+### Development & Testing Workflow
+```bash
+# Activate Python virtual environment first
+.venv\Scripts\activate
+
+# Run quality checks (CI/CD pipeline)
+python scripts/run_performance_benchmark.py  # Performance validation
+flake8 scripts/ src/ tests/ --count --select=E9,F63,F7,F82  # Linting
+black --check scripts/ src/ tests/  # Code formatting
+python -m pytest tests/ -v --cov=src --cov-report=html  # Tests with coverage
+
+# Test specific modules
+pytest tests/test_clean_csv.py::test_clean_csv_basic
 ```
 
 ## Project-Specific Conventions
@@ -94,7 +111,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/Setu
 - Apply styles: `Font(bold=True)`, `PatternFill(start_color='...')`, `Alignment(horizontal='center')`
 - Auto-size columns: iterate `get_column_letter()` and set `column_dimensions[].width`
 
-### Error Handling Pattern (NEW v1.0.0)
+### Error Handling Pattern
 **Problem**: Generic `Exception` handlers make debugging difficult.
 
 **Solution**: Use specific exception types with detailed error messages:
@@ -110,7 +127,7 @@ except (PermissionError, UnicodeDecodeError) as e:
 ```
 Applied to: `scripts/m365_cis_report.py`, `scripts/generate_security_dashboard.py`
 
-### Dashboard Generation Pattern (NEW v1.0.0)
+### Dashboard Generation Pattern
 **HTML Dashboard** (`scripts/generate_security_dashboard.py`):
 - Zero external dependencies (uses CDN for Chart.js)
 - Historical trend analysis from timestamped audit files
@@ -121,6 +138,15 @@ Applied to: `scripts/m365_cis_report.py`, `scripts/generate_security_dashboard.p
 - Use `TemporaryDirectory()` from tempfile for file I/O tests
 - Validate with pandas: `df.shape`, `df.columns`, `df.iloc[0]['column']`
 - Return stats dicts from functions for assertion checks
+- **pytest configuration**: `pyproject.toml` defines test paths, coverage settings, and excludes
+- **CI/CD integration**: GitHub Actions run tests automatically on push/PR
+
+### Configuration Management Pattern
+**Central config** (`config/audit_config.json`):
+- Tenant settings (SPO URL, schedule frequency)
+- Service toggles (skip Exchange/Graph/Purview)
+- Output options (timestamped files, retention, dashboard generation)
+- Notification settings for automated runs
 
 ## External Dependencies & Integration Points
 
@@ -145,6 +171,11 @@ Applied to: `scripts/m365_cis_report.py`, `scripts/generate_security_dashboard.p
 - **Include**: JSON/CSV reports (`!output/reports/security/*.json`, `!output/reports/security/*.csv`)
 - **Exclude**: Excel files (use Git LFS if needed), virtual envs (`.venv/`), `__pycache__/`
 - **Rationale**: Text-based evidence is lightweight and diffable; Excel causes repo bloat
+
+### Branch Strategy
+- **Main branch**: `evidence/2025-10-25` (current active branch)
+- **Feature branches**: `feature/*` pattern for development
+- **CI/CD triggers**: Automatic builds on push to main branch and feature branches
 
 ### Output Organization
 - `output/reports/security/` - CIS audit results (JSON/CSV/XLSX)
@@ -173,3 +204,5 @@ Always call `.parent.mkdir(parents=True, exist_ok=True)` before writing files to
 - ✅ **Do** validate JSON structure before Excel conversion (`inspect_cis_report.py`)
 - ✅ **Do** use `-WhatIf` for safe remediation previews before applying changes
 - ✅ **Do** leverage historical trending with multiple timestamped audit runs
+- ✅ **Do** use virtual environments for Python dependencies (`.venv\Scripts\activate`)
+- ✅ **Do** follow pytest conventions for testing (`test_*.py` files in `tests/` directory)
