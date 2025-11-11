@@ -64,7 +64,12 @@ cd share-report
 # Setup Python environment
 python -m venv .venv
 .venv\Scripts\activate
+
+# Install core dependencies (required)
 pip install -r requirements.txt
+
+# Optional: Install extensions (MCP server, GPT-5 integration)
+pip install -r requirements-extensions.txt
 
 # Install PowerShell modules
 Install-Module Microsoft.Graph.Authentication, ExchangeOnlineManagement -Scope CurrentUser
@@ -103,6 +108,7 @@ python scripts/generate_security_dashboard.py  # Creates HTML dashboard
 │   ├── processed/                 # Cleaned CSV files
 │   └── archive/                   # Historical snapshots
 ├── 📂 docs/                       # Documentation
+│   ├── CUSTOM_MCP_SERVER_GUIDE.md        # MCP server development
 │   ├── M365_SERVICE_PRINCIPAL_SETUP.md   # Automation setup guide
 │   ├── PRODUCTION_DEPLOYMENT.md          # Enterprise deployment
 │   ├── SECURITY_M365_CIS.md              # Security audit workflow
@@ -113,6 +119,23 @@ python scripts/generate_security_dashboard.py  # Creates HTML dashboard
 ├── 📂 scripts/                    # Automation scripts
 │   ├── 🐍 Python processing scripts
 │   └── 📂 powershell/modules/     # M365CIS PowerShell module
+├── 📂 src/                        # Source code modules
+│   ├── 📂 core/                   # Core toolkit functionality
+│   │   ├── excel_generator.py    # Report generation
+│   │   └── cost_tracker.py       # GPT-5 cost monitoring
+│   ├── 📂 integrations/           # External service integrations
+│   │   ├── sharepoint_connector.py  # SharePoint analysis
+│   │   └── openai_gpt5.py        # GPT-5 client
+│   └── 📂 extensions/             # 🆕 Optional add-ons
+│       └── 📂 mcp/                # Model Context Protocol server
+│           ├── server.py          # MCP server implementation
+│           ├── setup.py           # Setup wizard
+│           ├── tools/             # MCP tool definitions
+│           └── README.md          # Extension documentation
+├── requirements.txt               # Core dependencies (required)
+├── requirements-extensions.txt    # 🆕 Optional extensions (MCP, GPT-5)
+└── requirements-dev.txt           # Development tools
+```
 ├── 📂 src/                        # Core toolkit modules
 │   ├── core/                      # Excel generation
 │   └── integrations/              # SharePoint connector
@@ -127,10 +150,13 @@ python scripts/generate_security_dashboard.py  # Creates HTML dashboard
 3. **Follow** project-specific patterns for CSV processing, Excel generation, and PowerShell modules
 4. **Use** established error handling and testing patterns with `TemporaryDirectory()`
 
-### MCP Integration
-- **Custom MCP Server**: See [`docs/CUSTOM_MCP_SERVER_GUIDE.md`](docs/CUSTOM_MCP_SERVER_GUIDE.md)
-- **Direct M365 Integration**: AI assistants can interface directly with M365 services
-- **Automated Security Analysis**: Real-time AI-powered security recommendations
+### MCP Integration (Optional Extension)
+- **MCP Server Extension**: See [`src/extensions/mcp/README.md`](src/extensions/mcp/README.md)
+- **Setup Guide**: [`docs/CUSTOM_MCP_SERVER_GUIDE.md`](docs/CUSTOM_MCP_SERVER_GUIDE.md)
+- **AI Assistant Integration**: Enable natural language queries for M365 security tasks
+- **Optional Dependencies**: `pip install -r requirements-extensions.txt`
+
+> 💡 **Note**: MCP server is an optional extension. Core toolkit works independently.
 
 ## 🔧 Core Workflows
 

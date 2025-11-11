@@ -13,6 +13,15 @@ htmlcov/
 venv/
 ENV/
 
+# Environment variables and secrets
+.env
+.env.local
+.env.*.local
+*.env
+
+# Keep template
+!.env.template
+
 # VS Code
 .vscode/
 

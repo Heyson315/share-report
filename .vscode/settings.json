@@ -60,6 +60,13 @@
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "python.analysis.autoImportCompletions": true,
   "python.analysis.aiHoverSummaries": true,
-  "python.analysis.displayEnglishDiagnostics": false,
-  "python.analysis.enablePerfTelemetry": true
+  "python.analysis.displayEnglishDiagnostics": true,
+  "python.analysis.enablePerfTelemetry": true,
+  "python.analysis.completeFunctionParens": true,
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.disableTaggedHints": false,
+  "python.analysis.enableAsyncProgram": true,
+  "python.analysis.inlayHints.functionReturnTypes": true,
+  "python.analysis.inlayHints.pytestParameters": true,
+  "python.analysis.inlayHints.variableTypes": true
 }

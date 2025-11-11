@@ -10,7 +10,8 @@
 
 ### **AI Development**
 - **🧠 AI agent development**: [.github/copilot-instructions.md](.github/copilot-instructions.md) ⭐ **START HERE**
-- **🤖 Build MCP server**: [docs/CUSTOM_MCP_SERVER_GUIDE.md](docs/CUSTOM_MCP_SERVER_GUIDE.md)
+- **🤖 MCP server extension**: [src/extensions/mcp/README.md](src/extensions/mcp/README.md)
+- **📖 MCP development guide**: [docs/CUSTOM_MCP_SERVER_GUIDE.md](docs/CUSTOM_MCP_SERVER_GUIDE.md)
 
 ### **Security & Compliance**
 - **🛡️ Run security audits**: [docs/SECURITY_M365_CIS.md](docs/SECURITY_M365_CIS.md)
