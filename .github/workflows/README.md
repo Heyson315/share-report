@@ -95,10 +95,10 @@ Edit the cron schedule in `m365-automated-audit.yml`:
 schedule:
   # Monthly on 1st at 6 AM UTC
   - cron: '0 6 1 * *'
-  
+
   # Weekly on Mondays at 9 AM UTC
   # - cron: '0 9 * * 1'
-  
+
   # Daily at 2 AM UTC  
   # - cron: '0 2 * * *'
 ```

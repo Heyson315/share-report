@@ -26,10 +26,10 @@ jobs:
   m365-security-audit:
     name: M365 CIS Security Audit
     runs-on: windows-latest
-    
+
     # Manual trigger only until M365 credentials are configured
     if: ${{ github.event_name == 'workflow_dispatch' }}
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -41,7 +41,7 @@ jobs:
         M365_CLIENT_ID: ${{ vars.M365_CLIENT_ID }}
       run: |
         Write-Host "🔧 Configuring M365 environment..."
-        
+
         # Install required PowerShell modules
         Install-Module -Name ExchangeOnlineManagement -Force -Scope CurrentUser
         Install-Module -Name Microsoft.Graph.Authentication -Force -Scope CurrentUser
@@ -58,7 +58,7 @@ jobs:
         AUDIT_SCOPE: ${{ github.event.inputs.audit_scope || 'full' }}
       run: |
         Write-Host "🛡️ Starting M365 CIS Security Audit..."
-        
+
         # Set parameters based on scope
         $scopeParams = @{}
         switch ($env:AUDIT_SCOPE) {
@@ -67,7 +67,7 @@ jobs:
           'purview' { $scopeParams['PurviewOnly'] = $true }
           default { Write-Host "Running full audit..." }
         }
-        
+
         # Run the audit with timestamping
         try {
           ./scripts/powershell/Invoke-M365CISAudit.ps1 -Timestamped @scopeParams
@@ -81,21 +81,21 @@ jobs:
       shell: pwsh
       run: |
         Write-Host "📊 Generating audit reports..."
-        
+
         # Find the most recent audit file
-        $auditFile = Get-ChildItem "output/reports/security/" -Filter "m365_cis_audit_*.json" | 
-                     Sort-Object LastWriteTime -Descending | 
+        $auditFile = Get-ChildItem "output/reports/security/" -Filter "m365_cis_audit_*.json" |
+                     Sort-Object LastWriteTime -Descending |
                      Select-Object -First 1
-        
+
         if ($auditFile) {
           Write-Host "Processing audit file: $($auditFile.Name)"
-          
+
           # Generate Excel report
           python scripts/m365_cis_report.py --input $auditFile.FullName
-          
+
           # Generate HTML dashboard
           python scripts/generate_security_dashboard.py --input $auditFile.FullName
-          
+
           Write-Host "✅ Reports generated successfully"
         } else {
           Write-Host "❌ No audit file found"
@@ -123,60 +123,60 @@ jobs:
         script: |
           const fs = require('fs');
           const path = require('path');
-          
+
           // Find the latest audit results
           const securityDir = 'output/reports/security';
           const auditFiles = fs.readdirSync(securityDir)
             .filter(file => file.startsWith('m365_cis_audit_') && file.endsWith('.json'))
             .sort()
             .reverse();
-          
+
           if (auditFiles.length === 0) {
             console.log('No audit files found');
             return;
           }
-          
+
           const latestFile = auditFiles[0];
           const auditData = JSON.parse(fs.readFileSync(path.join(securityDir, latestFile), 'utf8'));
-          
+
           // Count results by status
           const summary = auditData.reduce((acc, control) => {
             acc[control.Status] = (acc[control.Status] || 0) + 1;
             return acc;
           }, {});
-          
+
           const totalControls = auditData.length;
           const passedControls = summary.Pass || 0;
           const failedControls = summary.Fail || 0;
           const manualControls = summary.Manual || 0;
-          
+
           const complianceRate = Math.round((passedControls / totalControls) * 100);
-          
+
           const issueBody = `## 🛡️ M365 CIS Security Audit Results
-          
+
           **Audit Date:** ${new Date().toISOString().split('T')[0]}
           **Audit Scope:** ${{ github.event.inputs.audit_scope || 'full' }}
           **Workflow Run:** #${{ github.run_number }}
-          
+
           ### 📊 Summary
           - **Total Controls:** ${totalControls}
           - **Passed:** ${passedControls} ✅
-          - **Failed:** ${failedControls} ❌  
+          - **Failed:** ${failedControls} ❌
           - **Manual Review:** ${manualControls} 🔍
           - **Compliance Rate:** ${complianceRate}%
-          
+
           ### 🎯 Next Actions
           ${failedControls > 0 ? '- Review failed controls and plan remediation' : '- No immediate actions required'}
           ${manualControls > 0 ? '- Complete manual reviews for applicable controls' : ''}
-          
+
           ### 📁 Artifacts
           - Audit results: \`${latestFile}\`
           - Excel report: Available in workflow artifacts
           - HTML dashboard: Available in workflow artifacts
-          
+
           ---
           *This issue was automatically created by the M365 Security Audit workflow*`;
-          
+
           await github.rest.issues.create({
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -190,7 +190,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [m365-security-audit]
     if: success()
-    
+
     steps:
     - name: Create reminder issue
       uses: actions/github-script@v6
@@ -198,25 +198,25 @@ jobs:
         script: |
           const nextAuditDate = new Date();
           nextAuditDate.setMonth(nextAuditDate.getMonth() + 1);
-          
+
           const issueBody = `## 🗓️ Monthly M365 Security Audit Reminder
-          
+
           The automated M365 security audit completed successfully.
-          
+
           **Next Scheduled Audit:** ${nextAuditDate.toISOString().split('T')[0]}
-          
+
           ### 📋 Preparation Checklist
           - [ ] Review previous audit findings
           - [ ] Update CIS benchmark requirements if needed
           - [ ] Verify M365 service principal permissions
           - [ ] Check for new M365 security features to assess
-          
+
           ### 🔧 Manual Trigger
           To run an ad-hoc audit, go to Actions → "Automated M365 Security Audit" → "Run workflow"
-          
+
           ---
           *This reminder was automatically created by the audit workflow*`;
-          
+
           await github.rest.issues.create({
             owner: context.repo.owner,
             repo: context.repo.repo,

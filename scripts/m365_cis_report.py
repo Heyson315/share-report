@@ -1,7 +1,8 @@
+import argparse
 import json
 import sys
-import argparse
 from pathlib import Path
+
 import pandas as pd
 
 DEFAULT_JSON = Path("output/reports/security/m365_cis_audit.json")

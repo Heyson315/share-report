@@ -53,7 +53,7 @@ Thank you for your interest in contributing to the Share Report M365 Security To
    ```bash
    # Production dependencies
    pip install -r requirements.txt
-   
+
    # Development dependencies (includes testing and linting tools)
    pip install -r requirements-dev.txt
    ```
@@ -71,7 +71,7 @@ Thank you for your interest in contributing to the Share Report M365 Security To
    ```bash
    # Run tests
    pytest
-   
+
    # Check code quality
    pylint scripts/ src/
    black --check scripts/ src/ tests/
@@ -96,11 +96,11 @@ from pathlib import Path
 def process_data(input_path: Path, options: Dict[str, str]) -> List[Dict[str, any]]:
     """
     Process data from input file.
-    
+
     Args:
         input_path: Path to input file
         options: Processing options
-        
+
     Returns:
         List of processed data dictionaries
     """
@@ -177,10 +177,10 @@ def test_clean_csv_removes_comments():
         td = Path(td)
         input_file = td / "input.csv"
         output_file = td / "output.csv"
-        
+
         input_file.write_text("# Comment\nHeader\nData", encoding="utf-8")
         stats = clean_csv(input_file, output_file)
-        
+
         assert stats["comment_lines"] == 1
         assert stats["output_rows"] == 1
 ```
@@ -236,13 +236,13 @@ Update README with new installation instructions
    ```bash
    # Format code
    black scripts/ src/ tests/
-   
+
    # Run linter
    pylint scripts/ src/
-   
+
    # Run tests
    pytest
-   
+
    # Check type hints
    mypy scripts/ src/
    ```

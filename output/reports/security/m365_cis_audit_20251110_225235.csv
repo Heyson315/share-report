@@ -54,17 +54,17 @@ Extern : T
          r
          u
          e
-Extern : 
+Extern :
 Extern : T
          r
          u
          e
 Extern : 1
          0
-          
+
          M
          B
-          
+
          (
          1
          0
@@ -76,19 +76,19 @@ Extern : 1
          7
          6
          0
-          
+
          b
          y
          t
          e
          s
          )
-Extern : 
+Extern :
 Extern : T
          r
          u
          e
-Extern : 
+Extern :
 Genera : {
          }
 Hygien : P
@@ -102,17 +102,17 @@ Intern : T
          r
          u
          e
-Intern : 
+Intern :
 Intern : T
          r
          u
          e
 Intern : 1
          0
-          
+
          M
          B
-          
+
          (
          1
          0
@@ -124,14 +124,14 @@ Intern : 1
          7
          6
          0
-          
+
          b
          y
          t
          e
          s
          )
-Intern : 
+Intern :
 Intern : T
          r
          u
@@ -168,10 +168,10 @@ Redire : F
          e
 MaxDum : 1
          8
-          
+
          M
          B
-          
+
          (
          1
          8
@@ -183,7 +183,7 @@ MaxDum : 1
          3
          6
          8
-          
+
          b
          y
          t
@@ -274,7 +274,7 @@ Superv : {
          c
          t
          ,
-          
+
          A
          l
          l
@@ -350,7 +350,7 @@ Organi : N
          o
          f
          t
-          
+
          E
          x
          c
@@ -359,14 +359,14 @@ Organi : N
          n
          g
          e
-          
+
          H
          o
          s
          t
          e
          d
-          
+
          O
          r
          g
@@ -423,9 +423,9 @@ Organi : N
          c
          o
          m
-          
+
          -
-          
+
          N
          A
          M
@@ -663,14 +663,14 @@ Delaye : E
          e
          d
          :
-          
+
          F
          a
          l
          s
          e
          ;
-          
+
          W
          h
          e
@@ -691,7 +691,7 @@ Delaye : E
          t
          c
          :
-          
+
          1
          /
          1
@@ -700,7 +700,7 @@ Delaye : E
          0
          0
          1
-          
+
          1
          2
          :
@@ -709,7 +709,7 @@ Delaye : E
          :
          0
          0
-          
+
          A
          M
 Tenant : E
@@ -720,14 +720,14 @@ Tenant : E
          e
          d
          :
-          
+
          F
          a
          l
          s
          e
          ;
-          
+
          W
          h
          e
@@ -748,7 +748,7 @@ Tenant : E
          t
          c
          :
-          
+
          1
          /
          1
@@ -757,7 +757,7 @@ Tenant : E
          0
          0
          1
-          
+
          1
          2
          :
@@ -766,7 +766,7 @@ Tenant : E
          :
          0
          0
-          
+
          A
          M
 EndUse : E
@@ -777,14 +777,14 @@ EndUse : E
          e
          d
          :
-          
+
          F
          a
          l
          s
          e
          ;
-          
+
          W
          h
          e
@@ -805,7 +805,7 @@ EndUse : E
          t
          c
          :
-          
+
          1
          /
          1
@@ -814,7 +814,7 @@ EndUse : E
          0
          0
          1
-          
+
          1
          2
          :
@@ -823,7 +823,7 @@ EndUse : E
          :
          0
          0
-          
+
          A
          M
 Delaye : E
@@ -834,14 +834,14 @@ Delaye : E
          e
          d
          :
-          
+
          F
          a
          l
          s
          e
          ;
-          
+
          W
          h
          e
@@ -862,7 +862,7 @@ Delaye : E
          t
          c
          :
-          
+
          1
          /
          1
@@ -871,7 +871,7 @@ Delaye : E
          0
          0
          1
-          
+
          1
          2
          :
@@ -880,17 +880,17 @@ Delaye : E
          :
          0
          0
-          
+
          A
          M
-Defaul : 
+Defaul :
 Defaul : 1
          .
          7
-          
+
          G
          B
-          
+
          (
          1
          ,
@@ -905,7 +905,7 @@ Defaul : 1
          9
          2
          0
-          
+
          b
          y
          t
@@ -913,10 +913,10 @@ Defaul : 1
          s
          )
 Defaul : 2
-          
+
          G
          B
-          
+
          (
          2
          ,
@@ -931,7 +931,7 @@ Defaul : 2
          6
          4
          8
-          
+
          b
          y
          t
@@ -1020,16 +1020,16 @@ AppsFo : T
          e
 AppsFo : 5
 Privat : 5
-AVAuth : 
-Custom : 
-Distri : 
+AVAuth :
+Custom :
+Distri :
 Distri : {
          }
-Distri : 
-EwsAll : 
-EwsAll : 
-EwsAll : 
-EwsAll : 
+Distri :
+EwsAll :
+EwsAll :
+EwsAll :
+EwsAll :
 Disabl : F
          a
          l
@@ -1044,14 +1044,14 @@ MaskCl : T
          r
          u
          e
-EwsApp : 
-EwsBlo : 
+EwsApp :
+EwsBlo :
 Autodi : F
          a
          l
          s
          e
-EwsEna : 
+EwsEna :
 IPList : {
          }
 ElcPro : F
@@ -1075,7 +1075,7 @@ Exchan : T
          e
 Exchan : {
          }
-Hierar : 
+Hierar :
 Indust : N
          o
          t
@@ -1106,7 +1106,7 @@ MailTi : T
          r
          u
          e
-Manage : 
+Manage :
 Micros : {
          S
          M
@@ -1303,7 +1303,7 @@ Micros : M
          c
          o
          m
-Micros : 
+Micros :
 Forwar : F
          a
          l
@@ -1317,8 +1317,8 @@ ReadTr : F
          s
          e
 SCLJun : 4
-SIPAcc : 
-SIPSes : 
+SIPAcc :
+SIPSes :
 MaxCon : U
          n
          l
@@ -1328,9 +1328,9 @@ MaxCon : U
          t
          e
          d
-MaxAdd : 
-MaxOff : 
-MaxInf : 
+MaxAdd :
+MaxOff :
+MaxInf :
 MaxInf : 5
          0
          0
@@ -1445,7 +1445,7 @@ Releas : S
          o
          u
          t
-Compas : 
+Compas :
 ShareP : h
          t
          t
@@ -1562,7 +1562,7 @@ IsAgen : T
          r
          u
          e
-Networ : 
+Networ :
 Bookin : T
          r
          u
@@ -1575,7 +1575,7 @@ Bookin : 0
          /
          0
          1
-          
+
          1
          2
          :
@@ -1584,7 +1584,7 @@ Bookin : 0
          :
          0
          0
-          
+
          A
          M
 Bookin : F
@@ -1651,13 +1651,13 @@ Bookin : F
          l
          s
          e
-Bookin : 
+Bookin :
 Bookin : F
          a
          l
          s
          e
-Bookin : 
+Bookin :
 Bookin : F
          a
          l
@@ -1682,7 +1682,7 @@ Outloo : F
          l
          s
          e
-Elevat : 
+Elevat :
 AuditD : F
          a
          l
@@ -1710,7 +1710,7 @@ Connec : 0
          /
          0
          1
-          
+
          1
          2
          :
@@ -1719,7 +1719,7 @@ Connec : 0
          :
          0
          0
-          
+
          A
          M
 Connec : T
@@ -1734,7 +1734,7 @@ Connec : 0
          /
          0
          1
-          
+
          1
          2
          :
@@ -1743,7 +1743,7 @@ Connec : 0
          :
          0
          0
-          
+
          A
          M
 Connec : T
@@ -1758,7 +1758,7 @@ Connec : 0
          /
          0
          1
-          
+
          1
          2
          :
@@ -1767,7 +1767,7 @@ Connec : 0
          :
          0
          0
-          
+
          A
          M
 Connec : T
@@ -1782,7 +1782,7 @@ Connec : 0
          /
          0
          1
-          
+
          1
          2
          :
@@ -1791,7 +1791,7 @@ Connec : 0
          :
          0
          0
-          
+
          A
          M
 AutoEn : F
@@ -1799,7 +1799,7 @@ AutoEn : F
          l
          s
          e
-Online : 
+Online :
 SendFr : T
          r
          u
@@ -1925,8 +1925,8 @@ RPSEna : F
          l
          s
          e
-EwsOpe : 
-EwsOpe : 
+EwsOpe :
+EwsOpe :
 EwsOpe : F
          a
          l
@@ -1937,7 +1937,7 @@ BlockE : F
          l
          s
          e
-Enforc : 
+Enforc :
 DLPWai : F
          a
          l
@@ -1952,7 +1952,7 @@ InRegi : F
          l
          s
          e
-InRegi : 
+InRegi :
 Organi : f
          J
          H
@@ -2320,7 +2320,7 @@ Legacy : /
          n
          g
          e
-          
+
          A
          d
          m
@@ -2335,13 +2335,13 @@ Legacy : /
          i
          v
          e
-          
+
          G
          r
          o
          u
          p
-          
+
          (
          F
          Y
@@ -2437,7 +2437,7 @@ Displa : R
          m
          a
          n
-          
+
          F
          i
          n
@@ -2445,11 +2445,11 @@ Displa : R
          n
          c
          e
-          
+
          a
          n
          d
-          
+
          A
          c
          c
@@ -2460,7 +2460,7 @@ Displa : R
          i
          n
          g
-          
+
          P
          .
          L
@@ -2477,7 +2477,7 @@ Resour : {
          A
          l
          l
-          
+
          R
          o
          o
@@ -2492,7 +2492,7 @@ Previo : 0
          .
          1
          0
-          
+
          (
          1
          4
@@ -2511,9 +2511,9 @@ IsAddr : T
          e
 Foreig : {
          }
-Foreig : 
-Foreig : 
-Foreig : 
+Foreig :
+Foreig :
+Foreig :
 MimeTy : {
          }
 IsLice : T
@@ -2552,7 +2552,7 @@ IsMail : F
 RBACCo : 0
          .
          1
-          
+
          (
          1
          5
@@ -2567,14 +2567,14 @@ RBACCo : 0
          .
          6
          )
-RootPu : 
+RootPu :
 Remote : {
          }
 AdminD : 0
          .
          2
          0
-          
+
          (
          1
          5
@@ -2611,23 +2611,23 @@ Servic : B
          5
          _
          0
-Target : 
-WACDis : 
-AdfsAu : 
-AdfsIs : 
+Target :
+WACDis :
+AdfsAu :
+AdfsIs :
 AdfsAu : {
          }
 AdfsSi : {
          }
-AdfsEn : 
-SiteMa : 
-Defaul : 
+AdfsEn :
+SiteMa :
+Defaul :
 Mailbo : F
          a
          l
          s
          e
-Defaul : 
+Defaul :
 Allowe : {
          n
          a
@@ -2659,7 +2659,7 @@ Allowe : {
          o
          m
          ,
-          
+
          N
          A
          M
@@ -2823,7 +2823,7 @@ Curren : {
          o
          m
          ,
-          
+
          n
          a
          m
@@ -2850,7 +2850,7 @@ Curren : {
          o
          m
          ,
-          
+
          n
          a
          m
@@ -2876,7 +2876,7 @@ Curren : {
          o
          m
          ,
-          
+
          n
          a
          m
@@ -2906,8 +2906,8 @@ Curren : {
          .
          .
          }
-IsJitE : 
-AutoJi : 
+IsJitE :
+AutoJi :
 Defaul : 0
          3
          /
@@ -2916,7 +2916,7 @@ Defaul : 0
          /
          2
          4
-          
+
          0
          6
          :
@@ -2925,7 +2925,7 @@ Defaul : 0
          :
          1
          3
-          
+
          P
          M
 Allowe : 1
@@ -2936,7 +2936,7 @@ Allowe : 1
          /
          2
          5
-          
+
          0
          3
          :
@@ -2945,7 +2945,7 @@ Allowe : 1
          :
          4
          3
-          
+
          A
          M
 Direct : F
@@ -2970,8 +2970,8 @@ Hidden : F
          l
          s
          e
-Groups : 
-Groups : 
+Groups :
+Groups :
 Defaul : P
          r
          i
@@ -3063,7 +3063,7 @@ GroupL : <
          y
          p
          e
-          
+
          p
          2
          :
@@ -3077,7 +3077,7 @@ GroupL : <
          u
          e
          ""
-          
+
          x
          m
          l
@@ -3130,7 +3130,7 @@ GroupL : <
          c
          e
          ""
-          
+
          /
          >
          <
@@ -3219,7 +3219,7 @@ GroupL : <
          c
          y
          >
-Groups : 
+Groups :
 DataCl : <
          D
          a
@@ -3240,7 +3240,7 @@ DataCl : <
          o
          n
          s
-          
+
          /
          >
 Visibl : L
@@ -3280,8 +3280,8 @@ Disabl : F
          e
 InPlac : {
          }
-Servic : 
-Guests : 
+Servic :
+Guests :
 Organi : h
          t
          t
@@ -3324,7 +3324,7 @@ BlockM : F
          l
          s
          e
-Focuse : 
+Focuse :
 Focuse : 0
          1
          /
@@ -3333,7 +3333,7 @@ Focuse : 0
          /
          0
          1
-          
+
          1
          2
          :
@@ -3342,10 +3342,10 @@ Focuse : 0
          :
          0
          0
-          
+
          A
          M
-Forest : 
+Forest :
 Forest : 0
          1
          /
@@ -3354,7 +3354,7 @@ Forest : 0
          /
          0
          1
-          
+
          1
          2
          :
@@ -3363,7 +3363,7 @@ Forest : 0
          :
          0
          0
-          
+
          A
          M
 EndUse : F
@@ -3371,14 +3371,14 @@ EndUse : F
          l
          s
          e
-OcmGro : 
+OcmGro :
 IsGrou : F
          a
          l
          s
          e
-Recall : 
-Messag : 
+Recall :
+Messag :
 Messag : F
          a
          l
@@ -3404,7 +3404,7 @@ Id     : F
          r
          s
          t
-          
+
          O
          r
          g
@@ -3424,7 +3424,7 @@ IsVali : T
 Exchan : 0
          .
          1
-          
+
          (
          8
          .
@@ -3652,7 +3652,7 @@ Object : {
          o
          p
          ,
-          
+
          c
          o
          n
@@ -3663,7 +3663,7 @@ Object : {
          e
          r
          ,
-          
+
          m
          s
          E
@@ -3692,7 +3692,7 @@ Object : {
          e
          r
          ,
-          
+
          m
          s
          E
@@ -3734,7 +3734,7 @@ WhenCh : 1
          /
          2
          5
-          
+
          1
          0
          :
@@ -3743,7 +3743,7 @@ WhenCh : 1
          :
          5
          2
-          
+
          P
          M
 WhenCr : 0
@@ -3754,7 +3754,7 @@ WhenCr : 0
          /
          2
          4
-          
+
          0
          2
          :
@@ -3763,7 +3763,7 @@ WhenCr : 0
          :
          5
          5
-          
+
          P
          M
 WhenCh : 1
@@ -3774,7 +3774,7 @@ WhenCh : 1
          /
          2
          5
-          
+
          0
          3
          :
@@ -3783,7 +3783,7 @@ WhenCh : 1
          :
          5
          2
-          
+
          A
          M
 WhenCr : 0
@@ -3794,7 +3794,7 @@ WhenCr : 0
          /
          2
          4
-          
+
          0
          6
          :
@@ -3803,7 +3803,7 @@ WhenCr : 0
          :
          5
          5
-          
+
          P
          M
 Exchan : 7
@@ -3941,7 +3941,7 @@ Object : C
 ","CIS M365 Foundations v3.0 L1; EXO Auditing","2025-11-10T22:53:33"
 "CIS-EXO-4","Ensure legacy protocols disabled per mailbox (sample check)","Medium","Legacy protocols (POP/IMAP/MAPI) disabled on all mailboxes","MailboxesWithLegacyProtocols=2 (sample of 100)","Fail","
 DisplayNam
-e         
+e
 ----------
 Discove...
 Hassan ...
@@ -3977,8 +3977,8 @@ Extern : T
          r
          u
          e
-NoAcce : 
-Archiv : 
+NoAcce :
+Archiv :
 Sharin : E
          x
          t
@@ -4010,7 +4010,7 @@ Displa : T
          r
          u
          e
-StartA : 
+StartA :
 ShowEv : F
          a
          l
@@ -4073,7 +4073,7 @@ Provis : F
          l
          s
          e
-SignIn : 
+SignIn :
 Enable : F
          a
          l
@@ -4091,7 +4091,7 @@ BccExt : F
          l
          s
          e
-BccExt : 
+BccExt :
 Public : F
          a
          l
@@ -4150,8 +4150,8 @@ Public : {
 Requir : -
          1
 Requir : 0
-Sharin : 
-Sharin : 
+Sharin :
+Sharin :
 Sharin : N
          o
          n
@@ -4166,7 +4166,7 @@ IPAddr : F
          l
          s
          e
-IPAddr : 
+IPAddr :
 IPAddr : 1
          5
 Enable : F
@@ -4323,7 +4323,7 @@ Defaul : E
          d
          i
          t
-Custom : 
+Custom :
 Condit : A
          l
          l
@@ -4381,8 +4381,8 @@ EmailA : F
          e
 EmailA : 3
          0
-Disabl : 
-Disabl : 
+Disabl :
+Disabl :
 Enable : T
          r
          u
@@ -4415,7 +4415,7 @@ AllowC : T
          r
          u
          e
-Condit : 
+Condit :
 Restri : N
          o
          n
@@ -4713,7 +4713,7 @@ BlockS : F
          l
          s
          e
-LabelM : 
+LabelM :
 Disabl : F
          a
          l
@@ -4833,8 +4833,8 @@ Defaul : E
          c
          i
          t
-AppAcc : 
-AllOrg : 
+AppAcc :
+AllOrg :
 Disabl : F
          a
          l
@@ -5076,7 +5076,7 @@ ESigna : {
          }
          ""
          ,
-          
+
          ""
          {
          \
@@ -5261,21 +5261,21 @@ Optica : N
          s
 Optica : {
          }
-Defaul : 
+Defaul :
 AllowW : F
          a
          l
          s
          e
-AllowS : 
-DenySe : 
+AllowS :
+DenySe :
 Exempt : F
          a
          l
          s
          e
-AllowS : 
-DenySe : 
+AllowS :
+DenySe :
 Enforc : T
          r
          u
@@ -5290,8 +5290,8 @@ Restri : F
 
 ","CIS M365 Foundations v3.0 L1; SPO Sharing","2025-11-10T22:53:34"
 "CIS-AAD-1","Limit Global Administrator role assignments","High","Global Admin assignments minimal (<= 2-4)","GlobalAdminCount=3","Pass","
-PrincipalId                          RoleDefinitionId                    
------------                          ----------------                    
+PrincipalId                          RoleDefinitionId
+-----------                          ----------------
 6b633c09-7475-4647-9bcc-f59732ec625f 62e90394-69f5-4237-9190-012177145e10
 727d96b1-4aab-47bc-b62d-3ee40c1d73bb 62e90394-69f5-4237-9190-012177145e10
 2912f341-f9ff-4f03-ad74-721dbf070c4f 62e90394-69f5-4237-9190-012177145e10
@@ -5301,9 +5301,9 @@ PrincipalId                          RoleDefinitionId
 "CIS-DEF-1","Ensure Safe Links policy is enabled","High","At least one Safe Links rule or policy is enabled","EnabledRules=0; EnabledPolicies=0","Fail","
 Name                                        Enabled
 ----                                        -------
-Strict Preset Security Policy1713470629399         
-StandardRecommendedPolicy638480795407067709        
-Built-In Protection Policy                         
+Strict Preset Security Policy1713470629399
+StandardRecommendedPolicy638480795407067709
+Built-In Protection Policy
 
 
 ","CIS M365 Foundations v3.0 L1; Defender for Office","2025-11-10T22:53:45"
@@ -5317,8 +5317,8 @@ Built-In Protection Policy                    True
 
 ","CIS M365 Foundations v3.0 L1; Defender for Office","2025-11-10T22:53:45"
 "CIS-CA-1","Ensure Conditional Access MFA policy exists for all users","High","At least one enabled CA policy requiring MFA for all users","MFAPolicies=5","Pass","
-DisplayName                                               State  
------------                                               -----  
+DisplayName                                               State
+-----------                                               -----
 Require multifactor authentication for guest access       enabled
 Require multifactor authentication for all users          enabled
 conditional access 1`                                     enabled

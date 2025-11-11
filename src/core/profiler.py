@@ -13,13 +13,13 @@ Usage:
         profile_script(main)
 """
 
-import functools
-import time
 import cProfile
-import pstats
+import functools
 import io
-from typing import Callable, Any
+import pstats
+import time
 from pathlib import Path
+from typing import Any, Callable
 
 
 def profile_function(func: Callable) -> Callable:

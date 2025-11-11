@@ -11,8 +11,10 @@ Usage (PowerShell):
 """
 
 from __future__ import annotations
+
 import argparse
 from pathlib import Path
+
 import pandas as pd
 
 DEFAULT_INPUT = Path("data/processed/sharepoint_permissions_clean.csv")

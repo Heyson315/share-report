@@ -27,7 +27,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.integrations.openai_gpt5 import GPT5Client, quick_chat, analyze_with_reasoning
+from src.integrations.openai_gpt5 import GPT5Client, analyze_with_reasoning, quick_chat
 
 
 def print_header(title: str):
@@ -59,8 +59,10 @@ def demo_1_simple_chat():
         usage = response["usage"]
 
         print(f"Answer:\n{answer}\n")
-        print(f"Token Usage: {usage['total_tokens']} tokens "
-              f"(prompt: {usage['prompt_tokens']}, completion: {usage['completion_tokens']})")
+        print(
+            f"Token Usage: {usage['total_tokens']} tokens "
+            f"(prompt: {usage['prompt_tokens']}, completion: {usage['completion_tokens']})"
+        )
 
     except Exception as e:
         print(f"❌ Error: {e}")
@@ -82,7 +84,7 @@ def demo_2_reasoning_api():
         - Net profit (before owner salary): $400,000
         - Considering purchasing $200,000 in equipment
         - Has $50,000 in capital loss carryforward from prior years
-        
+
         Question: What are the tax optimization strategies for this year?
         """
 
@@ -115,21 +117,21 @@ def demo_3_financial_analysis():
 
     sample_financials = """
     ABC Manufacturing Inc. - Q3 2025 Financial Data
-    
+
     Income Statement:
     - Revenue: $650,000 (up 25% from Q2)
     - Cost of Goods Sold: $420,000 (up 35% from Q2)
     - Gross Profit: $230,000 (35.4% margin, down from 41.2% in Q2)
     - Operating Expenses: $180,000 (up 10% from Q2)
     - Net Income: $50,000 (down 15% from Q2)
-    
+
     Balance Sheet Highlights:
     - Cash: $45,000 (down from $120,000 in Q2)
     - Accounts Receivable: $280,000 (DSO increased to 65 days from 45 days)
     - Inventory: $340,000 (up 40% from Q2)
     - Accounts Payable: $190,000 (DPO increased to 75 days from 50 days)
     - Short-term debt: $150,000 (new line of credit drawn)
-    
+
     Notable Items:
     - Major customer (30% of revenue) payment delayed 60 days
     - New product line launched in Q3
@@ -144,9 +146,7 @@ def demo_3_financial_analysis():
         print(sample_financials)
         print("\nAnalyzing from audit perspective (high reasoning effort)...\n")
 
-        response = client.analyze_financial_document(
-            document_text=sample_financials, analysis_type="audit"
-        )
+        response = client.analyze_financial_document(document_text=sample_financials, analysis_type="audit")
 
         output = response.get("output_text", "No analysis available")
         reasoning = response.get("reasoning_summary", "")
@@ -167,23 +167,23 @@ def demo_4_client_report():
 
     client_data = """
     Rahman Finance and Accounting P.L.LLC - Client Quarterly Report
-    
+
     Client: Tech Innovations LLC
     Period: Q3 2025
-    
+
     Financial Performance:
     - Revenue: $1.2M (up 18% YoY)
     - Gross Margin: 58% (improved from 54% last year)
     - Operating Expenses: $420,000 (controlled at 35% of revenue)
     - Net Profit: $276,000 (23% margin)
     - Cash Flow from Operations: $310,000 (strong conversion)
-    
+
     Key Achievements:
     - Successfully launched new SaaS product (contributing 15% of revenue)
     - Reduced customer acquisition cost by 22%
     - Improved gross margin through better pricing strategy
     - Paid off $150,000 term loan ahead of schedule
-    
+
     Recommendations:
     - Consider R&D tax credit for new product development ($50K potential)
     - Evaluate Section 179 deduction for planned equipment purchases
@@ -198,9 +198,7 @@ def demo_4_client_report():
         print(client_data[:400] + "...\n")
         print("Generating executive summary...\n")
 
-        response = client.generate_client_report_summary(
-            client_data=client_data, report_type="quarterly"
-        )
+        response = client.generate_client_report_summary(client_data=client_data, report_type="quarterly")
 
         summary = response["choices"][0]["message"]["content"]
         print(f"Generated Executive Summary:\n\n{summary}\n")
@@ -229,8 +227,7 @@ def demo_5_engagement_letter():
                 "Sales tax compliance review for multi-state operations."
             ),
             fee_structure=(
-                "$5,000 fixed fee for tax return preparation, plus $250/hour for "
-                "additional consulting services."
+                "$5,000 fixed fee for tax return preparation, plus $250/hour for " "additional consulting services."
             ),
         )
 
@@ -249,9 +246,7 @@ def demo_6_convenience_functions():
 
     print("Using quick_chat() function:\n")
     try:
-        response = quick_chat(
-            "Explain the difference between cash basis and accrual accounting in 2 sentences."
-        )
+        response = quick_chat("Explain the difference between cash basis and accrual accounting in 2 sentences.")
         print(f"Response: {response}\n")
     except Exception as e:
         print(f"❌ Error: {e}\n")
@@ -271,7 +266,8 @@ def print_setup_instructions():
     """Print setup instructions."""
     print_header("Setup Instructions")
 
-    print("""
+    print(
+        """
 1. Create Azure OpenAI Resource:
    - Go to portal.azure.com
    - Create Azure OpenAI resource
@@ -282,15 +278,15 @@ def print_setup_instructions():
    - Copy endpoint URL and API key
 
 3. Set Environment Variables:
-   
+
    Windows PowerShell:
    $env:AZURE_OPENAI_ENDPOINT="https://your-resource.openai.azure.com"
    $env:AZURE_OPENAI_API_KEY="your-api-key-here"
-   
+
    Windows Command Prompt:
    set AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com
    set AZURE_OPENAI_API_KEY=your-api-key-here
-   
+
    Linux/Mac:
    export AZURE_OPENAI_ENDPOINT="https://your-resource.openai.azure.com"
    export AZURE_OPENAI_API_KEY="your-api-key-here"
@@ -309,7 +305,8 @@ def print_setup_instructions():
 For more information:
 - https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/reasoning
 - https://learn.microsoft.com/en-us/azure/cognitive-services/openai/quickstart
-    """)
+    """
+    )
 
 
 def main():

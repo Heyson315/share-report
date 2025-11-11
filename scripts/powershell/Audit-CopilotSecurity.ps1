@@ -15,7 +15,7 @@
 
 .EXAMPLE
     .\Audit-CopilotSecurity.ps1
-    
+
 .EXAMPLE
     .\Audit-CopilotSecurity.ps1 -OutputPath "C:\CopilotAudits\"
 
@@ -72,14 +72,14 @@ try {
 Write-Host "`n[+] Checking Copilot License Assignments..." -ForegroundColor Cyan
 try {
     $copilotSkus = Get-MgSubscribedSku | Where-Object {
-        $_.SkuPartNumber -like "*COPILOT*" -or 
+        $_.SkuPartNumber -like "*COPILOT*" -or
         $_.SkuPartNumber -like "*M365_COPILOT*" -or
         $_.ServicePlans.ServicePlanName -like "*COPILOT*"
     }
-    
+
     $results.Licenses.TotalCopilotSkus = $copilotSkus.Count
     $results.Licenses.Details = @()
-    
+
     foreach ($sku in $copilotSkus) {
         $skuInfo = @{
             SkuPartNumber = $sku.SkuPartNumber
@@ -89,22 +89,22 @@ try {
             AvailableUnits = $sku.PrepaidUnits.Enabled - $sku.ConsumedUnits
         }
         $results.Licenses.Details += $skuInfo
-        
+
         Write-Host "  [✓] Found: $($sku.SkuPartNumber)" -ForegroundColor Green
         Write-Host "      Assigned: $($sku.ConsumedUnits) / $($sku.PrepaidUnits.Enabled)" -ForegroundColor Gray
     }
-    
+
     # Get users with Copilot licenses
-    $copilotUsers = Get-MgUser -All -Property DisplayName,UserPrincipalName,AssignedLicenses | 
-        Where-Object { 
-            $_.AssignedLicenses.SkuId -in $copilotSkus.SkuId 
+    $copilotUsers = Get-MgUser -All -Property DisplayName,UserPrincipalName,AssignedLicenses |
+        Where-Object {
+            $_.AssignedLicenses.SkuId -in $copilotSkus.SkuId
         }
-    
+
     $results.Licenses.AssignedUsers = $copilotUsers.Count
     $results.Licenses.UserList = $copilotUsers | Select-Object DisplayName, UserPrincipalName
-    
+
     Write-Host "  [✓] Copilot assigned to $($copilotUsers.Count) users" -ForegroundColor Green
-    
+
 } catch {
     Write-Host "  [!] License check failed: $($_.Exception.Message)" -ForegroundColor Red
     $results.Licenses.Error = $_.Exception.Message
@@ -114,21 +114,21 @@ try {
 Write-Host "`n[+] Checking DLP Policies for Copilot Protection..." -ForegroundColor Cyan
 try {
     $dlpPolicies = Get-DlpCompliancePolicy
-    $copilotDlpPolicies = $dlpPolicies | Where-Object { 
-        $_.Name -like "*Copilot*" -or 
+    $copilotDlpPolicies = $dlpPolicies | Where-Object {
+        $_.Name -like "*Copilot*" -or
         $_.Name -like "*AI*" -or
         $_.Comment -like "*Copilot*"
     }
-    
+
     $results.DataProtection.DLPPolicies = @{
         Total = $dlpPolicies.Count
         CopilotSpecific = $copilotDlpPolicies.Count
         Details = $copilotDlpPolicies | Select-Object Name, Mode, Enabled
     }
-    
+
     Write-Host "  [✓] Total DLP policies: $($dlpPolicies.Count)" -ForegroundColor Green
     Write-Host "  [✓] Copilot/AI-specific DLP: $($copilotDlpPolicies.Count)" -ForegroundColor Green
-    
+
     if ($copilotDlpPolicies.Count -eq 0) {
         $results.Recommendations += @{
             Priority = "HIGH"
@@ -138,7 +138,7 @@ try {
             Impact = "Client data could be exposed through Copilot responses"
         }
     }
-    
+
 } catch {
     Write-Host "  [!] DLP check failed: $($_.Exception.Message)" -ForegroundColor Red
     $results.DataProtection.DLPError = $_.Exception.Message
@@ -149,22 +149,22 @@ Write-Host "`n[+] Checking Sensitivity Labels Configuration..." -ForegroundColor
 try {
     $labels = Get-Label
     $labelPolicies = Get-LabelPolicy
-    
+
     $results.DataProtection.SensitivityLabels = @{
         TotalLabels = $labels.Count
         PublishedPolicies = $labelPolicies.Count
         MandatoryLabelingEnabled = ($labelPolicies | Where-Object { $_.Settings -like "*Mandatory*" }).Count
     }
-    
+
     Write-Host "  [✓] Sensitivity labels: $($labels.Count)" -ForegroundColor Green
     Write-Host "  [✓] Published policies: $($labelPolicies.Count)" -ForegroundColor Green
-    
+
     # Check if labels support Copilot blocking
-    $copilotAwareLabels = $labels | Where-Object { 
-        $_.Settings -like "*copilot*" -or 
+    $copilotAwareLabels = $labels | Where-Object {
+        $_.Settings -like "*copilot*" -or
         $_.AdvancedSettings.Keys -like "*copilot*"
     }
-    
+
     if ($copilotAwareLabels.Count -eq 0) {
         $results.Recommendations += @{
             Priority = "MEDIUM"
@@ -174,7 +174,7 @@ try {
             Impact = "Copilot may access files that should be restricted"
         }
     }
-    
+
 } catch {
     Write-Host "  [!] Sensitivity label check failed: $($_.Exception.Message)" -ForegroundColor Red
     $results.DataProtection.LabelsError = $_.Exception.Message
@@ -185,9 +185,9 @@ Write-Host "`n[+] Checking Information Barriers Configuration..." -ForegroundCol
 try {
     $orgConfig = Get-OrganizationConfig
     $ibEnabled = $orgConfig.InformationBarriersManagementEnabled
-    
+
     $results.InformationBarriers.Enabled = $ibEnabled
-    
+
     if ($ibEnabled) {
         $ibPolicies = Get-InformationBarrierPolicy
         $results.InformationBarriers.Policies = $ibPolicies.Count
@@ -203,7 +203,7 @@ try {
             Impact = "High risk of client data cross-contamination in Copilot responses"
         }
     }
-    
+
 } catch {
     Write-Host "  [!] Information Barriers check failed: $($_.Exception.Message)" -ForegroundColor Red
     $results.InformationBarriers.Error = $_.Exception.Message
@@ -214,20 +214,20 @@ Write-Host "`n[+] Checking Audit Log Configuration for Copilot..." -ForegroundCo
 try {
     $auditConfig = Get-AdminAuditLogConfig
     $retentionPolicies = Get-UnifiedAuditLogRetentionPolicy
-    
+
     $results.AuditSettings.AuditEnabled = -not $orgConfig.AuditDisabled
     $results.AuditSettings.UnifiedAuditLogEnabled = $auditConfig.UnifiedAuditLogIngestionEnabled
     $results.AuditSettings.RetentionPolicies = $retentionPolicies.Count
-    
+
     # Check for Copilot-specific retention
-    $copilotRetention = $retentionPolicies | Where-Object { 
-        $_.Name -like "*Copilot*" -or 
+    $copilotRetention = $retentionPolicies | Where-Object {
+        $_.Name -like "*Copilot*" -or
         $_.RecordTypes -contains "MicrosoftCopilot"
     }
-    
+
     Write-Host "  [✓] Audit enabled: $($results.AuditSettings.AuditEnabled)" -ForegroundColor Green
     Write-Host "  [✓] Retention policies: $($retentionPolicies.Count)" -ForegroundColor Green
-    
+
     if ($copilotRetention.Count -eq 0) {
         $results.Recommendations += @{
             Priority = "MEDIUM"
@@ -237,7 +237,7 @@ try {
             Impact = "May not have audit trail for Copilot usage in case of investigations"
         }
     }
-    
+
 } catch {
     Write-Host "  [!] Audit config check failed: $($_.Exception.Message)" -ForegroundColor Red
     $results.AuditSettings.Error = $_.Exception.Message
@@ -252,11 +252,11 @@ try {
         WebPushNotificationsDisabled = $orgConfig.WebPushNotificationsDisabled
         OutlookTextPredictionDisabled = $orgConfig.OutlookTextPredictionDisabled
     }
-    
+
     $results.DataProtection.CopilotOrgSettings = $copilotSettings
-    
+
     Write-Host "  [✓] Connectors (required for Copilot): $($copilotSettings.ConnectorsEnabled)" -ForegroundColor Green
-    
+
 } catch {
     Write-Host "  [!] Copilot settings check failed: $($_.Exception.Message)" -ForegroundColor Red
 }
@@ -312,7 +312,7 @@ Write-Host "[✓] Audit complete!" -ForegroundColor Green
 # Generate CSV summary for easy review
 $csvFile = $reportFile -replace ".json$", ".csv"
 if ($results.Recommendations.Count -gt 0) {
-    $results.Recommendations | Select-Object Priority, Category, Finding, Recommendation, Impact | 
+    $results.Recommendations | Select-Object Priority, Category, Finding, Recommendation, Impact |
         Export-Csv -Path $csvFile -NoTypeInformation
     Write-Host "[✓] Recommendations exported to: $csvFile" -ForegroundColor Green
 }

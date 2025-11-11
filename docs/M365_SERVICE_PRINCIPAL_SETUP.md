@@ -70,7 +70,7 @@ Add the following **Application permissions** (not Delegated):
 # Required permission scopes
 $requiredScopes = @(
     "Directory.Read.All",
-    "Organization.Read.All", 
+    "Organization.Read.All",
     "Policy.Read.All",
     "User.Read.All",
     "Group.Read.All",
@@ -173,24 +173,24 @@ function Connect-M365CIS-ServicePrincipal {
     param(
         [Parameter(Mandatory=$true)]
         [string]$TenantId,
-        
+
         [Parameter(Mandatory=$true)]
         [string]$ClientId,
-        
+
         [Parameter(Mandatory=$true)]
         [SecureString]$ClientSecret
     )
-    
+
     try {
         # Convert SecureString to credential
         $credential = New-Object System.Management.Automation.PSCredential($ClientId, $ClientSecret)
-        
+
         # Connect to Microsoft Graph
         Connect-MgGraph -TenantId $TenantId -ClientSecretCredential $credential -NoWelcome
-        
+
         # Connect to Exchange Online
         Connect-ExchangeOnline -AppId $ClientId -CertificateThumbprint $TenantId -Organization "$TenantId.onmicrosoft.com" -ShowBanner:$false
-        
+
         Write-Host "✅ Successfully connected to M365 services using service principal" -ForegroundColor Green
         return $true
     }
@@ -210,19 +210,19 @@ Create a test script to validate the setup:
 $config = Import-Clixml -Path "config/service_principal_config.xml"
 
 if (Connect-M365CIS-ServicePrincipal -TenantId $config.TenantId -ClientId $config.ClientId -ClientSecret $config.ClientSecret) {
-    
+
     # Test Graph API access
     $org = Get-MgOrganization
     Write-Host "✅ Organization: $($org.DisplayName)"
-    
+
     # Test Exchange Online access
     $domains = Get-AcceptedDomain
     Write-Host "✅ Exchange domains: $($domains.Count)"
-    
+
     # Run a sample CIS check
     $result = Test-CIS-EXO-PasswordPolicy
     Write-Host "✅ Sample audit result: $($result.Status)"
-    
+
 } else {
     Write-Error "❌ Service principal authentication failed"
 }
@@ -249,13 +249,13 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-    
+
     - name: Setup PowerShell modules
       shell: powershell
       run: |
         Install-Module -Name Microsoft.Graph.Authentication -Force -Scope CurrentUser
         Install-Module -Name ExchangeOnlineManagement -Force -Scope CurrentUser
-    
+
     - name: Run M365 CIS Audit
       shell: powershell
       env:
@@ -265,16 +265,16 @@ jobs:
       run: |
         # Convert secret to SecureString
         $secureSecret = ConvertTo-SecureString $env:AZURE_CLIENT_SECRET -AsPlainText -Force
-        
+
         # Import audit module
         Import-Module "scripts/powershell/modules/M365CIS.psm1" -Force
-        
+
         # Connect using service principal
         Connect-M365CIS-ServicePrincipal -TenantId $env:AZURE_TENANT_ID -ClientId $env:AZURE_CLIENT_ID -ClientSecret $secureSecret
-        
+
         # Run the audit
         $results = Invoke-M365CISAudit -Timestamped
-        
+
         # Export results
         $results | ConvertTo-Json -Depth 10 | Out-File "output/reports/security/automated-audit-$(Get-Date -Format 'yyyy-MM-dd-HHmm').json"
 ```

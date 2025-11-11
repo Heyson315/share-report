@@ -23,7 +23,7 @@
 
 .EXAMPLE
     .\Compare-M365CISResults.ps1 -BeforeFile "before.json" -AfterFile "after.json"
-    
+
 .EXAMPLE
     .\Compare-M365CISResults.ps1 -BeforeFile "before.json" -AfterFile "after.json" -OutputCsv "comparison.csv" -OutputHtml "comparison.html"
 
@@ -36,13 +36,13 @@ param(
     [Parameter(Mandatory=$true)]
     [ValidateScript({Test-Path $_})]
     [string]$BeforeFile,
-    
+
     [Parameter(Mandatory=$true)]
     [ValidateScript({Test-Path $_})]
     [string]$AfterFile,
-    
+
     [string]$OutputCsv,
-    
+
     [string]$OutputHtml
 )
 
@@ -86,10 +86,10 @@ $comparisons = @()
 foreach ($controlId in $allControlIds) {
     $before = $beforeLookup[$controlId]
     $after = $afterLookup[$controlId]
-    
+
     $statusChange = "N/A"
     $changeType = "No Change"
-    
+
     if (-not $before -and $after) {
         $statusChange = "New → $($after.Status)"
         $changeType = "Added"
@@ -106,7 +106,7 @@ foreach ($controlId in $allControlIds) {
             $changeType = "Changed"
         }
     }
-    
+
     $comparison = [PSCustomObject]@{
         ControlId = $controlId
         Title = if ($after) { $after.Title } elseif ($before) { $before.Title } else { "Unknown" }
@@ -118,7 +118,7 @@ foreach ($controlId in $allControlIds) {
         BeforeActual = if ($before) { $before.Actual } else { "N/A" }
         AfterActual = if ($after) { $after.Actual } else { "N/A" }
     }
-    
+
     $comparisons += $comparison
 }
 
@@ -248,14 +248,14 @@ if ($OutputHtml) {
 </head>
 <body>
     <h1>M365 CIS Audit Comparison Report</h1>
-    
+
     <div class="summary">
         <h2>Summary</h2>
         <p><strong>Before File:</strong> $(Split-Path -Leaf $BeforeFile)</p>
         <p><strong>After File:</strong> $(Split-Path -Leaf $AfterFile)</p>
         <p><strong>Comparison Date:</strong> $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')</p>
     </div>
-    
+
     <div class="stats-grid">
         <div class="stat-card">
             <h3>BEFORE Status</h3>
@@ -272,16 +272,16 @@ if ($OutputHtml) {
             <p><strong>Pass Rate:</strong> $afterPassRate%</p>
         </div>
     </div>
-    
+
     <div class="stat-card">
         <h3>Change Summary</h3>
         <p><strong>Improvement:</strong> <span class="$(if ($improvement -gt 0) {'improved'} else {'degraded'})">$(if ($improvement -gt 0) {"+$improvement%"} else {"$improvement%"})</span></p>
-        <p><strong>Improved:</strong> <span class="improved">$(($comparisons | Where-Object {$_.ChangeType -eq 'Improved'}).Count)</span> | 
-           <strong>Degraded:</strong> <span class="degraded">$(($comparisons | Where-Object {$_.ChangeType -eq 'Degraded'}).Count)</span> | 
-           <strong>Added:</strong> $(($comparisons | Where-Object {$_.ChangeType -eq 'Added'}).Count) | 
+        <p><strong>Improved:</strong> <span class="improved">$(($comparisons | Where-Object {$_.ChangeType -eq 'Improved'}).Count)</span> |
+           <strong>Degraded:</strong> <span class="degraded">$(($comparisons | Where-Object {$_.ChangeType -eq 'Degraded'}).Count)</span> |
+           <strong>Added:</strong> $(($comparisons | Where-Object {$_.ChangeType -eq 'Added'}).Count) |
            <strong>Removed:</strong> $(($comparisons | Where-Object {$_.ChangeType -eq 'Removed'}).Count)</p>
     </div>
-    
+
     <h2>Detailed Comparison</h2>
     <table>
         <thead>
@@ -295,7 +295,7 @@ if ($OutputHtml) {
         </thead>
         <tbody>
 "@
-        
+
         foreach ($comp in $comparisons) {
             $severityClass = "severity-$($comp.Severity.ToLower())"
             $changeClass = "change-$($comp.ChangeType.ToLower())"
@@ -309,14 +309,14 @@ if ($OutputHtml) {
             </tr>
 "@
         }
-        
+
         $htmlContent += @"
         </tbody>
     </table>
 </body>
 </html>
 "@
-        
+
         $htmlContent | Out-File -FilePath $OutputHtml -Encoding UTF8
         Write-ColorOutput "[+] Comparison exported to HTML: $OutputHtml" "Green"
     } catch {

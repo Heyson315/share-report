@@ -45,10 +45,10 @@ class M365MCPServer:
         self.server = Server("m365-security-server")
         self.graph_client = None
         self.setup_tools()
-    
+
     def setup_tools(self):
         """Register all available M365 tools"""
-        
+
         @self.server.tool("run_security_audit")
         async def run_security_audit(tenant_id: str) -> str:
             """Execute comprehensive M365 security audit"""
@@ -58,7 +58,7 @@ class M365MCPServer:
                 return f"Security audit completed. {audit_results}"
             except Exception as e:
                 raise McpError(f"Audit failed: {str(e)}")
-        
+
         @self.server.tool("analyze_sharepoint_permissions")  
         async def analyze_sharepoint_permissions(site_url: str) -> str:
             """Analyze SharePoint site permissions in real-time"""
@@ -68,7 +68,7 @@ class M365MCPServer:
                 return f"Permission analysis: {analysis}"
             except Exception as e:
                 raise McpError(f"Permission analysis failed: {str(e)}")
-                
+
         @self.server.tool("get_security_alerts")
         async def get_security_alerts(severity: str = "high") -> str:
             """Retrieve current security alerts from Microsoft 365"""
@@ -82,7 +82,7 @@ class M365MCPServer:
         """Authenticate with Microsoft Graph using service principal"""
         credential = ClientSecretCredential(
             tenant_id=self.config['tenant_id'],
-            client_id=self.config['client_id'], 
+            client_id=self.config['client_id'],
             client_secret=self.config['client_secret']
         )
         self.graph_client = GraphServiceClient(credential)
@@ -95,17 +95,17 @@ class M365MCPServer:
 class M365GraphIntegration:
     def __init__(self, graph_client):
         self.client = graph_client
-    
+
     async def get_security_score(self):
         """Retrieve Microsoft Secure Score"""
         secure_scores = await self.client.security.secure_scores.get()
         return {
             'current_score': secure_scores.value[0].current_score,
             'max_score': secure_scores.value[0].max_score,
-            'percentage': (secure_scores.value[0].current_score / 
+            'percentage': (secure_scores.value[0].current_score /
                           secure_scores.value[0].max_score) * 100
         }
-    
+
     async def analyze_risky_users(self):
         """Identify users with security risks"""
         risky_users = await self.client.identity_protection.risky_users.get()
@@ -117,29 +117,29 @@ class M365GraphIntegration:
             }
             for user in risky_users.value
         ]
-    
+
     async def audit_sharepoint_sites(self):
         """Comprehensive SharePoint security audit"""
         sites = await self.client.sites.get()
         security_findings = []
-        
+
         for site in sites.value:
             # Check external sharing settings
             sharing_settings = await self._check_sharing_settings(site.id)
-            
+
             # Analyze permissions
             permissions = await self._audit_site_permissions(site.id)
-            
+
             # Check for sensitive content
             sensitive_content = await self._scan_sensitive_content(site.id)
-            
+
             security_findings.append({
                 'site': site.display_name,
                 'sharing_risks': sharing_settings,
                 'permission_issues': permissions,
                 'sensitive_content': sensitive_content
             })
-        
+
         return security_findings
 ```
 
@@ -154,22 +154,22 @@ from pathlib import Path
 class ToolkitIntegration:
     def __init__(self, toolkit_path: Path):
         self.toolkit_path = toolkit_path
-    
+
     async def run_powershell_audit(self, tenant_id: str):
         """Execute existing PowerShell CIS audit"""
         script_path = self.toolkit_path / "scripts/powershell/Invoke-M365CISAudit.ps1"
-        
+
         cmd = [
             "powershell.exe",
-            "-NoProfile", 
+            "-NoProfile",
             "-ExecutionPolicy", "Bypass",
             "-File", str(script_path),
             "-TenantId", tenant_id,
             "-Timestamped"
         ]
-        
+
         result = subprocess.run(cmd, capture_output=True, text=True)
-        
+
         if result.returncode == 0:
             # Parse the JSON output
             output_file = self.toolkit_path / "output/reports/security/m365_cis_audit.json"
@@ -177,7 +177,7 @@ class ToolkitIntegration:
                 return json.loads(output_file.read_text())
         else:
             raise Exception(f"PowerShell audit failed: {result.stderr}")
-    
+
     async def generate_enhanced_report(self, audit_data, graph_data):
         """Combine audit results with real-time Graph data"""
         enhanced_report = {
@@ -186,7 +186,7 @@ class ToolkitIntegration:
             'realtime_security': graph_data,
             'recommendations': await self._generate_ai_recommendations(audit_data, graph_data)
         }
-        
+
         return enhanced_report
 ```
 
@@ -199,21 +199,21 @@ class ToolkitIntegration:
 
 async def comprehensive_security_analysis():
     """Multi-dimensional security analysis"""
-    
+
     # Get CIS compliance status
     cis_results = await run_powershell_audit(tenant_id)
-    
+
     # Get real-time security data
     security_score = await get_security_score()
     risky_users = await analyze_risky_users()
     security_alerts = await get_security_alerts("high")
-    
+
     # Analyze SharePoint security
     sharepoint_audit = await audit_sharepoint_sites()
-    
+
     # Generate AI-powered insights
     insights = await analyze_security_trends(cis_results, security_score)
-    
+
     return {
         'overall_status': 'CRITICAL' if security_score['percentage'] < 70 else 'GOOD',
         'cis_compliance': cis_results,
@@ -232,25 +232,25 @@ async def comprehensive_security_analysis():
 
 async def incident_response_workflow(incident_id: str):
     """Automated security incident investigation"""
-    
+
     # Get incident details
     incident = await get_security_incident(incident_id)
-    
+
     # Gather related data
     affected_users = await get_affected_users(incident)
     related_alerts = await get_related_alerts(incident)
-    
+
     # Perform automated analysis
     threat_analysis = await analyze_threat_indicators(incident)
     impact_assessment = await assess_business_impact(affected_users)
-    
+
     # Generate response recommendations
     response_plan = await generate_response_plan(threat_analysis, impact_assessment)
-    
+
     # Execute safe automated responses
     if response_plan['auto_actions']:
         await execute_safe_responses(response_plan['auto_actions'])
-    
+
     return {
         'incident_summary': incident,
         'threat_analysis': threat_analysis,
@@ -267,29 +267,29 @@ async def incident_response_workflow(incident_id: str):
 
 async def continuous_compliance_monitoring():
     """Real-time compliance monitoring with intelligent alerting"""
-    
+
     while True:
         # Run periodic checks
         compliance_status = await check_compliance_policies()
         data_governance = await audit_data_governance()
         retention_compliance = await check_retention_policies()
-        
+
         # Detect compliance drift
         issues = await detect_compliance_issues(compliance_status)
-        
+
         if issues:
             # Generate intelligent alerts
             alert = await generate_compliance_alert(issues)
-            
+
             # Notify stakeholders
             await send_compliance_notification(alert)
-            
+
             # Suggest remediation
             remediation = await suggest_auto_remediation(issues)
-            
+
             if remediation['safe_to_auto_fix']:
                 await execute_compliance_fixes(remediation['actions'])
-        
+
         # Wait for next check cycle
         await asyncio.sleep(3600)  # Check hourly
 ```
@@ -302,7 +302,7 @@ async def continuous_compliance_monitoring():
 class SecureM365Authentication:
     def __init__(self):
         self.vault_client = self._setup_key_vault()
-        
+
     async def get_secure_credentials(self):
         """Retrieve credentials from Azure Key Vault"""
         credentials = {
@@ -311,7 +311,7 @@ class SecureM365Authentication:
             'client_secret': await self.vault_client.get_secret('m365-client-secret')
         }
         return credentials
-    
+
     def _setup_key_vault(self):
         """Configure secure credential storage"""
         # Implementation for Azure Key Vault or similar
@@ -324,7 +324,7 @@ class SecureM365Authentication:
 class MCPAuditLogger:
     def __init__(self):
         self.logger = self._setup_secure_logging()
-    
+
     async def log_mcp_action(self, action: str, user: str, result: str):
         """Log all MCP server actions for audit trail"""
         audit_entry = {
@@ -334,7 +334,7 @@ class MCPAuditLogger:
             'result': result,
             'session_id': self._get_session_id()
         }
-        
+
         await self.logger.info(json.dumps(audit_entry))
 ```
 

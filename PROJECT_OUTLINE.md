@@ -167,7 +167,7 @@ python scripts/run_performance_benchmark.py --baseline
 - **ISO 27001**: Risk assessment automation and control validation
 - **NIST Cybersecurity Framework**: Continuous monitoring and incident response
 - **GDPR/Privacy**: Data classification and retention policy enforcement
-- **🏢 CPA-Specific Compliance**: 
+- **🏢 CPA-Specific Compliance**:
   - **SOX (Sarbanes-Oxley)**: Financial reporting controls and documentation
   - **PCI-DSS**: Payment card industry data security (if applicable)
   - **AICPA Trust Services**: Security, availability, confidentiality criteria

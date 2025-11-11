@@ -19,14 +19,14 @@ function Connect-M365CIS {
         [string]$SPOAdminUrl,
         [switch]$SkipPurview
     )
-    
+
     # Fix PSModulePath for OneDrive-synced modules
     $userModulePath = "$env:USERPROFILE\OneDrive - Rahman Finance and Accounting P.L.LC\Documents\WindowsPowerShell\Modules"
     if ((Test-Path $userModulePath) -and ($env:PSModulePath -notlike "*$userModulePath*")) {
         $env:PSModulePath += ";$userModulePath"
         Write-CISLog "Added OneDrive module path to PSModulePath" "Info"
     }
-    
+
     if (-not $SkipExchange) {
         try {
             Write-CISLog 'Connecting to Exchange Online...'
@@ -84,7 +84,7 @@ function Connect-M365CIS {
 function Connect-PurviewCompliance {
     [CmdletBinding()]
     param()
-    
+
     try {
         # Check if ExchangeOnlineManagement module is available (provides Security & Compliance cmdlets)
         if (Get-Module -ListAvailable ExchangeOnlineManagement) {
@@ -465,7 +465,7 @@ function Invoke-M365CISAudit {
     $results += Test-CIS-Defender-SafeLink
     $results += Test-CIS-Defender-SafeAttachment
     $results += Test-CIS-CA-MFAEnabled
-    
+
     # New enhanced controls (6)
     $results += Test-CIS-Purview-DLPPoliciesEnabled
     $results += Test-CIS-AAD-RiskPoliciesEnabled

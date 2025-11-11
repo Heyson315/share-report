@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import pandas as pd
 
 report = Path("output/reports/business/sharepoint_permissions_report.xlsx")

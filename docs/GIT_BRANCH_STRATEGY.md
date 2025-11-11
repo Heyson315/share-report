@@ -357,7 +357,7 @@ git checkout <commit-hash>
 
 ---
 
-**🎯 Remember**: 
+**🎯 Remember**:
 - Work on `develop` for daily development
 - Merge to `main` only for releases
 - Create `evidence/*` branches for audit trails

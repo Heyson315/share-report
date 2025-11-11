@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 import pandas as pd
 
 JSON_PATH = Path("output/reports/security/m365_cis_audit.json")

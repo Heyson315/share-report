@@ -18,10 +18,10 @@ Created: November 2025
 
 import json
 import os
+from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-from collections import defaultdict
 
 
 class GPT5CostTracker:
@@ -171,9 +171,7 @@ class GPT5CostTracker:
         """Get total cost for the past 7 days."""
         week_ago = datetime.now() - timedelta(days=7)
         weekly_cost = sum(
-            entry["cost"]["total"]
-            for entry in self.history
-            if datetime.fromisoformat(entry["timestamp"]) >= week_ago
+            entry["cost"]["total"] for entry in self.history if datetime.fromisoformat(entry["timestamp"]) >= week_ago
         )
         return weekly_cost
 
@@ -230,9 +228,7 @@ class GPT5CostTracker:
     def print_detailed_report(self, days: int = 30):
         """Print detailed cost report."""
         cutoff = datetime.now() - timedelta(days=days)
-        recent = [
-            e for e in self.history if datetime.fromisoformat(e["timestamp"]) >= cutoff
-        ]
+        recent = [e for e in self.history if datetime.fromisoformat(e["timestamp"]) >= cutoff]
 
         print("\n" + "=" * 80)
         print(f"  GPT-5 Cost Report - Last {days} Days")
@@ -286,9 +282,7 @@ class GPT5CostTracker:
                 pricing = self.PRICING[model_key]
                 cached_tokens = entry["tokens"]["cached_input"]
                 # Savings = (full price - discounted price) * tokens
-                savings += (cached_tokens / 1_000_000) * (
-                    pricing["input"] - pricing["cached_input"]
-                )
+                savings += (cached_tokens / 1_000_000) * (pricing["input"] - pricing["cached_input"])
         return savings
 
     def _print_recommendations(self, entries: List[Dict]):
@@ -299,33 +293,23 @@ class GPT5CostTracker:
         total_requests = len(entries)
         gpt5_requests = sum(1 for e in entries if e["model"] == "gpt-5")
         if gpt5_requests / total_requests > 0.5:
-            recommendations.append(
-                "   • Consider using gpt-5-mini for simpler tasks (2-3x cheaper)"
-            )
+            recommendations.append("   • Consider using gpt-5-mini for simpler tasks (2-3x cheaper)")
 
         # Check cache usage
         total_input = sum(e["tokens"]["input"] for e in entries)
         total_cached = sum(e["tokens"]["cached_input"] for e in entries)
         if total_cached < total_input * 0.1:
-            recommendations.append(
-                "   • Low cache usage detected - implement prompt caching for repeated content"
-            )
+            recommendations.append("   • Low cache usage detected - implement prompt caching for repeated content")
 
         # Check output token usage
-        avg_output = (
-            sum(e["tokens"]["output"] for e in entries) / len(entries) if entries else 0
-        )
+        avg_output = sum(e["tokens"]["output"] for e in entries) / len(entries) if entries else 0
         if avg_output > 2000:
-            recommendations.append(
-                "   • High output tokens - consider reducing max_completion_tokens parameter"
-            )
+            recommendations.append("   • High output tokens - consider reducing max_completion_tokens parameter")
 
         # Check reasoning effort
         reasoning_requests = [e for e in entries if e["request_type"] == "reasoning"]
         if len(reasoning_requests) > total_requests * 0.3:
-            recommendations.append(
-                "   • Heavy reasoning API usage - use Chat Completions for simple queries"
-            )
+            recommendations.append("   • Heavy reasoning API usage - use Chat Completions for simple queries")
 
         if recommendations:
             for rec in recommendations:
