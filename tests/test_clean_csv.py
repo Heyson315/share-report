@@ -1,6 +1,8 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
+
 import pandas as pd
+
 from scripts.clean_csv import clean_csv
 
 SAMPLE = """# Comment line should be removed

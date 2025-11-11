@@ -144,7 +144,7 @@ notepad "config/audit_config.json"
   "auditing": {
     "enabledModules": [
       "Exchange",
-      "AzureAD", 
+      "AzureAD",
       "SharePoint",
       "Intune",
       "Defender"
@@ -269,7 +269,7 @@ if ($criticalFindings.Count -gt 0) {
         "text" = "🚨 Critical M365 security findings detected: $($criticalFindings.Count) issues"
         "findings" = $criticalFindings | Select-Object ControlId, Title, Evidence
     }
-    
+
     Invoke-RestMethod -Uri $webhookUrl -Method POST -Body ($alertPayload | ConvertTo-Json) -ContentType "application/json"
 }
 ```

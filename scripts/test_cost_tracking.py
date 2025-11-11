@@ -219,8 +219,12 @@ def demo_model_comparison():
     # Calculate savings
     baseline = results["gpt-5"]
     print(f"\n💰 Savings vs gpt-5:")
-    print(f"   gpt-5-mini: ${baseline - results['gpt-5-mini']:.6f} ({((baseline - results['gpt-5-mini']) / baseline * 100):.1f}% cheaper)")
-    print(f"   gpt-5-nano: ${baseline - results['gpt-5-nano']:.6f} ({((baseline - results['gpt-5-nano']) / baseline * 100):.1f}% cheaper)")
+    print(
+        f"   gpt-5-mini: ${baseline - results['gpt-5-mini']:.6f} ({((baseline - results['gpt-5-mini']) / baseline * 100):.1f}% cheaper)"
+    )
+    print(
+        f"   gpt-5-nano: ${baseline - results['gpt-5-nano']:.6f} ({((baseline - results['gpt-5-nano']) / baseline * 100):.1f}% cheaper)"
+    )
 
     print("\n💡 Recommendation:")
     print("   Use gpt-5-mini for most CPA tasks (2-3x cheaper)")

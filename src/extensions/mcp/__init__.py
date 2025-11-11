@@ -6,7 +6,7 @@ enabling AI assistants to interact with the M365 security toolkit.
 
 Usage:
     python -m src.extensions.mcp.server
-    
+
 Or:
     python src/extensions/mcp/server.py
 

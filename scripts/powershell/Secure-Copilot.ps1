@@ -44,21 +44,21 @@ function Write-Status {
         [ValidateSet('Info','Success','Warning','Error')]
         [string]$Type = 'Info'
     )
-    
+
     $color = switch ($Type) {
         'Success' { 'Green' }
         'Warning' { 'Yellow' }
         'Error'   { 'Red' }
         default   { 'Cyan' }
     }
-    
+
     $prefix = switch ($Type) {
         'Success' { '[✓]' }
         'Warning' { '[!]' }
         'Error'   { '[✗]' }
         default   { '[*]' }
     }
-    
+
     Write-Host "$prefix $Message" -ForegroundColor $color
 }
 
@@ -86,10 +86,10 @@ try {
 Write-Status "`nConfiguring DLP Policy: Copilot Financial Data Protection..." "Info"
 try {
     if ($PSCmdlet.ShouldProcess("DLP Policy", "Create Copilot Financial Data Protection policy")) {
-        
+
         # Check if policy already exists
         $existingPolicy = Get-DlpCompliancePolicy -Identity "Copilot Financial Data Protection - CPA Firm" -ErrorAction SilentlyContinue
-        
+
         if ($existingPolicy) {
             Write-Status "DLP policy already exists, updating..." "Warning"
             Set-DlpCompliancePolicy -Identity "Copilot Financial Data Protection - CPA Firm" `
@@ -100,10 +100,10 @@ try {
                 -Comment "Protects CPA client data (SSN, EIN, Tax IDs, Financial info) from exposure via Copilot. Auto-created by security hardening script." `
                 -Mode Enable `
                 -ErrorAction Stop
-            
+
             Write-Status "Created DLP policy" "Success"
         }
-        
+
         # Create DLP rules for financial data types
         $rules = @(
             @{
@@ -127,11 +127,11 @@ try {
                 )
             }
         )
-        
+
         foreach ($rule in $rules) {
-            $existingRule = Get-DlpComplianceRule -Policy "Copilot Financial Data Protection - CPA Firm" | 
+            $existingRule = Get-DlpComplianceRule -Policy "Copilot Financial Data Protection - CPA Firm" |
                 Where-Object { $_.Name -eq $rule.Name }
-            
+
             if (-not $existingRule) {
                 New-DlpComplianceRule -Name $rule.Name `
                     -Policy "Copilot Financial Data Protection - CPA Firm" `
@@ -141,19 +141,19 @@ try {
                     -GenerateIncidentReport SiteAdmin `
                     -IncidentReportContent All `
                     -ErrorAction Stop
-                
+
                 Write-Status "Created DLP rule: $($rule.Name)" "Success"
             } else {
                 Write-Status "DLP rule already exists: $($rule.Name)" "Warning"
             }
         }
-        
+
         $script:successCount++
     } else {
         Write-Status "Would create Copilot DLP policy (WhatIf mode)" "Warning"
         $script:skippedCount++
     }
-    
+
 } catch {
     Write-Status "Failed to create DLP policy: $($_.Exception.Message)" "Error"
     $script:failureCount++
@@ -164,10 +164,10 @@ Write-Status "`nConfiguring Sensitivity Labels for Copilot Awareness..." "Info"
 try {
     $labels = Get-Label
     $confidentialLabel = $labels | Where-Object { $_.DisplayName -like "*Confidential*" } | Select-Object -First 1
-    
+
     if ($confidentialLabel) {
         if ($PSCmdlet.ShouldProcess("Sensitivity Label '$($confidentialLabel.DisplayName)'", "Add Copilot blocking settings")) {
-            
+
             # Update label with Copilot-specific settings
             Set-Label -Identity $confidentialLabel.Id `
                 -AdvancedSettings @{
@@ -175,7 +175,7 @@ try {
                     "copilotresponsemonitoring"="enabled"
                 } `
                 -ErrorAction Stop
-            
+
             Write-Status "Updated label: $($confidentialLabel.DisplayName) with Copilot protection" "Success"
             $script:successCount++
         } else {
@@ -186,7 +186,7 @@ try {
         Write-Status "No 'Confidential' label found to update" "Warning"
         $script:skippedCount++
     }
-    
+
 } catch {
     Write-Status "Failed to configure sensitivity labels: $($_.Exception.Message)" "Error"
     $script:failureCount++
@@ -196,23 +196,23 @@ try {
 Write-Status "`nEnabling Information Barriers for Client Data Segregation..." "Info"
 try {
     $orgConfig = Get-OrganizationConfig
-    
+
     if (-not $orgConfig.InformationBarriersManagementEnabled) {
         if ($PSCmdlet.ShouldProcess("Organization", "Enable Information Barriers")) {
-            
+
             Set-OrganizationConfig -InformationBarriersManagementEnabled $true -ErrorAction Stop
             Write-Status "Enabled Information Barriers" "Success"
             Write-Status "IMPORTANT: You must now create organization segments and IB policies" "Warning"
             Write-Status "Example: New-OrganizationSegment -Name 'Tax-Clients' -UserGroupFilter 'Department -eq Tax'" "Warning"
             $script:successCount++
-            
+
         } else {
             Write-Status "Would enable Information Barriers (WhatIf mode)" "Warning"
             $script:skippedCount++
         }
     } else {
         Write-Status "Information Barriers already enabled" "Success"
-        
+
         # Check for existing policies
         $ibPolicies = Get-InformationBarrierPolicy -ErrorAction SilentlyContinue
         if ($ibPolicies.Count -eq 0) {
@@ -222,7 +222,7 @@ try {
             Write-Status "Found $($ibPolicies.Count) Information Barrier policies" "Success"
         }
     }
-    
+
 } catch {
     Write-Status "Failed to enable Information Barriers: $($_.Exception.Message)" "Error"
     $script:failureCount++
@@ -232,14 +232,14 @@ try {
 Write-Status "`nVerifying Audit Retention Covers Copilot Activities..." "Info"
 try {
     $retentionPolicies = Get-UnifiedAuditLogRetentionPolicy
-    
+
     # Check if 3-year policy exists (already configured)
     $cpaPolicyExists = $retentionPolicies | Where-Object { $_.Name -like "*CPA*" -or $_.Name -like "*3 Years*" }
-    
+
     if ($cpaPolicyExists) {
         Write-Status "Found existing audit retention policy: $($cpaPolicyExists.Name)" "Success"
         Write-Status "Duration: $($cpaPolicyExists.RetentionDuration)" "Success"
-        
+
         # Verify it covers all record types (including Copilot)
         if ($cpaPolicyExists.RecordTypes -contains '*' -or $cpaPolicyExists.RecordTypes.Count -gt 50) {
             Write-Status "Policy covers all audit events including Copilot" "Success"
@@ -253,7 +253,7 @@ try {
         Write-Status "Existing 3-year policy should cover Copilot activities" "Info"
         $script:skippedCount++
     }
-    
+
 } catch {
     Write-Status "Failed to check audit retention: $($_.Exception.Message)" "Error"
     $script:failureCount++
@@ -264,12 +264,12 @@ Write-Status "`nEnabling Customer Lockbox for Data Access Control..." "Info"
 try {
     if (-not $orgConfig.CustomerLockboxEnabled) {
         if ($PSCmdlet.ShouldProcess("Organization", "Enable Customer Lockbox")) {
-            
+
             Set-OrganizationConfig -CustomerLockboxEnabled $true -ErrorAction Stop
             Write-Status "Enabled Customer Lockbox" "Success"
             Write-Status "Microsoft engineers now require approval before accessing your data" "Info"
             $script:successCount++
-            
+
         } else {
             Write-Status "Would enable Customer Lockbox (WhatIf mode)" "Warning"
             $script:skippedCount++
@@ -277,7 +277,7 @@ try {
     } else {
         Write-Status "Customer Lockbox already enabled" "Success"
     }
-    
+
 } catch {
     Write-Status "Failed to enable Customer Lockbox: $($_.Exception.Message)" "Error"
     $script:failureCount++
@@ -288,23 +288,23 @@ Write-Status "`nRestricting Guest User Invitations..." "Info"
 try {
     # This requires Microsoft Graph PowerShell
     Connect-MgGraph -Scopes "Policy.ReadWrite.Authorization" -NoWelcome -ErrorAction SilentlyContinue
-    
+
     if ($PSCmdlet.ShouldProcess("Authorization Policy", "Restrict guest invitations to admins only")) {
-        
+
         $policy = Get-MgPolicyAuthorizationPolicy
         Update-MgPolicyAuthorizationPolicy -AuthorizationPolicyId $policy.Id `
             -AllowInvitesFrom "adminsAndGuestInviters" `
             -AllowedToSignUpEmailBasedSubscriptions $false `
             -ErrorAction Stop
-        
+
         Write-Status "Restricted guest invitations to admins and guest inviters only" "Success"
         $script:successCount++
-        
+
     } else {
         Write-Status "Would restrict guest invitations (WhatIf mode)" "Warning"
         $script:skippedCount++
     }
-    
+
 } catch {
     Write-Status "Failed to restrict guest access: $($_.Exception.Message)" "Error"
     $script:failureCount++
@@ -345,13 +345,13 @@ Write-Host @"
   # Create client segments:
   New-OrganizationSegment -Name 'Tax-Preparation' -UserGroupFilter 'Department -eq TaxPrep'
   New-OrganizationSegment -Name 'Audit-Services' -UserGroupFilter 'Department -eq Audit'
-  
+
   # Create barrier policy:
   New-InformationBarrierPolicy -Name 'Isolate-Tax-From-Audit' ``
     -AssignedSegment 'Tax-Preparation' ``
     -SegmentsBlocked 'Audit-Services' ``
     -State Active
-  
+
   # Apply policies:
   Start-InformationBarrierPoliciesApplication
 "@ -ForegroundColor Gray

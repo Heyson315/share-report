@@ -67,7 +67,7 @@ python scripts/generate_security_dashboard.py [--input "output/reports/security/
 # Preview remediation actions (safe mode)
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/PostRemediateM365CIS.ps1" -WhatIf
 
-# Apply remediation actions 
+# Apply remediation actions
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/powershell/PostRemediateM365CIS.ps1" -Force
 ```
 

@@ -44,7 +44,7 @@ This project is optimized for **AI coding agents** with comprehensive developmen
 ### Prerequisites
 
 - **Windows 10/11** or **Windows Server 2019+**
-- **PowerShell 5.1+** 
+- **PowerShell 5.1+**
 - **Python 3.9+**
 - **M365 tenant** with admin access
 
@@ -238,7 +238,7 @@ See [`docs/M365_SERVICE_PRINCIPAL_SETUP.md`](docs/M365_SERVICE_PRINCIPAL_SETUP.m
 
 **Key Guides:**
 - 🔐 [M365 CIS Security Auditing](docs/SECURITY_M365_CIS.md)
-- 📊 [SharePoint Permissions Analysis](docs/USAGE_SHAREPOINT.md) 
+- 📊 [SharePoint Permissions Analysis](docs/USAGE_SHAREPOINT.md)
 - 🤖 [AI MCP Server Development](docs/CUSTOM_MCP_SERVER_GUIDE.md)
 - ⚙️ [Service Principal Setup](docs/M365_SERVICE_PRINCIPAL_SETUP.md)
 - 🚀 [CI/CD Automation](.github/workflows/README.md)

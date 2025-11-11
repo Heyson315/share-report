@@ -38,6 +38,6 @@ Clear description of how to improve the AI development experience.
 How will this enhancement be validated with AI agents?
 
 **References**
-- Related to existing copilot instructions section: 
-- Related documentation: 
+- Related to existing copilot instructions section:
+- Related documentation:
 - External AI development resources:

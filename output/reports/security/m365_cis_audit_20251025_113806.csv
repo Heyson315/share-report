@@ -11,19 +11,19 @@ DSNConversionMode                                           : PreserveDSNBody
 JournalArchivingEnabled                                     : False
 EnableExternalHTTPMailDelivery                              : False
 ExternalDelayDsnEnabled                                     : True
-ExternalDsnDefaultLanguage                                  : 
+ExternalDsnDefaultLanguage                                  :
 ExternalDsnLanguageDetectionEnabled                         : True
 ExternalDsnMaxMessageAttachSize                             : 10 MB (10,485,760 bytes)
-ExternalDsnReportingAuthority                               : 
+ExternalDsnReportingAuthority                               :
 ExternalDsnSendHtml                                         : True
-ExternalPostmasterAddress                                   : 
+ExternalPostmasterAddress                                   :
 GenerateCopyOfDSNFor                                        : {}
 HygieneSuite                                                : Premium
 InternalDelayDsnEnabled                                     : True
-InternalDsnDefaultLanguage                                  : 
+InternalDsnDefaultLanguage                                  :
 InternalDsnLanguageDetectionEnabled                         : True
 InternalDsnMaxMessageAttachSize                             : 10 MB (10,485,760 bytes)
-InternalDsnReportingAuthority                               : 
+InternalDsnReportingAuthority                               :
 InternalDsnSendHtml                                         : True
 InternalSMTPServers                                         : {}
 JournalMessageExpirationDays                                : 0
@@ -57,7 +57,7 @@ Xexch50Enabled                                              : True
 ","CIS M365 Foundations v3.0 L1; EXO TransportConfig","2025-10-25T11:38:29"
 "CIS-EXO-3","Ensure mailbox auditing is enabled","Medium","Organization AuditDisabled=False","AuditDisabled=False","Pass","
 
-OrganizationId                                            : NAMPR12A012.PROD.OUTLOOK.COM/Microsoft Exchange Hosted 
+OrganizationId                                            : NAMPR12A012.PROD.OUTLOOK.COM/Microsoft Exchange Hosted
                                                             Organizations/RahmanFinanceandAccounting.onmicrosoft.com - NAMPR12A012.PROD.OUTLOOK.COM/Configurat
                                                             ionUnits/RahmanFinanceandAccounting.onmicrosoft.com/Configuration
 Name                                                      : RahmanFinanceandAccounting.onmicrosoft.com
@@ -68,7 +68,7 @@ DelayedDelicensingEnabledState                            : Enabled: False; When
 TenantAdminNotificationForDelayedDelicensingState         : Enabled: False; WhenLastModifiedUtc: 1/1/0001 12:00:00 AM
 EndUserMailNotificationForDelayedDelicensingState         : Enabled: False; WhenLastModifiedUtc: 1/1/0001 12:00:00 AM
 DelayedDelicensingBlockedExplicitlyState                  : Enabled: False; WhenLastModifiedUtc: 1/1/0001 12:00:00 AM
-DefaultPublicFolderAgeLimit                               : 
+DefaultPublicFolderAgeLimit                               :
 DefaultPublicFolderIssueWarningQuota                      : 1.7 GB (1,825,361,920 bytes)
 DefaultPublicFolderProhibitPostQuota                      : 2 GB (2,147,483,648 bytes)
 DefaultPublicFolderMaxItemSize                            : Unlimited
@@ -86,51 +86,51 @@ ActivityBasedAuthenticationTimeoutWithSingleSignOnEnabled : True
 AppsForOfficeEnabled                                      : True
 AppsForOfficeCorpCatalogAppsCount                         : 5
 PrivateCatalogAppsCount                                   : 5
-AVAuthenticationService                                   : 
-CustomerFeedbackEnabled                                   : 
-DistributionGroupDefaultOU                                : 
+AVAuthenticationService                                   :
+CustomerFeedbackEnabled                                   :
+DistributionGroupDefaultOU                                :
 DistributionGroupNameBlockedWordsList                     : {}
-DistributionGroupNamingPolicy                             : 
-EwsAllowEntourage                                         : 
-EwsAllowList                                              : 
-EwsAllowMacOutlook                                        : 
-EwsAllowOutlook                                           : 
+DistributionGroupNamingPolicy                             :
+EwsAllowEntourage                                         :
+EwsAllowList                                              :
+EwsAllowMacOutlook                                        :
+EwsAllowOutlook                                           :
 DisablePlusAddressInRecipients                            : False
 RejectDirectSend                                          : False
 MaskClientIpInReceivedHeadersEnabled                      : True
-EwsApplicationAccessPolicy                                : 
-EwsBlockList                                              : 
+EwsApplicationAccessPolicy                                :
+EwsBlockList                                              :
 AutodiscoverPartialDirSync                                : False
-EwsEnabled                                                : 
+EwsEnabled                                                :
 IPListBlocked                                             : {}
 ElcProcessingDisabled                                     : False
 AutoExpandingArchiveEnabled                               : False
 ComplianceMLBgdCrawlEnabled                               : False
 ExchangeNotificationEnabled                               : True
 ExchangeNotificationRecipients                            : {}
-HierarchicalAddressBookRoot                               : 
+HierarchicalAddressBookRoot                               :
 Industry                                                  : NotSpecified
 MailTipsAllTipsEnabled                                    : True
 MailTipsExternalRecipientsTipsEnabled                     : True
 MailTipsGroupMetricsEnabled                               : True
 MailTipsLargeAudienceThreshold                            : 25
 MailTipsMailboxSourcedTipsEnabled                         : True
-ManagedFolderHomepage                                     : 
+ManagedFolderHomepage                                     :
 MicrosoftExchangeRecipientEmailAddresses                  : {SMTP:MicrosoftExchange329e71ec88ae4615bbc36ab6ce41109e@RahmanFinanceandAccounting.onmicrosoft.com
                                                             }
 MicrosoftExchangeRecipientEmailAddressPolicyEnabled       : False
 MicrosoftExchangeRecipientPrimarySmtpAddress              : MicrosoftExchange329e71ec88ae4615bbc36ab6ce41109e@RahmanFinanceandAccounting.onmicrosoft.com
-MicrosoftExchangeRecipientReplyRecipient                  : 
+MicrosoftExchangeRecipientReplyRecipient                  :
 ForwardSyncLiveIdBusinessInstance                         : False
 OrganizationSummary                                       : {}
 ReadTrackingEnabled                                       : False
 SCLJunkThreshold                                          : 4
-SIPAccessService                                          : 
-SIPSessionBorderController                                : 
+SIPAccessService                                          :
+SIPSessionBorderController                                :
 MaxConcurrentMigrations                                   : Unlimited
-MaxAddressBookPolicies                                    : 
-MaxOfflineAddressBooks                                    : 
-MaxInformationBarrierSegmentsLegacy                       : 
+MaxAddressBookPolicies                                    :
+MaxOfflineAddressBooks                                    :
+MaxInformationBarrierSegmentsLegacy                       :
 MaxInformationBarrierSegments                             : 5000
 MaxInformationBarrierBridges                              : 5000
 InformationBarriersManagementEnabled                      : False
@@ -154,7 +154,7 @@ IntuneManagedStatus                                       : True
 AzurePremiumSubscriptionStatus                            : False
 HybridConfigurationStatus                                 : Unknown
 ReleaseTrack                                              : StagedRollout
-CompassEnabled                                            : 
+CompassEnabled                                            :
 SharePointUrl                                             : https://rahmanfinanceandaccounting.sharepoint.com/
 MapiHttpEnabled                                           : False
 RealTimeLogServiceEnabled                                 : False
@@ -171,7 +171,7 @@ UnblockUnsafeSenderPromptEnabled                          : True
 AsyncSendEnabled                                          : True
 RefreshSessionEnabled                                     : False
 IsAgendaMailEnabled                                       : True
-NetworkThrottlingConfiguration                            : 
+NetworkThrottlingConfiguration                            :
 BookingsEnabled                                           : True
 BookingsEnabledLastUpdateTime                             : 01/01/01 12:00:00 AM
 BookingsPaymentsEnabled                                   : False
@@ -187,15 +187,15 @@ BookingsSmsMicrosoftEnabled                               : True
 BookingsNamingPolicyEnabled                               : False
 BookingsBlockedWordsEnabled                               : False
 BookingsNamingPolicyPrefixEnabled                         : False
-BookingsNamingPolicyPrefix                                : 
+BookingsNamingPolicyPrefix                                :
 BookingsNamingPolicySuffixEnabled                         : False
-BookingsNamingPolicySuffix                                : 
+BookingsNamingPolicySuffix                                :
 BookingsSearchEngineIndexDisabled                         : False
 LeanPopoutEnabled                                         : False
 OutlookMobileHelpShiftEnabled                             : True
 OutlookMobileSingleAccountEnabled                         : False
 OutlookMobileGCCRestrictionsEnabled                       : False
-ElevatedAccessControl                                     : 
+ElevatedAccessControl                                     :
 AuditDisabled                                             : False
 WebPushNotificationsDisabled                              : False
 WebSuggestedRepliesDisabled                               : False
@@ -208,7 +208,7 @@ ConnectorsEnabledForSharepointLastUpdateTime              : 01/01/01 12:00:00 AM
 ConnectorsEnabledForYammer                                : True
 ConnectorsEnabledForYammerLastUpdateTime                  : 01/01/01 12:00:00 AM
 AutoEnableArchiveMailbox                                  : False
-OnlineMeetingsByDefaultEnabled                            : 
+OnlineMeetingsByDefaultEnabled                            :
 SendFromAliasEnabled                                      : True
 OutlookTextPredictionDisabled                             : False
 MobileAppEducationEnabled                                 : True
@@ -235,11 +235,11 @@ PostponeRoamingSignaturesUntilLater                       : False
 TwoClickMailPreviewEnabled                                : False
 MessageRecallMaxRecallableAge                             : 365.00:00:00
 RPSEnabled                                                : False
-EwsOperationAccessPolicyEnabled                           : 
-EwsOperationAccessPolicyAllowList                         : 
+EwsOperationAccessPolicyEnabled                           :
+EwsOperationAccessPolicyAllowList                         :
 EwsOperationAccessPolicyPopulated                         : False
 BlockExchangeProvisioningFromOnPremEnabled                : False
-EnforceShortenEventSettingEffectiveTime                   : 
+EnforceShortenEventSettingEffectiveTime                   :
 DLPWaitOnSendEnabled                                      : False
 DLPWaitOnSendTimeout                                      : 0
 InRegionRoutingEnabled                                    : False
@@ -247,7 +247,7 @@ OrganizationConfigHash                                    : fJHNTsMwDIBfpeoJDkub
                                                             Mjtes0+GbBL9JNIary6vhksS4NNdgGCz7yhbh2FXgoFXlliwcblMi+lcS21kgVuqGH436yFDlb5skJX8XALperM8b5qcjmyDj/
                                                             cWgtjNvc2hYIXybxDnr36ZpvizurDmiCm9fzUX/OxiRneXT/h4utlGrwqq6MBozvKd6AVkXX2YUcgEmjRfalPscE9ydyD50G2i
                                                             EBSQVUR6MJ5ONVzJBGaY0zjf9tyX6uls1/0wcAAAD//wMA
-LegacyExchangeDN                                          : /o=ExchangeLabs/ou=Exchange Administrative Group 
+LegacyExchangeDN                                          : /o=ExchangeLabs/ou=Exchange Administrative Group
                                                             (FYDIBOHF23SPDLT)/cn=exotemplatee34f58bc-eb3e-47ed-a4a8-b8b47893ca9d.com/cn=Configuration
 DisplayName                                               : Rahman Finance and Accounting P.L.LC.
 Heuristics                                                : None
@@ -256,9 +256,9 @@ IsMixedMode                                               : True
 PreviousAdminDisplayVersion                               : 0.10 (14.0.100.0)
 IsAddressListPagingEnabled                                : True
 ForeignForestFQDN                                         : {}
-ForeignForestOrgAdminUSGSid                               : 
-ForeignForestRecipientAdminUSGSid                         : 
-ForeignForestViewOnlyAdminUSGSid                          : 
+ForeignForestOrgAdminUSGSid                               :
+ForeignForestRecipientAdminUSGSid                         :
+ForeignForestViewOnlyAdminUSGSid                          :
 MimeTypes                                                 : {}
 IsLicensingEnforced                                       : True
 IsTenantAccessBlocked                                     : False
@@ -268,28 +268,28 @@ IsDehydrated                                              : False
 IsGuidPrefixedLegacyDnDisabled                            : False
 IsMailboxForcedReplicationDisabled                        : False
 RBACConfigurationVersion                                  : 0.1 (15.20.9253.11)
-RootPublicFolderMailbox                                   : 
+RootPublicFolderMailbox                                   :
 RemotePublicFolderMailboxes                               : {}
 AdminDisplayVersion                                       : 0.20 (15.20.9253.11)
 IsUpgradingOrganization                                   : False
 IsUpdatingServicePlan                                     : False
 ServicePlan                                               : BPOS_S_E15_0
-TargetServicePlan                                         : 
-WACDiscoveryEndpoint                                      : 
-AdfsAuthenticationConfiguration                           : 
-AdfsIssuer                                                : 
+TargetServicePlan                                         :
+WACDiscoveryEndpoint                                      :
+AdfsAuthenticationConfiguration                           :
+AdfsIssuer                                                :
 AdfsAudienceUris                                          : {}
 AdfsSignCertificateThumbprints                            : {}
-AdfsEncryptCertificateThumbprint                          : 
-SiteMailboxCreationURL                                    : 
-DefaultDataEncryptionPolicy                               : 
+AdfsEncryptCertificateThumbprint                          :
+SiteMailboxCreationURL                                    :
+DefaultDataEncryptionPolicy                               :
 MailboxDataEncryptionEnabled                              : False
-DefaultAuthenticationPolicy                               : 
+DefaultAuthenticationPolicy                               :
 AllowedMailboxRegions                                     : {nam=namprd12.prod.outlook.com}
 DefaultMailboxRegion                                      : nam
 CurrentMailboxForests                                     : {namprd12.prod.outlook.com}
-IsJitEnabled                                              : 
-AutoJitForests                                            : 
+IsJitEnabled                                              :
+AutoJitForests                                            :
 DefaultMailboxRegionLastUpdateTime                        : 03/30/24 06:34:13 PM
 AllowedMailboxRegionsLastUpdateTime                       : 03/30/24 06:34:13 PM
 DirectReportsGroupAutoCreationEnabled                     : False
@@ -297,33 +297,33 @@ AllowToAddGuests                                          : True
 GuestsEnabled                                             : True
 GroupsCreationEnabled                                     : True
 HiddenMembershipGroupsCreationEnabled                     : False
-GroupsCreationWhitelistedId                               : 
-GroupsUsageGuidelinesLink                                 : 
+GroupsCreationWhitelistedId                               :
+GroupsUsageGuidelinesLink                                 :
 DefaultGroupAccessType                                    : Private
-GroupLifeCyclePolicy                                      : <GroupLifeCyclePolicy><GroupLifetimeInDays>-1</GroupLifetimeInDays><ManagedGroupType 
-                                                            p2:nil=""true"" xmlns:p2=""http://www.w3.org/2001/XMLSchema-instance"" 
+GroupLifeCyclePolicy                                      : <GroupLifeCyclePolicy><GroupLifetimeInDays>-1</GroupLifetimeInDays><ManagedGroupType
+                                                            p2:nil=""true"" xmlns:p2=""http://www.w3.org/2001/XMLSchema-instance""
                                                             /><LastUpdatedTime>2025-10-22T22:00:42.8575342Z</LastUpdatedTime></GroupLifeCyclePolicy>
-GroupsNamingPolicy                                        : 
+GroupsNamingPolicy                                        :
 DataClassifications                                       : <DataClassifications />
 VisibleMeetingUpdateProperties                            : Location,AllProperties:15
 MatchSenderOrganizerProperties                            : False
 DisableMailboxForSubstrateOnlyFinished                    : False
 InPlaceHolds                                              : {}
-ServiceInstanceMove                                       : 
-GuestsUsageGuidelinesLink                                 : 
+ServiceInstanceMove                                       :
+GuestsUsageGuidelinesLink                                 :
 OrganizationPrivacyStatementLink                          : https://hhr-cpa.com/privacy
 IsMIPLabelForGroupsEnabled                                : False
 IsGroupFoldersAndRulesEnabled                             : False
 BlockMoveMessagesForGroupFolders                          : False
-FocusedInboxOn                                            : 
+FocusedInboxOn                                            :
 FocusedInboxOnLastUpdateTime                              : 01/01/01 12:00:00 AM
-ForestConfigVersion                                       : 
+ForestConfigVersion                                       :
 ForestConfigLastRunTime                                   : 01/01/01 12:00:00 AM
 EndUserDLUpgradeFlowsDisabled                             : False
-OcmGroupId                                                : 
+OcmGroupId                                                :
 IsGroupMemberAllowedToEditContent                         : False
-RecallReadMessagesEnabled                                 : 
-MessageRecallEnabled                                      : 
+RecallReadMessagesEnabled                                 :
+MessageRecallEnabled                                      :
 MessageRecallAlertRecipientsEnabled                       : False
 MessageRecallAlertRecipientsReadMessagesOnlyEnabled       : False
 AutomaticForcedReadReceiptEnabled                         : False
@@ -357,8 +357,8 @@ Hassan Rahman                  True        True        True
 ","CIS M365 Foundations v3.0 L1; EXO Mailbox Protocols","2025-10-25T11:38:30"
 "CIS-SPO-1","Restrict SharePoint external sharing (Tenant)","High","Restrictive external sharing","Unknown","Manual","No connection available. Use Connect-SPOService before running this CmdLet.","CIS M365 Foundations v3.0 L1; SPO Sharing","2025-10-25T11:38:30"
 "CIS-AAD-1","Limit Global Administrator role assignments","High","Global Admin assignments minimal (<= 2-4)","GlobalAdminCount=3","Pass","
-PrincipalId                          RoleDefinitionId                    
------------                          ----------------                    
+PrincipalId                          RoleDefinitionId
+-----------                          ----------------
 6b633c09-7475-4647-9bcc-f59732ec625f 62e90394-69f5-4237-9190-012177145e10
 727d96b1-4aab-47bc-b62d-3ee40c1d73bb 62e90394-69f5-4237-9190-012177145e10
 2912f341-f9ff-4f03-ad74-721dbf070c4f 62e90394-69f5-4237-9190-012177145e10
@@ -368,9 +368,9 @@ PrincipalId                          RoleDefinitionId
 "CIS-DEF-1","Ensure Safe Links policy is enabled","High","At least one Safe Links policy enabled","EnabledPolicies=0","Fail","
 Name                                        Enabled
 ----                                        -------
-Strict Preset Security Policy1713470629399         
-StandardRecommendedPolicy638480795407067709        
-Built-In Protection Policy                         
+Strict Preset Security Policy1713470629399
+StandardRecommendedPolicy638480795407067709
+Built-In Protection Policy
 
 
 ","CIS M365 Foundations v3.0 L1; Defender for Office","2025-10-25T11:38:38"
@@ -384,8 +384,8 @@ Built-In Protection Policy                    True
 
 ","CIS M365 Foundations v3.0 L1; Defender for Office","2025-10-25T11:38:38"
 "CIS-CA-1","Ensure Conditional Access MFA policy exists for all users","High","At least one enabled CA policy requiring MFA for all users","MFAPolicies=5","Pass","
-DisplayName                                               State  
------------                                               -----  
+DisplayName                                               State
+-----------                                               -----
 Require multifactor authentication for guest access       enabled
 Require multifactor authentication for all users          enabled
 conditional access 1`                                     enabled
