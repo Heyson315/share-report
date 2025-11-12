@@ -11,12 +11,17 @@
 ```
 Branch Status Distribution:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Duplicate/Redundant            ████████████████████  8 (57.1%)
+Exact Duplicates               ████████                4 (28.6%)
+Redundant (Already Merged/     ████████                4 (28.6%)
+  Behind Main, no unique work)  
 Behind Main (10+ commits)      ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  9 (64.3%)
-Unmerged w/ Valuable Work      ▒▒▒▒▒▒▒▒              3 (21.4%)
-Already Merged (can delete)    ░░░░░░░░              3 (21.4%)
-Active Development             ■■■■■                 2 (14.3%)
+Unmerged w/ Valuable Work      ▒▒▒▒▒▒▒▒                3 (21.4%)
+Active Development             ■■■■■                   2 (14.3%)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+*Note: Categories may overlap. "Exact Duplicates" are branches pointing to same commits. 
+"Redundant" includes already-merged branches or branches with no unique commits. 
+See BRANCH_ANOMALY_REPORT.md for detailed categorization.*
 
 Cleanup Impact:
   Current branches:           14
@@ -54,13 +59,15 @@ These branches contain completed work that should be merged to main:
 
 Safe to delete immediately - these are exact copies:
 
-- `evidence/2025-11-11` → Duplicate of `main`
-- `feature/mcp-server` → Duplicate of `feature/enterprise-docs`
+- `evidence/2025-11-11` → Duplicate of `main` (same commit)
+- `feature/mcp-server` → Duplicate of `feature/enterprise-docs` (same commit)
+  - ⚠️ **Keep `feature/enterprise-docs` to merge the documentation, delete `feature/mcp-server` immediately**
 
 **Commands:**
 ```bash
 git push origin --delete evidence/2025-11-11
 git push origin --delete feature/mcp-server
+# Keep feature/enterprise-docs to merge its documentation work
 ```
 
 ---

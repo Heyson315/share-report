@@ -28,9 +28,10 @@ git push origin merge/git-docs
 # 3. Merge development branch
 git checkout main
 git pull origin main
+git checkout -b merge/develop
 git merge origin/develop
-git push origin main
-# Or create PR if you prefer
+git push origin merge/develop
+# Create PR and merge to main
 ```
 
 > **Note:** After merging the above PRs, delete the source branches (`copilot/implement-performance-benchmark`, `feature/enterprise-docs`, `develop`) either immediately or as part of the cleanup commands in Step 6 below.
@@ -69,12 +70,15 @@ git push origin --delete evidence/2025-10-25
 ### ✅ Step 6: Delete Completed Work Branches
 
 ```bash
-# After merging the valuable work in Step 1
+# ⚠️ IMPORTANT: After merging valuable work from Step 1, delete source branches
 git push origin --delete copilot/implement-performance-benchmark
 git push origin --delete feature/enterprise-docs
-git push origin --delete develop
-git push origin --delete copilot/review-branches-anomalies
+
+# ⚠️ Only delete copilot/review-branches-anomalies AFTER this PR is merged to main!
+# git push origin --delete copilot/review-branches-anomalies
 ```
+
+**Note on develop branch:** If following Git Flow, keep `develop` as a permanent branch. If following GitHub Flow (single main branch), merge and delete it. The choice depends on your team's workflow.
 
 ### ⚠️ Step 7: Evaluate Before Deleting
 
@@ -103,7 +107,7 @@ git push origin --delete copilot/review-branches-anomalies
 
 ### Target Branches (4-6)
 - ✅ main (primary branch)
-- ✅ develop (development branch) - or merge to main
+- ✅ develop (if using Git Flow) - otherwise merge to main and delete
 - ✅ Active feature branches only (2-4 max)
 
 ## Legend

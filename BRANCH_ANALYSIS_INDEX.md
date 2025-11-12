@@ -123,18 +123,19 @@ These contain completed work that will be lost if deleted:
    - Performance testing implementation
    - Includes tests and documentation
 
-2. **feature/enterprise-docs** (or feature/mcp-server)
+2. **feature/enterprise-docs**
    - Git branch management guide
    - Documentation work
+   - Note: `feature/mcp-server` is a separate branch pointing to the same commit (duplicate)
 
 3. **develop**
    - Development optimization tools
    - Git Flow documentation
 
 ### Safe to Delete Immediately
-These are exact duplicates:
-- `evidence/2025-11-11` (same as main)
-- `feature/mcp-server` (same as enterprise-docs)
+These are exact duplicates (separate branch names pointing to same commits):
+- `evidence/2025-11-11` (duplicate of `main` - points to same commit)
+- `feature/mcp-server` (duplicate of `feature/enterprise-docs` - points to same commit)
 
 ---
 
@@ -155,9 +156,11 @@ Time to cleanup:              1-2 hours (estimated)
 
 The analysis was performed using:
 - Git command-line tools
-- Bash scripts for automation
-- Python for visualization
+- Custom bash scripts for automated branch comparison
+- Python for data visualization
 - Manual verification and review
+
+The analysis methodology combined automated git commands (branch listing, commit comparison, merge-base analysis) with manual verification to ensure accuracy.
 
 
 ---

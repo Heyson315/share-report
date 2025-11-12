@@ -8,7 +8,7 @@
 
 This report identifies significant anomalies in the repository's branch structure. Key findings include:
 
-- **5 pairs of duplicate branches** with identical or nearly identical content
+- **5 duplicate branch scenarios** with identical or nearly identical content
 - **9 branches significantly behind main** (10+ commits behind)
 - **3 unmerged branches** with unique work that may need attention
 - **No stale branches** (all updated within 90 days)
@@ -187,12 +187,12 @@ These branches appear to be part of active development workflow:
 
 1. **Delete Exact Duplicates:**
    - Delete `evidence/2025-11-11` (exact duplicate of main)
-   - Delete one of `feature/enterprise-docs` or `feature/mcp-server`
+   - Delete `feature/mcp-server` (keep `feature/enterprise-docs` for merging documentation)
 
 2. **Merge Valuable Work:**
    - Review and merge `copilot/implement-performance-benchmark` (5 commits of completed work)
-   - Merge `feature/enterprise-docs` or `feature/mcp-server` (Git docs)
-   - Merge `develop` branch (development optimization tools)
+   - Merge `feature/enterprise-docs` (Git docs - keep this one, delete `feature/mcp-server` duplicate)
+   - Merge `develop` branch (development optimization tools) - or keep as permanent branch if using Git Flow
 
 3. **Delete Already-Merged Branches:**
    - Delete `copilot/troubleshoot-errors-and-report`
