@@ -34,7 +34,7 @@ git push origin merge/develop
 # Create PR and merge to main
 ```
 
-> **Note:** After merging the above PRs, delete the source branches (`copilot/implement-performance-benchmark`, `feature/enterprise-docs`, `develop`) either immediately or as part of the cleanup commands in Step 6 below.
+> **Note:** After merging the above PRs, delete the source branches (`copilot/implement-performance-benchmark`, `feature/enterprise-docs`) immediately or as part of the cleanup commands in Step 6 below. For `develop`, see the note in Step 6 about Git Flow vs GitHub Flow.
 ### ✅ Step 2: Delete Exact Duplicates
 
 ```bash
