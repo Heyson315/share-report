@@ -85,7 +85,7 @@ This is a quick visual overview of the findings with priority actions.
 
 | Category | Count | % of Total |
 |----------|-------|------------|
-| Duplicate/Redundant | 8 | 57% |
+| Duplicate/Redundant | 7 | 50% |
 | Behind Main (10+) | 9 | 64% |
 | Valuable Unmerged Work | 3 | 21% |
 | Already Merged | 3 | 21% |
