@@ -159,7 +159,6 @@ The analysis was performed using:
 - Python for visualization
 - Manual verification and review
 
-Analysis scripts available in `/tmp/branch_analysis.sh` and `/tmp/detailed_analysis.sh` on the analysis system.
 
 ---
 
