@@ -250,7 +250,6 @@ git push origin --delete copilot/fix-unused-template-content
 # After merging valuable work, delete:
 git push origin --delete copilot/implement-performance-benchmark
 git push origin --delete feature/enterprise-docs
-git push origin --delete develop
 git push origin --delete evidence/2025-10-25
 git push origin --delete copilot/review-branches-anomalies
 
