@@ -1,6 +1,8 @@
 # Copilot Instructions: M365 Security & SharePoint Analysis Toolkit
 
-> 🤖 **Quick Start for AI Agents**: New to this project? Start with [AI Agent Quick Start Guide](AI_AGENT_QUICKSTART.md) for fast onboarding!
+> 🤖 **Quick Start for AI Agents**: New to this project? 
+> - **Fast Track** (15 min): [AI Agent Quick Start](AI_AGENT_QUICKSTART.md)
+> - **Complete Index**: [AI Development Index](AI_DEVELOPMENT_INDEX.md) - Navigate all AI resources
 
 ## Architecture Overview
 
