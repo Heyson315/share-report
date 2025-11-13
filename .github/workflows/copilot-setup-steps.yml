@@ -35,7 +35,7 @@ jobs:
         run: |
           echo "📦 Step 1: Python Environment Setup"
           echo "-----------------------------------"
-          echo "1. Install Python 3.9 or higher from https://www.python.org/downloads/"
+          echo "1. Install Python 3.11 or higher from https://www.python.org/downloads/"
           echo "2. Create a virtual environment:"
           echo "   python -m venv .venv"
           echo ""
