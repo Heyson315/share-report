@@ -31,9 +31,9 @@ The instructions file includes all recommended sections:
 
 ### 3. Document Statistics
 - **Total Lines**: 354
-- **Top-level Headers** (#): 55
-- **Second-level Headers** (##): 42  
-- **Third-level Headers** (###): 32
+- **Top-level Headers** (#): 1
+- **Second-level Headers** (##): 19  
+- **Third-level Headers** (###): 23
 - **Code Blocks**: Multiple examples in PowerShell, Python, CSS, JavaScript, HTML
 
 ### 4. Code Examples ✅
