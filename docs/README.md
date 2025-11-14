@@ -25,6 +25,7 @@
 📁 Technical Implementation
 ├── 📄 docs/SECURITY_M365_CIS.md           # CIS security audit workflow
 ├── 📄 docs/USAGE_SHAREPOINT.md            # SharePoint permissions analysis
+├── 📄 docs/SESSION_MANAGEMENT.md          # 🆕 Session tracking & audit trails
 ├── 📄 docs/M365_SERVICE_PRINCIPAL_SETUP.md # Automation authentication
 └── 📄 docs/CUSTOM_MCP_SERVER_GUIDE.md     # AI MCP server integration
 ```
@@ -94,6 +95,7 @@
 ### **Find by Topic**
 - **Security Auditing**: SECURITY_M365_CIS.md, PROJECT_OUTLINE.md
 - **SharePoint Analysis**: USAGE_SHAREPOINT.md, scripts/README.md
+- **Session Management**: SESSION_MANAGEMENT.md
 - **AI Development**: copilot-instructions.md, CUSTOM_MCP_SERVER_GUIDE.md
 - **Setup & Installation**: README.md, PRODUCTION_DEPLOYMENT.md
 - **Automation**: M365_SERVICE_PRINCIPAL_SETUP.md, workflows/README.md
