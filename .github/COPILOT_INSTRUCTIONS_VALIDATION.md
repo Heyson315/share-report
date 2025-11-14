@@ -34,7 +34,7 @@ The instructions file includes all recommended sections:
 - **Top-level Headers** (#): 1
 - **Second-level Headers** (##): 19  
 - **Third-level Headers** (###): 23
-- **Code Blocks**: Multiple examples in PowerShell, Python, CSS, JavaScript, HTML
+- **Code Blocks**: Multiple examples in PowerShell, Python, YAML, CSS, JavaScript, HTML
 
 ### 4. Code Examples ✅
 The file includes comprehensive code examples for:
