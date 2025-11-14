@@ -39,10 +39,13 @@ This project is optimized for **AI coding agents** with comprehensive developmen
 - **[AI Agent Quick Start](.github/AI_AGENT_QUICKSTART.md)** - 15-minute onboarding with common task patterns
 - **[AI Workflow Testing](.github/AI_WORKFLOW_TESTING.md)** - Comprehensive testing strategies and automation
 - **[MCP Tool Patterns](.github/MCP_TOOL_PATTERNS.md)** - Model Context Protocol tool development patterns
+- **[AI Development Index](.github/AI_DEVELOPMENT_INDEX.md)** - Complete navigation hub for all AI resources
 
 🎯 **Perfect for**: GitHub Copilot, Claude, ChatGPT, and other AI coding assistants to immediately understand and contribute to this enterprise security toolkit.
 
-> 📚 **Quick Documentation Access**: See [DOCS.md](DOCS.md) for instant navigation to any guide
+> 📚 **New to AI Development?** Start with [.github/README.md](.github/README.md) for a quick overview and learning paths!
+> 
+> 📖 **Need Specific Info?** See [DOCS.md](DOCS.md) for instant navigation to any guide
 
 ## 🚀 Quick Start
 
@@ -212,6 +215,7 @@ python scripts/run_performance_benchmark.py --validate-against-baseline
 - **Automated Testing**: Unit tests, integration tests, performance validation
 - **Monthly Audits**: Scheduled M365 security assessments with artifact preservation
 - **Dependency Updates**: Automated dependency scanning and updates
+- **Build Provenance**: Cryptographically signed attestations for all artifacts
 
 ### Service Principal Authentication
 
@@ -284,6 +288,7 @@ See [`docs/M365_SERVICE_PRINCIPAL_SETUP.md`](docs/M365_SERVICE_PRINCIPAL_SETUP.m
 - **Audit logging** for all script executions
 - **Access control** with role-based permissions
 - **Secure credential storage** using PowerShell SecureString
+- **Build provenance attestation** for supply chain security
 
 ## 🚀 Production Deployment
 
