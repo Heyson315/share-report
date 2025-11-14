@@ -119,7 +119,7 @@ According to GitHub's recommended best practices for Copilot instructions:
 1. **Comprehensive Coverage**: 354 lines covering all aspects of development
 2. **AI-Optimized**: Specifically designed for AI coding agents with quick start
 3. **Well-Integrated**: Properly linked throughout repository documentation
-4. **Code Examples**: Rich examples in multiple languages (Python, PowerShell, CSS, JS)
+4. **Code Examples**: Rich examples in multiple languages (Python, PowerShell, YAML, CSS, JavaScript, HTML)
 5. **Clear Structure**: Logical organization with consistent formatting
 6. **Maintained**: Up-to-date with version indicators and recent features
 7. **Validated Links**: All internal references verified
