@@ -508,5 +508,3 @@ python scripts/process_data.py --input "clean.csv"
 ---
 
 **🤖 This guide helps AI agents contribute effectively to enterprise M365 security toolkit!**
-
-https://github.com/Heyson315/share-report/blob/Primary/.github/copilot-instructions.md
