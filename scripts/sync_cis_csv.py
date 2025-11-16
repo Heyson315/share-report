@@ -15,12 +15,14 @@ def main():
         rows = [data]
     else:
         rows = data
-    df = pd.DataFrame(rows)
+    controls_dataframe = pd.DataFrame(rows)
     # Reorder columns if present; include any extras at the end
-    cols = [c for c in COLUMNS if c in df.columns] + [c for c in df.columns if c not in COLUMNS]
-    df = df[cols]
+    cols = [c for c in COLUMNS if c in controls_dataframe.columns] + [
+        c for c in controls_dataframe.columns if c not in COLUMNS
+    ]
+    controls_dataframe = controls_dataframe[cols]
     CSV_PATH.parent.mkdir(parents=True, exist_ok=True)
-    df.to_csv(CSV_PATH, index=False, encoding="utf-8")
+    controls_dataframe.to_csv(CSV_PATH, index=False, encoding="utf-8")
     print("CSV synced from JSON:", CSV_PATH)
 
 
