@@ -40,6 +40,4 @@ template: |
   ## Changes
 
   $CHANGES
-
-  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$NEXT_PATCH_VERSION
 no-changes-template: 'No significant changes in this release.'
