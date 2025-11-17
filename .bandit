@@ -1,0 +1,21 @@
+[bandit]
+# Bandit configuration for M365 Security Toolkit
+
+# Exclude test directories and virtual environments
+exclude_dirs = [
+    '/tests/',
+    '/.venv/',
+    '/venv/',
+    '/__pycache__/'
+]
+
+# Severity level: LOW, MEDIUM, or HIGH
+# Only report issues at or above this level
+skips = []
+
+# Tests to skip (B101 = assert_used, B601 = paramiko_calls, etc.)
+# Currently not skipping any tests - adjust as needed
+# skips = ['B101']
+
+# Confidence level: LOW, MEDIUM, or HIGH
+# Only report issues at or above this level
