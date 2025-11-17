@@ -21,12 +21,14 @@ Created: November 2025
 
 import os
 from typing import Dict, List, Literal, Optional
-from openai import OpenAI, AzureOpenAI
+
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+from openai import OpenAI
 
 # Import cost tracking
 try:
     from src.core.cost_tracker import track_gpt5_request
+
     COST_TRACKING_ENABLED = True
 except ImportError:
     COST_TRACKING_ENABLED = False
@@ -91,9 +93,7 @@ class GPT5Client:
                     "Azure OpenAI API key is required when not using Entra ID. "
                     "Set AZURE_OPENAI_API_KEY environment variable or pass api_key parameter."
                 )
-            self.client = OpenAI(
-                base_url=f"{self.azure_endpoint}/openai/v1/", api_key=self.api_key
-            )
+            self.client = OpenAI(base_url=f"{self.azure_endpoint}/openai/v1/", api_key=self.api_key)
 
     def chat_completion(
         self,
@@ -113,7 +113,20 @@ class GPT5Client:
 
         Returns:
             Dict with response data including choices, usage, model info
+            
+        Raises:
+            ValueError: If parameters are invalid
+            RuntimeError: If API request fails
         """
+        if not prompt or not prompt.strip():
+            raise ValueError("Prompt cannot be empty")
+        
+        if max_tokens < 1:
+            raise ValueError("max_tokens must be positive")
+        
+        if temperature is not None and not (0.0 <= temperature <= 2.0):
+            raise ValueError("temperature must be between 0.0 and 2.0")
+        
         messages = []
         if system_message:
             messages.append({"role": "developer", "content": system_message})
@@ -127,8 +140,11 @@ class GPT5Client:
         if temperature is not None:
             kwargs["temperature"] = temperature
 
-        response = self.client.chat.completions.create(**kwargs)
-        result = response.model_dump()
+        try:
+            response = self.client.chat.completions.create(**kwargs)
+            result = response.model_dump()
+        except Exception as e:
+            raise RuntimeError(f"GPT-5 API request failed: {e}") from e
 
         # Track costs if enabled
         if COST_TRACKING_ENABLED and "usage" in result:
@@ -167,7 +183,23 @@ class GPT5Client:
 
         Returns:
             Dict with response data including output, reasoning, usage
+            
+        Raises:
+            ValueError: If parameters are invalid
+            RuntimeError: If API request fails
         """
+        if not prompt or not prompt.strip():
+            raise ValueError("Prompt cannot be empty")
+        
+        if reasoning_effort not in ["low", "medium", "high"]:
+            raise ValueError("reasoning_effort must be 'low', 'medium', or 'high'")
+        
+        if reasoning_summary not in ["auto", "detailed"]:
+            raise ValueError("reasoning_summary must be 'auto' or 'detailed'")
+        
+        if text_verbosity not in ["low", "medium", "high"]:
+            raise ValueError("text_verbosity must be 'low', 'medium', or 'high'")
+        
         request_params = {
             "input": prompt,
             "model": self.model,
@@ -183,8 +215,11 @@ class GPT5Client:
         if tools:
             request_params["tools"] = tools
 
-        response = self.client.responses.create(**request_params)
-        result = response.model_dump()
+        try:
+            response = self.client.responses.create(**request_params)
+            result = response.model_dump()
+        except Exception as e:
+            raise RuntimeError(f"GPT-5 Reasoning API request failed: {e}") from e
 
         # Track costs if enabled
         if COST_TRACKING_ENABLED and "usage" in result:
@@ -247,9 +282,7 @@ class GPT5Client:
             text_verbosity="medium",
         )
 
-    def generate_client_report_summary(
-        self, client_data: str, report_type: str = "quarterly"
-    ) -> Dict:
+    def generate_client_report_summary(self, client_data: str, report_type: str = "quarterly") -> Dict:
         """
         Generate executive summary for client reports using GPT-5.
 
@@ -355,9 +388,7 @@ def analyze_with_reasoning(prompt: str, model: str = "gpt-5") -> Dict:
         Dict with output_text and reasoning_summary
     """
     client = GPT5Client(model=model)
-    response = client.reasoning_response(
-        prompt=prompt, reasoning_effort="high", reasoning_summary="detailed"
-    )
+    response = client.reasoning_response(prompt=prompt, reasoning_effort="high", reasoning_summary="detailed")
     return {
         "output": response.get("output_text", ""),
         "reasoning": response.get("reasoning_summary", ""),
@@ -417,7 +448,7 @@ if __name__ == "__main__":
         COGS: $300,000 (increased 20% from prior year)
         Operating Expenses: $150,000 (decreased 5% from prior year)
         Net Income: $50,000 (decreased 10% from prior year)
-        
+
         Notable items:
         - New equipment purchase: $75,000 (Section 179 eligible)
         - Customer concentration: Top 3 customers represent 60% of revenue
@@ -425,9 +456,7 @@ if __name__ == "__main__":
         """
 
         client = GPT5Client(model="gpt-5")
-        response = client.analyze_financial_document(
-            document_text=sample_document, analysis_type="audit"
-        )
+        response = client.analyze_financial_document(document_text=sample_document, analysis_type="audit")
         print(f"Analysis: {response.get('output_text', 'N/A')[:500]}...\n")
     except Exception as e:
         print(f"Error: {e}\n")

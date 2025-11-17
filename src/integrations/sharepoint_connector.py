@@ -11,8 +11,11 @@ Usage (PowerShell):
 """
 
 from __future__ import annotations
+
 import argparse
+import sys
 from pathlib import Path
+
 import pandas as pd
 
 DEFAULT_INPUT = Path("data/processed/sharepoint_permissions_clean.csv")
@@ -78,40 +81,92 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
 
 
 def write_excel_report(summaries: dict[str, pd.DataFrame], output_path: Path) -> None:
+    """Write summary DataFrames to Excel report."""
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
-        # Overview sheet
-        overview_rows = []
-        for key, df in summaries.items():
-            overview_rows.append(
-                {
-                    "Summary": key,
-                    "Rows": len(df),
-                    "Columns": len(df.columns),
-                }
-            )
-        pd.DataFrame(overview_rows).to_excel(writer, sheet_name="Overview", index=False)
+    try:
+        with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
+            # Overview sheet
+            overview_rows = []
+            for key, df in summaries.items():
+                overview_rows.append(
+                    {
+                        "Summary": key,
+                        "Rows": len(df),
+                        "Columns": len(df.columns),
+                    }
+                )
+            
+            if overview_rows:
+                pd.DataFrame(overview_rows).to_excel(writer, sheet_name="Overview", index=False)
+            else:
+                # Create empty overview if no summaries
+                pd.DataFrame({"Message": ["No summaries generated"]}).to_excel(
+                    writer, sheet_name="Overview", index=False
+                )
 
-        # Individual sheets
-        for name, sdf in summaries.items():
-            # Limit sheet name to 31 chars
-            sheet = name[:31]
-            sdf.to_excel(writer, sheet_name=sheet, index=False)
+            # Individual sheets
+            for name, sdf in summaries.items():
+                # Limit sheet name to 31 chars (Excel limitation)
+                sheet = name[:31]
+                sdf.to_excel(writer, sheet_name=sheet, index=False)
+    except PermissionError as e:
+        print(f"ERROR: Cannot write to {output_path}: Permission denied. "
+              f"Please close the file if it's open.", file=sys.stderr)
+        raise
+    except OSError as e:
+        print(f"ERROR: OS error writing to {output_path}: {e}", file=sys.stderr)
+        raise
+    except ValueError as e:
+        print(f"ERROR: Invalid data for Excel: {e}", file=sys.stderr)
+        raise
 
 
 def main():
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(description="Generate SharePoint permissions analysis report")
     ap.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Path to cleaned SharePoint CSV")
     ap.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Path to Excel report to write")
     args = ap.parse_args()
 
-    df = pd.read_csv(args.input)
-    summaries = build_summaries(df)
-    write_excel_report(summaries, args.output)
+    # Validate input file
+    if not args.input.exists():
+        print(f"ERROR: Input file not found: {args.input}", file=sys.stderr)
+        sys.exit(1)
 
-    print("Report written:", args.output)
+    try:
+        df = pd.read_csv(args.input)
+    except pd.errors.EmptyDataError:
+        print(f"ERROR: Input CSV is empty: {args.input}", file=sys.stderr)
+        sys.exit(1)
+    except pd.errors.ParserError as e:
+        print(f"ERROR: Failed to parse CSV: {e}", file=sys.stderr)
+        sys.exit(1)
+    except UnicodeDecodeError as e:
+        print(f"ERROR: Failed to decode input file (encoding issue): {e}", file=sys.stderr)
+        sys.exit(1)
+    except FileNotFoundError as e:
+        print(f"ERROR: Input file not found: {e}", file=sys.stderr)
+        sys.exit(1)
+    except OSError as e:
+        print(f"ERROR: I/O error while reading input file: {e}", file=sys.stderr)
+        sys.exit(1)
+    
+    if df.empty:
+        print(f"WARNING: Input CSV contains no data rows", file=sys.stderr)
+    
+    try:
+        summaries = build_summaries(df)
+    except Exception as e:
+        print(f"ERROR: Failed to build summaries: {e}", file=sys.stderr)
+        sys.exit(1)
+    
+    if not summaries:
+        print("WARNING: No summaries could be generated from the input data", file=sys.stderr)
+    
+    # Let exceptions from write_excel_report propagate; it already prints detailed errors
+    write_excel_report(summaries, args.output)
+    print(f"✓ Report written: {args.output}")
 
 
 if __name__ == "__main__":

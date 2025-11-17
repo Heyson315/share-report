@@ -1,7 +1,8 @@
-import openpyxl
-from openpyxl.styles import Font, PatternFill, Alignment
-from openpyxl.utils import get_column_letter
 from datetime import datetime
+
+import openpyxl
+from openpyxl.styles import Font, PatternFill
+from openpyxl.utils import get_column_letter
 
 # Constants for sample data
 INITIAL_BUDGET = 10000
@@ -18,9 +19,20 @@ def create_project_management_workbook(filename=None):
 
     Args:
         filename (str, optional): Output filename for the workbook. Defaults to 'Project_Management.xlsx'.
+        
+    Returns:
+        openpyxl.Workbook: The created workbook object
+        
+    Raises:
+        PermissionError: If the file cannot be written (e.g., file is open)
+        ValueError: If filename is invalid
     """
     if filename is None:
         filename = "Project_Management.xlsx"
+    
+    if not filename:
+        raise ValueError("Filename cannot be empty")
+    
     # Create a new workbook
     wb = openpyxl.Workbook()
 
@@ -112,7 +124,18 @@ def create_project_management_workbook(filename=None):
             budget_sheet.cell(row=row, column=col).value = value
 
     # Save the workbook
-    wb.save(filename)
+    try:
+        wb.save(filename)
+        print(f"✓ Workbook created successfully: {filename}")
+    except PermissionError as e:
+        raise PermissionError(
+            f"Cannot write to {filename}. Please close the file if it's open."
+        ) from e
+    except OSError as e:
+        raise OSError(f"OS error writing to {filename}: {e}") from e
+    except ValueError as e:
+        raise ValueError(f"Invalid data for Excel: {e}") from e
+    
     return wb
 
 

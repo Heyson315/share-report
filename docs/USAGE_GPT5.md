@@ -345,12 +345,12 @@ response = client.reasoning_response(
     prompt=f"""
     Analyze this M365 security audit for a CPA firm:
     {json.dumps(audit_data, indent=2)}
-    
+
     Prioritize findings based on:
     1. Client data confidentiality (CRITICAL for CPA)
     2. Regulatory compliance (SOC 2, AICPA)
     3. Business continuity
-    
+
     Provide actionable recommendations.
     """,
     reasoning_effort="high",
@@ -366,11 +366,11 @@ print(response['output_text'])
 def draft_client_email(scenario: str, tone: str = "professional"):
     """Draft client-facing email using GPT-5."""
     client = GPT5Client(model="gpt-5")
-    
+
     response = client.chat_completion(
         prompt=f"""
         Draft an email to a client about: {scenario}
-        
+
         Tone: {tone}
         Include: Greeting, explanation, next steps, closing
         """,
@@ -380,7 +380,7 @@ def draft_client_email(scenario: str, tone: str = "professional"):
         ),
         max_tokens=800
     )
-    
+
     return response['choices'][0]['message']['content']
 
 # Usage
@@ -396,11 +396,11 @@ email = draft_client_email(
 def tax_research(question: str):
     """Research tax question with citations."""
     client = GPT5Client(model="gpt-5")
-    
+
     response = client.reasoning_response(
         prompt=f"""
         Tax Research Question: {question}
-        
+
         Provide:
         1. Direct answer
         2. Relevant IRC sections
@@ -412,7 +412,7 @@ def tax_research(question: str):
         reasoning_summary="detailed",
         text_verbosity="high"
     )
-    
+
     return {
         'answer': response['output_text'],
         'reasoning': response['reasoning_summary'],

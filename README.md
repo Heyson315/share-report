@@ -21,6 +21,7 @@ Enterprise-ready Microsoft 365 security auditing and SharePoint permissions anal
 - 🧠 **AI-Assisted Development**: Comprehensive GitHub Copilot instructions for immediate productivity
 - 📈 **Performance Monitoring**: Built-in benchmarking and validation
 - 📱 **Interactive Dashboards**: HTML security scorecards with trend analysis
+- 🎨 **Modern Web Design**: Professional templates for SharePoint and custom domains
 - 🔧 **Service Principal Ready**: Unattended automation support
 - 🐍 **Hybrid Architecture**: PowerShell + Python for optimal performance
 
@@ -35,16 +36,24 @@ This project is optimized for **AI coding agents** with comprehensive developmen
 - Common pitfalls and debugging strategies
 - CI/CD automation and testing patterns
 
+🚀 **Quick Start Guides for AI Agents**:
+- **[AI Agent Quick Start](.github/AI_AGENT_QUICKSTART.md)** - 15-minute onboarding with common task patterns
+- **[AI Workflow Testing](.github/AI_WORKFLOW_TESTING.md)** - Comprehensive testing strategies and automation
+- **[MCP Tool Patterns](.github/MCP_TOOL_PATTERNS.md)** - Model Context Protocol tool development patterns
+- **[AI Development Index](.github/AI_DEVELOPMENT_INDEX.md)** - Complete navigation hub for all AI resources
+
 🎯 **Perfect for**: GitHub Copilot, Claude, ChatGPT, and other AI coding assistants to immediately understand and contribute to this enterprise security toolkit.
 
-> 📚 **Quick Documentation Access**: See [DOCS.md](DOCS.md) for instant navigation to any guide
+> 📚 **New to AI Development?** Start with [.github/README.md](.github/README.md) for a quick overview and learning paths!
+> 
+> 📖 **Need Specific Info?** See [DOCS.md](DOCS.md) for instant navigation to any guide
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 - **Windows 10/11** or **Windows Server 2019+**
-- **PowerShell 5.1+** 
+- **PowerShell 5.1+**
 - **Python 3.9+**
 - **M365 tenant** with admin access
 
@@ -112,7 +121,8 @@ python scripts/generate_security_dashboard.py  # Creates HTML dashboard
 │   ├── M365_SERVICE_PRINCIPAL_SETUP.md   # Automation setup guide
 │   ├── PRODUCTION_DEPLOYMENT.md          # Enterprise deployment
 │   ├── SECURITY_M365_CIS.md              # Security audit workflow
-│   └── USAGE_SHAREPOINT.md               # SharePoint analysis guide
+│   ├── USAGE_SHAREPOINT.md               # SharePoint analysis guide
+│   └── WEB_DESIGN_GUIDE.md               # 🆕 Web design patterns
 ├── 📂 output/reports/             # Generated reports
 │   ├── security/                  # JSON/CSV audit results
 │   └── business/                  # Excel/HTML reports
@@ -132,14 +142,19 @@ python scripts/generate_security_dashboard.py  # Creates HTML dashboard
 │           ├── setup.py           # Setup wizard
 │           ├── tools/             # MCP tool definitions
 │           └── README.md          # Extension documentation
+├── 📂 web-templates/              # 🆕 Web design templates
+│   ├── 📂 common/                 # Shared CSS/JS for both platforms
+│   │   ├── css/                   # Base styles & dashboard CSS
+│   │   ├── js/                    # Common JavaScript
+│   │   └── images/                # Shared assets
+│   ├── 📂 sharepoint/             # SharePoint-specific templates
+│   │   └── examples/              # Ready-to-use SharePoint pages
+│   └── 📂 godaddy/                # Custom domain templates
+│       └── examples/              # Static HTML sites
+├── 📂 tests/                      # Automated testing
 ├── requirements.txt               # Core dependencies (required)
 ├── requirements-extensions.txt    # 🆕 Optional extensions (MCP, GPT-5)
 └── requirements-dev.txt           # Development tools
-```
-├── 📂 src/                        # Core toolkit modules
-│   ├── core/                      # Excel generation
-│   └── integrations/              # SharePoint connector
-└── 📂 tests/                      # Automated testing
 ```
 
 ## 🧠 AI Development Workflows
@@ -187,7 +202,29 @@ python -m src.integrations.sharepoint_connector --input "data/processed/sharepoi
 
 **Output**: Detailed Excel reports with user access summaries, permission inheritance analysis, and security recommendations
 
-### 3. Performance Benchmarking
+### 3. Web Design & Dashboard Creation
+
+```bash
+# Use provided templates for SharePoint
+# Copy from: web-templates/sharepoint/examples/security-dashboard.html
+# Deploy to: SharePoint Online modern page
+
+# Use provided templates for custom domain (GoDaddy)
+# Copy from: web-templates/godaddy/examples/security-landing-page.html
+# Upload to: public_html directory via FTP
+
+# Generate custom dashboard from audit data
+python scripts/generate_security_dashboard.py --input "output/reports/security/m365_cis_audit.json"
+```
+
+**Features**:
+- **SharePoint**: Modern UI with Fluent Design, mobile-responsive, ready to embed
+- **GoDaddy**: Static HTML with gradient backgrounds, interactive charts, SEO-optimized
+- **Both**: Professional styling, accessibility compliant, print-friendly
+
+**Documentation**: See [`docs/WEB_DESIGN_GUIDE.md`](docs/WEB_DESIGN_GUIDE.md) for complete design patterns and deployment instructions
+
+### 4. Performance Benchmarking
 
 ```python
 # Run performance validation
@@ -207,6 +244,7 @@ python scripts/run_performance_benchmark.py --validate-against-baseline
 - **Automated Testing**: Unit tests, integration tests, performance validation
 - **Monthly Audits**: Scheduled M365 security assessments with artifact preservation
 - **Dependency Updates**: Automated dependency scanning and updates
+- **Build Provenance**: Cryptographically signed attestations for all artifacts
 
 ### Service Principal Authentication
 
@@ -238,7 +276,7 @@ See [`docs/M365_SERVICE_PRINCIPAL_SETUP.md`](docs/M365_SERVICE_PRINCIPAL_SETUP.m
 
 **Key Guides:**
 - 🔐 [M365 CIS Security Auditing](docs/SECURITY_M365_CIS.md)
-- 📊 [SharePoint Permissions Analysis](docs/USAGE_SHAREPOINT.md) 
+- 📊 [SharePoint Permissions Analysis](docs/USAGE_SHAREPOINT.md)
 - 🤖 [AI MCP Server Development](docs/CUSTOM_MCP_SERVER_GUIDE.md)
 - ⚙️ [Service Principal Setup](docs/M365_SERVICE_PRINCIPAL_SETUP.md)
 - 🚀 [CI/CD Automation](.github/workflows/README.md)
@@ -279,6 +317,7 @@ See [`docs/M365_SERVICE_PRINCIPAL_SETUP.md`](docs/M365_SERVICE_PRINCIPAL_SETUP.m
 - **Audit logging** for all script executions
 - **Access control** with role-based permissions
 - **Secure credential storage** using PowerShell SecureString
+- **Build provenance attestation** for supply chain security
 
 ## 🚀 Production Deployment
 

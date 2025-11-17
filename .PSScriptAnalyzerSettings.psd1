@@ -4,14 +4,14 @@
 
 @{
     Severity = @('Error', 'Warning')
-    
+
     # Exclude rules that are acceptable for this project
     ExcludeRules = @(
         'PSAvoidUsingWriteHost',  # Write-Host is used intentionally for user-facing output
         'PSUseShouldProcessForStateChangingFunctions',  # New-CISResult doesn't change system state
         'PSUseBOMForUnicodeEncodedFile'  # UTF-8 without BOM is preferred
     )
-    
+
     # Include specific rules
     IncludeRules = @(
         'PSUseApprovedVerbs',

@@ -51,21 +51,21 @@ function Write-RemediationLog {
         [ValidateSet('Preview','Applied','Error','Info')]
         [string]$Type = 'Info'
     )
-    
+
     $color = switch ($Type) {
         'Preview' { 'Yellow' }
         'Applied' { 'Green' }
         'Error'   { 'Red' }
         default   { 'Cyan' }
     }
-    
+
     $prefix = switch ($Type) {
         'Preview' { '[PREVIEW]' }
         'Applied' { '[APPLIED]' }
         'Error'   { '[ERROR]  ' }
         default   { '[INFO]   ' }
     }
-    
+
     Write-Host "$prefix $Message" -ForegroundColor $color
 }
 
@@ -96,7 +96,7 @@ try {
     Write-RemediationLog "Would set TransportConfig ExternalClientForwardingDisabled=True" "Preview"
     $script:PreviewCount++
   }
-} catch { 
+} catch {
   Write-RemediationLog "Set-TransportConfig failed: $($_.Exception.Message)" "Error"
   $script:FailureCount++
 }
@@ -111,7 +111,7 @@ try {
     Write-RemediationLog "Would set HostedOutboundSpamFilterPolicy Default AutoForwardingMode=Off" "Preview"
     $script:PreviewCount++
   }
-} catch { 
+} catch {
   Write-RemediationLog "Set-HostedOutboundSpamFilterPolicy failed: $($_.Exception.Message)" "Error"
   $script:FailureCount++
 }
@@ -132,7 +132,7 @@ foreach ($mbx in $flagged) {
       Write-RemediationLog "Would disable legacy protocols for '$mbx'" "Preview"
       $script:PreviewCount++
     }
-  } catch { 
+  } catch {
     Write-RemediationLog "Set-CASMailbox failed for '$mbx': $($_.Exception.Message)" "Error"
     $script:FailureCount++
   }
@@ -143,7 +143,7 @@ Write-RemediationLog "Enforcing DEF-1: Ensure Safe Links rule enabled" "Info"
 try {
   $slRule = Get-SafeLinksRule -Identity "Built-In Protection Rule" -ErrorAction SilentlyContinue
   if ($slRule) {
-    try { 
+    try {
       if ($PSCmdlet.ShouldProcess("SafeLinksRule '$($slRule.Name)'", "Enable rule")) {
         Enable-SafeLinksRule -Identity $slRule.Name -ErrorAction Stop
         Write-RemediationLog "Enabled Safe Links rule: $($slRule.Name)" "Applied"
@@ -152,7 +152,7 @@ try {
         Write-RemediationLog "Would enable Safe Links rule: $($slRule.Name)" "Preview"
         $script:PreviewCount++
       }
-    } catch { 
+    } catch {
       Write-RemediationLog $_.Exception.Message "Error"
       $script:FailureCount++
     }
@@ -160,7 +160,7 @@ try {
     # Fallback: attempt to enable any existing disabled rule
     $anyRule = Get-SafeLinksRule | Where-Object { $_.State -ne 'Enabled' -and $_.Enabled -ne $true } | Select-Object -First 1
     if ($anyRule) {
-      try { 
+      try {
         if ($PSCmdlet.ShouldProcess("SafeLinksRule '$($anyRule.Name)'", "Enable rule")) {
           Enable-SafeLinksRule -Identity $anyRule.Name -ErrorAction Stop
           Write-RemediationLog "Enabled Safe Links rule: $($anyRule.Name)" "Applied"
@@ -169,7 +169,7 @@ try {
           Write-RemediationLog "Would enable Safe Links rule: $($anyRule.Name)" "Preview"
           $script:PreviewCount++
         }
-      } catch { 
+      } catch {
         Write-RemediationLog $_.Exception.Message "Error"
         $script:FailureCount++
       }

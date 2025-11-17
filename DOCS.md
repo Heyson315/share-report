@@ -7,9 +7,13 @@
 - **🏢 Development environment**: [docs/CPA_DEVELOPMENT_ENVIRONMENT.md](docs/CPA_DEVELOPMENT_ENVIRONMENT.md)
 - **🚀 Set up development**: [PROJECT_OUTLINE.md](PROJECT_OUTLINE.md)
 - **👥 Contribute code**: [CONTRIBUTING.md](CONTRIBUTING.md)
+- **🌳 Git workflow**: [docs/GIT_BRANCH_STRATEGY.md](docs/GIT_BRANCH_STRATEGY.md)
 
 ### **AI Development**
 - **🧠 AI agent development**: [.github/copilot-instructions.md](.github/copilot-instructions.md) ⭐ **START HERE**
+- **🚀 AI quick start**: [.github/AI_AGENT_QUICKSTART.md](.github/AI_AGENT_QUICKSTART.md) - 15-minute onboarding
+- **🧪 AI workflow testing**: [.github/AI_WORKFLOW_TESTING.md](.github/AI_WORKFLOW_TESTING.md) - Testing patterns
+- **🤖 MCP tool patterns**: [.github/MCP_TOOL_PATTERNS.md](.github/MCP_TOOL_PATTERNS.md) - MCP development
 - **🤖 MCP server extension**: [src/extensions/mcp/README.md](src/extensions/mcp/README.md)
 - **📖 MCP development guide**: [docs/CUSTOM_MCP_SERVER_GUIDE.md](docs/CUSTOM_MCP_SERVER_GUIDE.md)
 
@@ -38,4 +42,4 @@
 
 ---
 
-> **🧠 AI Agents**: Read [.github/copilot-instructions.md](.github/copilot-instructions.md) first for complete project architecture and patterns!
+> **🧠 AI Agents**: Read [.github/copilot-instructions.md](.github/copilot-instructions.md) first for complete project architecture, then use [.github/AI_AGENT_QUICKSTART.md](.github/AI_AGENT_QUICKSTART.md) for task-specific patterns!

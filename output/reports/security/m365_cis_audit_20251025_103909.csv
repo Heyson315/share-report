@@ -11,4 +11,3 @@
 "CIS-DEF-1","Ensure Safe Links policy is enabled","High","Safe Links enabled","Unknown","Manual","Not connected to EXO","CIS M365 Foundations v3.0 L1; Defender for Office","2025-10-25T10:39:11"
 "CIS-DEF-2","Ensure Safe Attachments policy is enabled","High","Safe Attachments enabled","Unknown","Manual","Not connected to EXO","CIS M365 Foundations v3.0 L1; Defender for Office","2025-10-25T10:39:11"
 "CIS-CA-1","Ensure Conditional Access MFA policy exists for all users","High","MFA policy enabled","Unknown","Manual","Not connected to Graph","CIS M365 Foundations v3.0 L1; Conditional Access","2025-10-25T10:39:11"
-

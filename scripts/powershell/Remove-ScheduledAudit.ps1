@@ -13,7 +13,7 @@
 
 .EXAMPLE
     .\Remove-ScheduledAudit.ps1
-    
+
 .EXAMPLE
     .\Remove-ScheduledAudit.ps1 -TaskName "M365-CIS-Audit" -Force
 

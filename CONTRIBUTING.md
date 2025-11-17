@@ -6,8 +6,20 @@ Thank you for your interest in contributing to the Share Report M365 Security To
 
 **For AI coding agents**: Please read [`.github/copilot-instructions.md`](.github/copilot-instructions.md) first for comprehensive project context, architecture patterns, and development workflows specific to this hybrid Python/PowerShell enterprise security toolkit.
 
+## 🌳 Git Branch Strategy
+
+**Before contributing**: Read [`docs/GIT_BRANCH_STRATEGY.md`](docs/GIT_BRANCH_STRATEGY.md) to understand our Git Flow workflow.
+
+**Quick Reference**:
+- Start features from `develop` branch
+- Use `feature/*` naming for new features
+- Use `copilot/*` naming for AI-generated code
+- Create PRs to `develop` branch (not `main`)
+- `main` branch is for production releases only
+
 ## Table of Contents
 - [AI-Assisted Development](#ai-assisted-development)
+- [Git Branch Strategy](#git-branch-strategy)
 - [Getting Started](#getting-started)
 - [Development Setup](#development-setup)
 - [Code Style Guidelines](#code-style-guidelines)
@@ -30,11 +42,18 @@ Thank you for your interest in contributing to the Share Report M365 Security To
    cd share-report
    ```
 
+2. **Checkout develop branch**
+   ```bash
+   git checkout develop
+   git pull origin develop
+   ```
+   ```
+
 2. **Install Python dependencies**
    ```bash
    # Production dependencies
    pip install -r requirements.txt
-   
+
    # Development dependencies (includes testing and linting tools)
    pip install -r requirements-dev.txt
    ```
@@ -52,7 +71,7 @@ Thank you for your interest in contributing to the Share Report M365 Security To
    ```bash
    # Run tests
    pytest
-   
+
    # Check code quality
    pylint scripts/ src/
    black --check scripts/ src/ tests/
@@ -77,11 +96,11 @@ from pathlib import Path
 def process_data(input_path: Path, options: Dict[str, str]) -> List[Dict[str, any]]:
     """
     Process data from input file.
-    
+
     Args:
         input_path: Path to input file
         options: Processing options
-        
+
     Returns:
         List of processed data dictionaries
     """
@@ -158,10 +177,10 @@ def test_clean_csv_removes_comments():
         td = Path(td)
         input_file = td / "input.csv"
         output_file = td / "output.csv"
-        
+
         input_file.write_text("# Comment\nHeader\nData", encoding="utf-8")
         stats = clean_csv(input_file, output_file)
-        
+
         assert stats["comment_lines"] == 1
         assert stats["output_rows"] == 1
 ```
@@ -217,13 +236,13 @@ Update README with new installation instructions
    ```bash
    # Format code
    black scripts/ src/ tests/
-   
+
    # Run linter
    pylint scripts/ src/
-   
+
    # Run tests
    pytest
-   
+
    # Check type hints
    mypy scripts/ src/
    ```

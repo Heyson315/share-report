@@ -10,18 +10,41 @@ Features:
 - Failed controls highlighted with remediation links
 """
 
+import argparse
 import json
 import sys
-from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Any
-import argparse
+from pathlib import Path
+from typing import Any, Dict, List
 
 
 def load_audit_results(json_path: Path) -> List[Dict[str, Any]]:
     """Load audit results from JSON file."""
-    with open(json_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(json_path, "r", encoding="utf-8-sig") as f:
+            data = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"ERROR: Invalid JSON in {json_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+    except (PermissionError, FileNotFoundError) as e:
+        print(f"ERROR: Cannot read {json_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+    except OSError as e:
+        print(f"ERROR: I/O error reading {json_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+    except UnicodeDecodeError as e:
+        print(f"ERROR: Encoding error reading {json_path}: {e}", file=sys.stderr)
+        sys.exit(1)
+    
+    # Validate data is a list
+    if not isinstance(data, list):
+        print(f"ERROR: Expected JSON array, got {type(data).__name__}", file=sys.stderr)
+        sys.exit(1)
+    
+    if not data:
+        print(f"WARNING: No audit results found in {json_path}", file=sys.stderr)
+    
+    return data
 
 
 def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -296,12 +319,12 @@ def generate_html_dashboard(
         <div class="header">
             <h1>🛡️ M365 CIS Security Dashboard</h1>
             <div class="meta">
-                <strong>Generated:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | 
-                <strong>Total Controls:</strong> {stats['total']} | 
+                <strong>Generated:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} |
+                <strong>Total Controls:</strong> {stats['total']} |
                 <strong>Pass Rate:</strong> {stats['pass_rate']}%
             </div>
         </div>
-        
+
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>Passed Controls</h3>
@@ -324,12 +347,12 @@ def generate_html_dashboard(
                 <div class="subtitle">Critical issues</div>
             </div>
         </div>
-        
+
         <div class="chart-container">
             <h2>📈 Pass Rate Trend</h2>
             <canvas id="trendChart"></canvas>
         </div>
-        
+
         <div class="controls-table">
             <h2>🔍 Control Status Details</h2>
             <div class="filter-controls">
@@ -377,13 +400,14 @@ def generate_html_dashboard(
                 </tbody>
             </table>
         </div>
-        
+
         <div class="footer">
-            <p><strong>Next Audit Recommended:</strong> {(datetime.now()).strftime('%Y-%m-%d')} (7 days from last audit)</p>
+            <p><strong>Next Audit Recommended:</strong> {(datetime.now()).strftime('%Y-%m-%d')}
+            (7 days from last audit)</p>
             <p>For remediation guidance, see PostRemediateM365CIS.ps1 with -WhatIf parameter</p>
         </div>
     </div>
-    
+
     <script>
         // Trend Chart
         const ctx = document.getElementById('trendChart');
@@ -422,21 +446,21 @@ def generate_html_dashboard(
                 }}
             }});
         }}
-        
+
         // Filter functionality
         function filterTable(filter) {{
             const rows = document.querySelectorAll('#controlsTable tbody tr');
             const buttons = document.querySelectorAll('.filter-btn');
-            
+
             // Update button states
             buttons.forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-            
+
             // Filter rows
             rows.forEach(row => {{
                 const status = row.dataset.status;
                 const severity = row.dataset.severity;
-                
+
                 if (filter === 'all') {{
                     row.style.display = '';
                 }} else if (filter === 'high') {{

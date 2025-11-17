@@ -13,11 +13,11 @@ ResourceQuotaAllocated                                           : 0
 OneDriveStorageQuota                                             : 1048576
 CompatibilityRange                                               : 15,15
 ExternalServicesEnabled                                          : True
-NoAccessRedirectUrl                                              : 
-ArchiveRedirectUrl                                               : 
+NoAccessRedirectUrl                                              :
+ArchiveRedirectUrl                                               :
 SharingCapability                                                : ExternalUserAndGuestSharing
 DisplayStartASiteOption                                          : True
-StartASiteFormUrl                                                : 
+StartASiteFormUrl                                                :
 ShowEveryoneClaim                                                : False
 ShowAllUsersClaim                                                : False
 OfficeClientADALDisabled                                         : False
@@ -31,23 +31,23 @@ ShowEveryoneExceptExternalUsersClaim                             : True
 AllowEveryoneExceptExternalUsersClaimInPrivateSite               : False
 SearchResolveExactEmailOrUPN                                     : False
 ProvisionSharedWithEveryoneFolder                                : False
-SignInAccelerationDomain                                         : 
+SignInAccelerationDomain                                         :
 EnableGuestSignInAcceleration                                    : False
 UsePersistentCookiesForExplorerView                              : False
 ContentTypeSyncSiteTemplatesList                                 : {}
 BccExternalSharingInvitations                                    : False
-BccExternalSharingInvitationsList                                : 
+BccExternalSharingInvitationsList                                :
 PublicCdnEnabled                                                 : False
 PublicCdnAllowedFileTypes                                        : CSS,EOT,GIF,ICO,JPEG,JPG,JS,MAP,PNG,SVG,TTF,WOFF
 PublicCdnOrigins                                                 : {}
 RequireAnonymousLinksExpireInDays                                : -1
 RequireOrganizationLinksExpireInDays                             : 0
-SharingAllowedDomainList                                         : 
-SharingBlockedDomainList                                         : 
+SharingAllowedDomainList                                         :
+SharingBlockedDomainList                                         :
 SharingDomainRestrictionMode                                     : None
 OneDriveForGuestsEnabled                                         : False
 IPAddressEnforcement                                             : False
-IPAddressAllowList                                               : 
+IPAddressAllowList                                               :
 IPAddressWACTokenLifetime                                        : 15
 EnableTenantRestrictionsInsights                                 : False
 EnablePromotedFileHandlers                                       : True
@@ -77,7 +77,7 @@ OrphanedPersonalSitesRetentionPeriod                             : 2555
 PermissiveBrowserFileHandlingOverride                            : False
 DisallowInfectedFileDownload                                     : False
 DefaultLinkPermission                                            : Edit
-CustomizedExternalSharingServiceUrl                              : 
+CustomizedExternalSharingServiceUrl                              :
 ConditionalAccessPolicy                                          : AllowFullAccess
 AllowDownloadingNonWebViewableFiles                              : True
 LimitedAccessFileType                                            : WebPreviewableFiles
@@ -86,13 +86,13 @@ ApplyAppEnforcedRestrictionsToAdHocRecipients                    : True
 FilePickerExternalImageSearchEnabled                             : True
 EmailAttestationRequired                                         : False
 EmailAttestationReAuthDays                                       : 30
-DisabledWebPartIds                                               : 
-DisabledAdaptiveCardExtensionIds                                 : 
+DisabledWebPartIds                                               :
+DisabledAdaptiveCardExtensionIds                                 :
 EnableMinimumVersionRequirement                                  : True
 MarkNewFilesSensitiveByDefault                                   : AllowExternalSharing
 EnableAIPIntegration                                             : True
 AllowCommentsTextOnEmailEnabled                                  : True
-ConditionalAccessPolicyErrorHelpLink                             : 
+ConditionalAccessPolicyErrorHelpLink                             :
 RestrictedAccessControlforSitesErrorHelpLink                     : None
 EnableAzureADB2BIntegration                                      : True
 RestrictedAccessControlForOneDriveErrorHelpLink                  : None
@@ -134,7 +134,7 @@ EnableSensitivityLabelForPDF                                     : True
 EnableSensitivityLabelForOneNote                                 : False
 EnableSensitivityLabelForVideoFiles                              : False
 BlockSendLabelMismatchEmail                                      : False
-LabelMismatchEmailHelpLink                                       : 
+LabelMismatchEmailHelpLink                                       :
 DisableAddShortcutsToOneDrive                                    : False
 EnableAutoNewsDigest                                             : True
 Workflow2010Disabled                                             : True
@@ -150,8 +150,8 @@ InformationBarriersSuspension                                    : True
 IBImplicitGroupBased                                             : False
 AppBypassInformationBarriers                                     : False
 DefaultOneDriveInformationBarrierMode                            : Explicit
-AppAccessInformationBarriersAllowList                            : 
-AllOrganizationSecurityGroupId                                   : 
+AppAccessInformationBarriersAllowList                            :
+AllOrganizationSecurityGroupId                                   :
 DisablePersonalListCreation                                      : False
 DisabledModernListTemplateIds                                    : {}
 DisableSpacesActivation                                          : False
@@ -194,7 +194,7 @@ DelayDenyAddAndCustomizePagesEnforcementOnClassicPublishingSites : False
 AllowClassicPublishingSiteCreation                               : False
 EsignatureEnabled                                                : False
 ESignatureSiteList                                               : {}
-ESignatureThirdPartyProviderInfoList                             : {""{\""ProviderName\"":\""DocuSign\"",\""IsEnabled\"":false}"", 
+ESignatureThirdPartyProviderInfoList                             : {""{\""ProviderName\"":\""DocuSign\"",\""IsEnabled\"":false}"",
                                                                    ""{\""ProviderName\"":\""AdobeSign\"",\""IsEnabled\"":false}""}
 ESignatureAppList                                                : {""{\""AppName\"":\""WordDesktop\"",\""IsEnabled\"":true}""}
 WhoCanShareAnonymousAllowList                                    : {}
@@ -214,13 +214,13 @@ KnowledgeAgentScope                                              : NoSites
 KnowledgeAgentSelectedSitesList                                  : {}
 OpticalCharacterRecognitionScope                                 : NoSites
 OpticalCharacterRecognitionSelectedSitesList                     : {}
-DefaultContentCenterSite                                         : 
+DefaultContentCenterSite                                         :
 AllowWebPropertyBagUpdateWhenDenyAddAndCustomizePagesIsEnabled   : False
-AllowSelectSecurityGroupsInSPSitesList                           : 
-DenySelectSecurityGroupsInSPSitesList                            : 
+AllowSelectSecurityGroupsInSPSitesList                           :
+DenySelectSecurityGroupsInSPSitesList                            :
 ExemptNativeUsersFromTenantLevelRestricedAccessControl           : False
-AllowSelectSGsInODBListInTenant                                  : 
-DenySelectSGsInODBListInTenant                                   : 
+AllowSelectSGsInODBListInTenant                                  :
+DenySelectSGsInODBListInTenant                                   :
 EnforceRequestDigest                                             : True
 RestrictResourceAccountAccess                                    : False
 
@@ -228,8 +228,8 @@ RestrictResourceAccountAccess                                    : False
 
 ","CIS M365 Foundations v3.0 L1; SPO Sharing","2025-10-25T17:16:27"
 "CIS-AAD-1","Limit Global Administrator role assignments","High","Global Admin assignments minimal (<= 2-4)","GlobalAdminCount=3","Pass","
-PrincipalId                          RoleDefinitionId                    
------------                          ----------------                    
+PrincipalId                          RoleDefinitionId
+-----------                          ----------------
 6b633c09-7475-4647-9bcc-f59732ec625f 62e90394-69f5-4237-9190-012177145e10
 727d96b1-4aab-47bc-b62d-3ee40c1d73bb 62e90394-69f5-4237-9190-012177145e10
 2912f341-f9ff-4f03-ad74-721dbf070c4f 62e90394-69f5-4237-9190-012177145e10
@@ -239,8 +239,8 @@ PrincipalId                          RoleDefinitionId
 "CIS-DEF-1","Ensure Safe Links policy is enabled","High","Safe Links enabled","Unknown","Manual","No Safe Links rules or policies found","CIS M365 Foundations v3.0 L1; Defender for Office","2025-10-25T17:16:38"
 "CIS-DEF-2","Ensure Safe Attachments policy is enabled","High","Safe Attachments enabled","Unknown","Manual","The term 'Get-SafeAttachmentPolicy' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.","CIS M365 Foundations v3.0 L1; Defender for Office","2025-10-25T17:16:38"
 "CIS-CA-1","Ensure Conditional Access MFA policy exists for all users","High","At least one enabled CA policy requiring MFA for all users","MFAPolicies=5","Pass","
-DisplayName                                               State  
------------                                               -----  
+DisplayName                                               State
+-----------                                               -----
 Require multifactor authentication for guest access       enabled
 Require multifactor authentication for all users          enabled
 conditional access 1`                                     enabled

@@ -26,7 +26,7 @@
 
 .EXAMPLE
     .\Setup-ScheduledAudit.ps1 -Schedule Weekly -DayOfWeek Monday -Time "09:00"
-    
+
 .EXAMPLE
     .\Setup-ScheduledAudit.ps1 -Schedule Daily -Time "06:00" -SPOAdminUrl "https://tenant-admin.sharepoint.com"
 
@@ -39,16 +39,16 @@ param(
     [Parameter(Mandatory=$true)]
     [ValidateSet('Daily','Weekly','Monthly')]
     [string]$Schedule,
-    
+
     [ValidateSet('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday')]
     [string]$DayOfWeek,
-    
+
     [string]$Time = "09:00",
-    
+
     [string]$SPOAdminUrl,
-    
+
     [string]$TaskName = "M365-CIS-Audit",
-    
+
     [string]$LogPath = "output/logs/scheduled_audit.log"
 )
 
@@ -159,22 +159,22 @@ try {
         -Settings $settings `
         -Description "Automated M365 CIS Level 1 security audit with timestamped outputs" `
         -ErrorAction Stop | Out-Null
-    
+
     Write-Host "`n[✓] Scheduled task created successfully!" -ForegroundColor Green
     Write-Host "`n[+] Task Details:" -ForegroundColor Cyan
-    
+
     $task = Get-ScheduledTask -TaskName $TaskName
     Write-Host "    Name: $($task.TaskName)" -ForegroundColor Gray
     Write-Host "    State: $($task.State)" -ForegroundColor Gray
     Write-Host "    Next Run Time: $((Get-ScheduledTask -TaskName $TaskName | Get-ScheduledTaskInfo).NextRunTime)" -ForegroundColor Gray
-    
+
     Write-Host "`n[+] Management Commands:" -ForegroundColor Cyan
     Write-Host "    View task:    Get-ScheduledTask -TaskName '$TaskName'" -ForegroundColor Gray
     Write-Host "    Run now:      Start-ScheduledTask -TaskName '$TaskName'" -ForegroundColor Gray
     Write-Host "    Disable:      Disable-ScheduledTask -TaskName '$TaskName'" -ForegroundColor Gray
     Write-Host "    Remove:       Unregister-ScheduledTask -TaskName '$TaskName' -Confirm:`$false" -ForegroundColor Gray
     Write-Host "    View logs:    Get-Content '$fullLogPath' -Tail 50" -ForegroundColor Gray
-    
+
 } catch {
     Write-Error "Failed to create scheduled task: $($_.Exception.Message)"
     exit 1
