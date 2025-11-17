@@ -36,8 +36,8 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
 
     # First pass: filter out comment and blank lines, keep original quoting intact
     filtered_lines = []
-    with in_path.open("r", encoding="utf-8-sig", errors="replace") as fin:
-        for raw_line in fin:
+    with in_path.open("r", encoding="utf-8-sig", errors="replace") as input_file:
+        for raw_line in input_file:
             stats["input_lines"] += 1
             if not raw_line.strip():
                 stats["blank_lines"] += 1
@@ -48,11 +48,11 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
             filtered_lines.append(raw_line)
 
     # Second pass: parse CSV properly respecting quotes
-    sio = StringIO("".join(filtered_lines))
-    reader = csv.reader(sio)
+    string_buffer = StringIO("".join(filtered_lines))
+    reader = csv.reader(string_buffer)
 
-    with out_path.open("w", encoding="utf-8", newline="") as fout:
-        writer = csv.writer(fout, lineterminator="\n")
+    with out_path.open("w", encoding="utf-8", newline="") as output_file:
+        writer = csv.writer(output_file, lineterminator="\n")
 
         header = None
         for row in reader:
@@ -80,10 +80,10 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
 
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Input CSV path")
-    ap.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Output CSV path")
-    args = ap.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Input CSV path")
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Output CSV path")
+    args = parser.parse_args()
 
     stats = clean_csv(args.input, args.output)
 
