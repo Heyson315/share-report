@@ -25,7 +25,7 @@ Enterprise-ready Microsoft 365 security auditing and SharePoint permissions anal
 
 - **Windows 10/11** or **Windows Server 2019+**
 - **PowerShell 5.1+** 
-- **Python 3.9+**
+- **Python 3.9-3.12** (Python 3.14+ not yet fully supported by all security tools)
 - **M365 tenant** with admin access
 
 ### Installation
@@ -35,7 +35,7 @@ Enterprise-ready Microsoft 365 security auditing and SharePoint permissions anal
 git clone https://github.com/Heyson315/share-report.git
 cd share-report
 
-# Setup Python environment
+# Setup Python environment (recommend Python 3.11 or 3.12)
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
