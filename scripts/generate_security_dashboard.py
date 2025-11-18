@@ -411,9 +411,9 @@ def generate_html_dashboard(
 
     <script>
         // Trend Chart
-        const ctx = document.getElementById('trendChart');
-        if (ctx) {{
-            new Chart(ctx, {{
+        const chart_context = document.getElementById('trendChart');
+        if (chart_context) {{
+            new Chart(chart_context, {{
                 type: 'line',
                 data: {{
                     labels: {json.dumps(trend_labels)},
