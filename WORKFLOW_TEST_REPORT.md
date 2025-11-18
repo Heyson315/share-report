@@ -2,8 +2,8 @@
 
 **Test Date:** 2025-11-14  
 **Total Tests:** 34  
-**✓ Passed:** 25 (73.5%)  
-**✗ Failed:** 9 (26.5%)  
+**✓ Passed:** 26 (76.5%)  
+**✗ Failed:** 8 (23.5%)  
 **⊘ Skipped:** 0  
 
 ---
@@ -21,7 +21,7 @@ All **PowerShell scripts and modules** have valid syntax and are ready to use (6
 
 ## Detailed Failure Analysis
 
-### 1. Missing Python Dependencies (8 failures)
+### 1. Missing Python Dependencies (6 failures)
 
 The following scripts require the `pandas` library which is not installed in the current environment:
 
