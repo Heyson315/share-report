@@ -21,7 +21,7 @@ All **PowerShell scripts and modules** have valid syntax and are ready to use (6
 
 ## Detailed Failure Analysis
 
-### 1. Missing Python Dependencies (8 failures)
+### 1. Missing Python Dependencies (6 failures)
 
 The following scripts require the `pandas` library which is not installed in the current environment:
 
