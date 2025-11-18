@@ -6,8 +6,15 @@ __pycache__/
 
 # Virtual environment
 .venv/
+.venv-py39/
 venv/
 ENV/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # VS Code
 .vscode/
