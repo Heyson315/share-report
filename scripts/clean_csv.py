@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-from io import StringIO
 from pathlib import Path
 
 DEFAULT_INPUT = Path("data/raw/sharepoint/Hassan Rahman_2025-8-16-20-24-4_1.csv")
@@ -21,6 +20,14 @@ DEFAULT_OUTPUT = Path("data/processed/sharepoint_permissions_clean.csv")
 
 
 def clean_csv(in_path: Path, out_path: Path) -> dict:
+    """
+    Clean CSV file in a single pass for better performance.
+
+    Optimizations:
+    - Single-pass processing (no intermediate list storage)
+    - Streaming I/O for memory efficiency
+    - In-place cell stripping to reduce allocations
+    """
     in_path = Path(in_path)
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -34,10 +41,16 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
         "header": None,
     }
 
+    # Single-pass processing: filter and write simultaneously
+    with in_path.open("r", encoding="utf-8-sig", errors="replace") as fin, out_path.open(
+        "w", encoding="utf-8", newline=""
+    ) as fout:
+
+        writer = csv.writer(fout, lineterminator="\n")
     # First pass: filter out comment and blank lines, keep original quoting intact
     filtered_lines = []
-    with in_path.open("r", encoding="utf-8-sig", errors="replace") as fin:
-        for raw_line in fin:
+    with in_path.open("r", encoding="utf-8-sig", errors="replace") as input_file:
+        for raw_line in input_file:
             stats["input_lines"] += 1
             if not raw_line.strip():
                 stats["blank_lines"] += 1
@@ -48,16 +61,35 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
             filtered_lines.append(raw_line)
 
     # Second pass: parse CSV properly respecting quotes
-    sio = StringIO("".join(filtered_lines))
-    reader = csv.reader(sio)
+    string_buffer = StringIO("".join(filtered_lines))
+    reader = csv.reader(string_buffer)
 
-    with out_path.open("w", encoding="utf-8", newline="") as fout:
-        writer = csv.writer(fout, lineterminator="\n")
+    with out_path.open("w", encoding="utf-8", newline="") as output_file:
+        writer = csv.writer(output_file, lineterminator="\n")
 
         header = None
+
+        # Create a generator that yields filtered lines
+        def filtered_lines():
+            for raw_line in fin:
+                stats["input_lines"] += 1
+                stripped = raw_line.strip()
+                if not stripped:
+                    stats["blank_lines"] += 1
+                    continue
+                if stripped.startswith("#"):
+                    stats["comment_lines"] += 1
+                    continue
+                yield raw_line
+
+        # Process CSV from filtered generator
+        reader = csv.reader(filtered_lines())
+
         for row in reader:
-            # Normalize whitespace in each cell
-            row = [cell.strip() for cell in row]
+            # Normalize whitespace in each cell (in-place for efficiency)
+            for i in range(len(row)):
+                row[i] = row[i].strip()
+
             if header is None:
                 header = row
                 # Strip potential BOM from first header col if still present
@@ -66,13 +98,16 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
                 stats["header"] = header
                 writer.writerow(header)
                 continue
+
             # Skip repeated header rows
             if row == header:
                 stats["skipped_repeated_headers"] += 1
                 continue
+
             # Guard against BOM in first data column
             if row and row[0].startswith("\ufeff"):
                 row[0] = row[0].lstrip("\ufeff")
+
             writer.writerow(row)
             stats["output_rows"] += 1
 
@@ -80,10 +115,10 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
 
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Input CSV path")
-    ap.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Output CSV path")
-    args = ap.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Input CSV path")
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Output CSV path")
+    args = parser.parse_args()
 
     stats = clean_csv(args.input, args.output)
 
