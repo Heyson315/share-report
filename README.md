@@ -29,6 +29,7 @@ Enterprise-ready Microsoft 365 security auditing and SharePoint permissions anal
 - 🎨 **Modern Web Design**: Professional templates for SharePoint and custom domains
 - 🔧 **Service Principal Ready**: Unattended automation support
 - 🐍 **Hybrid Architecture**: PowerShell + Python for optimal performance
+- 📝 **Session Management**: Track operations with comprehensive audit trails
 
 ## 🧠 AI-Assisted Development
 
@@ -137,7 +138,8 @@ python scripts/generate_security_dashboard.py  # Creates HTML dashboard
 ├── 📂 src/                        # Source code modules
 │   ├── 📂 core/                   # Core toolkit functionality
 │   │   ├── excel_generator.py    # Report generation
-│   │   └── cost_tracker.py       # GPT-5 cost monitoring
+│   │   ├── cost_tracker.py       # GPT-5 cost monitoring
+│   │   └── session_manager.py    # 🆕 Session tracking & audit trails
 │   ├── 📂 integrations/           # External service integrations
 │   │   ├── sharepoint_connector.py  # SharePoint analysis
 │   │   └── openai_gpt5.py        # GPT-5 client
@@ -285,6 +287,7 @@ See [`docs/M365_SERVICE_PRINCIPAL_SETUP.md`](docs/M365_SERVICE_PRINCIPAL_SETUP.m
 - 🔐 [M365 CIS Security Auditing](docs/SECURITY_M365_CIS.md)
 - 📊 [SharePoint Permissions Analysis](docs/USAGE_SHAREPOINT.md)
 - 🤖 [AI MCP Server Development](docs/CUSTOM_MCP_SERVER_GUIDE.md)
+- 📝 [Session Management Guide](docs/SESSION_MANAGEMENT.md)
 - ⚙️ [Service Principal Setup](docs/M365_SERVICE_PRINCIPAL_SETUP.md)
 - 🚀 [CI/CD Automation](.github/workflows/README.md)
 - 📝 [Script Usage Guide](scripts/README.md)

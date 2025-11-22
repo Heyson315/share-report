@@ -53,5 +53,8 @@ output/reports/security/test_*.json
 output/reports/security/test_*.html
 output/reports/security/test_*.csv
 
+# Session logs (exclude personal session data)
+output/sessions/
+
 # Test data
 data/test/
