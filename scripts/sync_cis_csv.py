@@ -10,7 +10,6 @@ Usage:
 import json
 import sys
 from pathlib import Path
-from typing import Union
 
 import pandas as pd
 
@@ -30,7 +29,7 @@ def main() -> None:
 
     try:
         # Load JSON data (can be single dict or list of dicts)
-        data: Union[dict, list] = json.loads(JSON_PATH.read_text(encoding="utf-8-sig"))
+        data: dict | list = json.loads(JSON_PATH.read_text(encoding="utf-8-sig"))
 
         # Handle both single object and list formats
         if isinstance(data, dict):

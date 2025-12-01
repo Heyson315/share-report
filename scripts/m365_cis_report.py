@@ -12,7 +12,6 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Union
 
 import pandas as pd
 
@@ -46,7 +45,7 @@ def build_report(json_path: Path, xlsx_path: Path | None = None) -> None:
     # Handle potential UTF-8 BOM from PowerShell's UTF8 encoding
     try:
         # Load JSON data (can be single dict or list of dicts)
-        data: Union[dict, list] = json.loads(json_path.read_text(encoding="utf-8-sig"))
+        data: dict | list = json.loads(json_path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError as e:
         print(f"ERROR: Invalid JSON in {json_path}: {e}", file=sys.stderr)
         sys.exit(1)
