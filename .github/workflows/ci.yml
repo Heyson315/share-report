@@ -1,6 +1,6 @@
 name: CI Tests & Coverage
 
-on: ubuntu-latest
+on:
   push:
     branches: [ main, Primary ]
     paths-ignore:
@@ -26,13 +26,13 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
           cache: 'pip'
 
       - name: Install dependencies
-        run: ubuntu-latest
+        run: |
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
 
@@ -59,12 +59,12 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: ubuntu-latest
+        run: |
           python -m pip install --upgrade pip
           pip install coverage coverage-badge
           # Retrieve artifact from test job (not needed if running tests again)
@@ -72,11 +72,11 @@ jobs:
           pytest --cov=src --cov=core --cov=extensions --cov=integrations --cov-report=xml --cov-report=term
 
       - name: Generate badge
-        run: ubuntu-latest
+        run: |
           coverage-badge -f -o coverage.svg
 
       - name: Commit badge
-        run: ubuntu-latest
+        run: |
           git config user.name github-actions
           git config user.email actions@github.com
           git add coverage.svg
