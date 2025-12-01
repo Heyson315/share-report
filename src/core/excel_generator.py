@@ -1,8 +1,22 @@
+"""
+Excel Project Management Workbook Generator
+
+Creates multi-sheet Excel workbooks for project management with
+formatted headers, sample data, and automatic column sizing.
+
+Usage:
+    from src.core.excel_generator import create_project_management_workbook
+    create_project_management_workbook('output.xlsx')
+"""
+
 from datetime import datetime
+from typing import Optional
 
 import openpyxl
 from openpyxl.styles import Font, PatternFill
 from openpyxl.utils import get_column_letter
+from openpyxl.workbook.workbook import Workbook
+from openpyxl.worksheet.worksheet import Worksheet
 
 # Constants for sample data
 INITIAL_BUDGET = 10000
@@ -13,15 +27,52 @@ MARKETING_BUDGET = 5000
 DEVELOPMENT_BUDGET = 3000
 
 
-def create_project_management_workbook(filename=None):
+def _apply_header_style(sheet: Worksheet, headers: list[str], fill_color: str = "CCE5FF") -> None:
     """
-    Create a project management Excel workbook.
+    Apply consistent header styling to a worksheet.
 
     Args:
-        filename (str, optional): Output filename for the workbook. Defaults to 'Project_Management.xlsx'.
+        sheet: Worksheet to style
+        headers: List of header column names
+        fill_color: Hex color code for header background
+    """
+    for column_index, header in enumerate(headers, 1):
+        cell = sheet.cell(row=1, column=column_index)
+        cell.value = header
+        cell.font = Font(bold=True)
+        cell.fill = PatternFill(start_color=fill_color, end_color=fill_color, fill_type="solid")
+
+
+def _auto_size_columns(workbook: Workbook) -> None:
+    """
+    Auto-size all columns in all sheets of a workbook.
+
+    Args:
+        workbook: Workbook to adjust
+    """
+    for sheet in workbook.worksheets:
+        for column_index in range(1, sheet.max_column + 1):
+            sheet.column_dimensions[get_column_letter(column_index)].width = 15
+
+
+def create_project_management_workbook(filename: Optional[str] = None) -> Workbook:
+    """
+    Create a project management Excel workbook with formatted sheets.
+
+    Args:
+        filename: Output filename (defaults to 'Project_Management.xlsx')
+
+    Returns:
+        Created workbook object
+
+    Sheets:
+        - Financial Transactions: Budget tracking with income/expense
+        - Project Tasks: Task management with assignments and deadlines
+        - Budget Summary: Category-wise budget allocation and spending
     """
     if filename is None:
         filename = "Project_Management.xlsx"
+
     # Create a new workbook
     workbook = openpyxl.Workbook()
 
@@ -29,34 +80,19 @@ def create_project_management_workbook(filename=None):
     transactions_sheet = workbook.active
     transactions_sheet.title = "Financial Transactions"
     trans_headers = ["Date", "Description", "Category", "Income", "Expense", "Balance"]
-    for column_index, header in enumerate(trans_headers, 1):
-        cell = transactions_sheet.cell(row=1, column=column_index)
-        cell.value = header
-        cell.font = Font(bold=True)
-        cell.fill = PatternFill(start_color="CCE5FF", end_color="CCE5FF", fill_type="solid")
+    _apply_header_style(transactions_sheet, trans_headers, "CCE5FF")
 
     # Project Tasks Sheet
     tasks_sheet = workbook.create_sheet(title="Project Tasks")
     task_headers = ["Task ID", "Task Name", "Start Date", "Due Date", "Status", "Assigned To", "Notes"]
-    for column_index, header in enumerate(task_headers, 1):
-        cell = tasks_sheet.cell(row=1, column=column_index)
-        cell.value = header
-        cell.font = Font(bold=True)
-        cell.fill = PatternFill(start_color="E6FFE6", end_color="E6FFE6", fill_type="solid")
+    _apply_header_style(tasks_sheet, task_headers, "E6FFE6")
 
     # Budget Summary Sheet
     budget_sheet = workbook.create_sheet(title="Budget Summary")
     budget_headers = ["Category", "Budgeted", "Spent", "Remaining", "Percent Spent"]
-    for column_index, header in enumerate(budget_headers, 1):
-        cell = budget_sheet.cell(row=1, column=column_index)
-        cell.value = header
-        cell.font = Font(bold=True)
-        cell.fill = PatternFill(start_color="FFE6CC", end_color="FFE6CC", fill_type="solid")
-
-    # Adjust column widths for all sheets
-    for sheet in workbook.worksheets:
-        for column_index in range(1, sheet.max_column + 1):
-            sheet.column_dimensions[get_column_letter(column_index)].width = 15
+    _apply_header_style(budget_sheet, budget_headers, "FFE6CC")
+    # Auto-size columns for all sheets
+    _auto_size_columns(workbook)
 
     # Sample transactions
     sample_transactions = [
@@ -71,7 +107,7 @@ def create_project_management_workbook(filename=None):
         ],
     ]
 
-    # Add sample data
+    # Add sample data to sheets
     # Transactions
     for row, data in enumerate(sample_transactions, 2):
         for column_index, value in enumerate(data, 1):
