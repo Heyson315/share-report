@@ -1,13 +1,22 @@
 #!/usr/bin/env python3
 """
-generate_security_dashboard.py
+M365 Security Dashboard Generator
 
-Generate an interactive HTML dashboard from M365 CIS audit JSON results.
+Generates interactive HTML dashboards from M365 CIS audit JSON results.
+
 Features:
-- Summary cards (Pass/Fail/Manual counts, severity breakdown)
-- Trend charts if historical data exists
-- Control status table with filtering/sorting
-- Failed controls highlighted with remediation links
+    - Summary cards (Pass/Fail/Manual counts, severity breakdown)
+    - Historical trend charts (if multiple audits exist)
+    - Interactive control status table with filtering/sorting
+    - Failed controls highlighted with evidence
+
+Usage:
+    python scripts/generate_security_dashboard.py [--input audit.json] [--output dashboard.html]
+
+Optimizations:
+    - Minimal data extraction for historical trends (stats only)
+    - Pre-computed sort keys for efficient sorting
+    - List comprehensions for data transformation
 """
 
 import argparse
@@ -19,13 +28,37 @@ from typing import Any, Dict, List
 
 
 def load_audit_results(json_path: Path) -> List[Dict[str, Any]]:
-    """Load audit results from JSON file."""
+    """
+    Load audit results from JSON file.
+
+    Args:
+        json_path: Path to audit JSON file
+
+    Returns:
+        List of audit control dictionaries
+
+    Raises:
+        json.JSONDecodeError: If JSON is invalid
+        FileNotFoundError: If file doesn't exist
+    """
     with open(json_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """Calculate summary statistics from audit results."""
+    """
+    Calculate summary statistics from audit results.
+
+    Args:
+        results: List of audit control dictionaries
+
+    Returns:
+        Dictionary containing counts, rates, and severity breakdowns
+
+    Optimizations:
+        - Single-pass aggregation
+        - Conditional counting for efficiency
+    """
     stats = {
         "total": len(results),
         "pass": 0,
@@ -64,10 +97,17 @@ def load_historical_data(reports_dir: Path) -> List[Dict[str, Any]]:
     """
     Load historical audit data for trend analysis.
 
+    Args:
+        reports_dir: Directory containing timestamped audit JSON files
+
+    Returns:
+        List of historical data points (last 10)
+
     Optimizations:
-    - Only extracts minimal data needed (stats) instead of full audit results
-    - Uses efficient timestamp parsing
-    - Returns last 10 data points for performance
+        - Timestamp validation before file loading
+        - Minimal data extraction (stats only, not full results)
+        - Robust error handling (continues on invalid files)
+        - Limited to last 10 data points for performance
     """
     historical = []
 
@@ -126,13 +166,20 @@ def load_historical_data(reports_dir: Path) -> List[Dict[str, Any]]:
 
 def generate_html_dashboard(
     results: List[Dict[str, Any]], stats: Dict[str, Any], historical: List[Dict[str, Any]], output_path: Path
-):
+) -> None:
     """
-    Generate interactive HTML dashboard.
+    Generate interactive HTML dashboard with embedded CSS and JavaScript.
+
+    Args:
+        results: List of audit control results
+        stats: Calculated statistics dictionary
+        historical: Historical trend data
+        output_path: Path for output HTML file
 
     Optimizations:
-    - Pre-compute sort keys to avoid repeated dict lookups in lambda
-    - Use tuple unpacking for efficient iteration
+        - Pre-computed sort keys (avoid repeated dict.get in lambda)
+        - List comprehensions for data transformation
+        - Embedded assets (no external dependencies)
     """
 
     # Prepare data for charts
@@ -482,7 +529,8 @@ def generate_html_dashboard(
         f.write(html_content)
 
 
-def main():
+def main() -> None:
+    """Parse arguments and generate security dashboard."""
     parser = argparse.ArgumentParser(description="Generate M365 CIS Security Dashboard")
     parser.add_argument(
         "--input", type=Path, help="Path to audit JSON file (default: latest in output/reports/security/)"

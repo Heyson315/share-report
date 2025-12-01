@@ -47,12 +47,12 @@ def benchmark_operation(name: str, func: Callable, *args, **kwargs) -> Dict[str,
     start_time = time.perf_counter()
 
     try:
-        result = func(*args, **kwargs)
+        result = func(*args, **kwargs)  # noqa: F841 - result may be used for debugging
         success = True
         error = None
     except Exception as e:
         print(f"❌ Error: {e}")
-        result = None
+        result = None  # noqa: F841 - result may be used for debugging
         success = False
         error = str(e)
 

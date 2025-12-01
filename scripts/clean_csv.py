@@ -1,38 +1,46 @@
 #!/usr/bin/env python3
 """
-Clean a CSV file by removing comment lines (# ...), blank lines, and repeated headers.
-Also normalizes whitespace around commas and trims field whitespace.
+CSV Cleaning Utility
 
-Usage (PowerShell):
-  python scripts/clean_csv.py --input "data/raw/sharepoint/Hassan Rahman_2025-8-16-20-24-4_1.csv" \\
-    --output "data/processed/sharepoint_permissions_clean.csv"
+Removes comment lines, blank lines, and repeated headers from CSV files.
+Normalizes whitespace and handles UTF-8 BOM from various sources.
 
-If --input/--output are omitted, defaults will be used for the SharePoint CSV.
+Usage:
+    python scripts/clean_csv.py --input "raw.csv" --output "clean.csv"
+
+Optimizations:
+    - Single-pass streaming processing
+    - Memory-efficient generator-based filtering
+    - In-place cell normalization
 """
 from __future__ import annotations
 
 import argparse
 import csv
 from pathlib import Path
+from typing import Dict, Any, Generator
 
 DEFAULT_INPUT = Path("data/raw/sharepoint/Hassan Rahman_2025-8-16-20-24-4_1.csv")
 DEFAULT_OUTPUT = Path("data/processed/sharepoint_permissions_clean.csv")
 
 
-def clean_csv(in_path: Path, out_path: Path) -> dict:
+def clean_csv(in_path: Path, out_path: Path) -> Dict[str, Any]:
     """
-    Clean CSV file in a single pass for better performance.
+    Clean CSV file using single-pass streaming processing.
+
+    Args:
+        in_path: Input CSV file path
+        out_path: Output CSV file path
+
+    Returns:
+        Dictionary containing cleaning statistics
 
     Optimizations:
-    - Single-pass processing (no intermediate list storage)
-    - Streaming I/O for memory efficiency
-    - In-place cell stripping to reduce allocations
+        - Single-pass processing (no intermediate list storage)
+        - Streaming I/O for memory efficiency
+        - In-place cell stripping to reduce allocations
     """
-    in_path = Path(in_path)
-    out_path = Path(out_path)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-
-    stats = {
+    stats: Dict[str, Any] = {
         "input_lines": 0,
         "output_rows": 0,
         "comment_lines": 0,
@@ -49,8 +57,8 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
         writer = csv.writer(fout, lineterminator="\n")
         header = None
 
-        # Create a generator that yields filtered lines
-        def filtered_lines_gen():
+        # Generator for filtered lines (memory-efficient)
+        def filtered_lines_gen() -> Generator[str, None, None]:
             for raw_line in fin:
                 stats["input_lines"] += 1
                 stripped = raw_line.strip()
@@ -94,15 +102,19 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
     return stats
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Input CSV path")
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Output CSV path")
+def main() -> None:
+    """Parse arguments and execute CSV cleaning."""
+    parser = argparse.ArgumentParser(description="Clean CSV file by removing comments, blank lines, and BOM")
+    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Input CSV file path")
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Output CSV file path")
     args = parser.parse_args()
+
+    # Ensure output directory exists
+    args.output.parent.mkdir(parents=True, exist_ok=True)
 
     stats = clean_csv(args.input, args.output)
 
-    print("CSV cleaned successfully:")
+    print("✅ CSV cleaned successfully:")
     print(f"  Input lines:            {stats['input_lines']}")
     print(f"  Comment lines removed:  {stats['comment_lines']}")
     print(f"  Blank lines removed:    {stats['blank_lines']}")

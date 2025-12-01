@@ -1,19 +1,25 @@
 """
-SharePoint permissions analysis and report generator.
+SharePoint Permissions Analysis and Report Generator
 
-Reads the cleaned CSV produced by scripts/clean_csv.py and writes an Excel report
-with useful summaries.
+Processes cleaned SharePoint permission CSV files and generates
+comprehensive Excel reports with multiple summary views.
 
-Usage (PowerShell):
-  python -m src.integrations.sharepoint_connector \
-    --input "data/processed/sharepoint_permissions_clean.csv" \
-    --output "output/reports/business/sharepoint_permissions_report.xlsx"
+Usage:
+    python -m src.integrations.sharepoint_connector \
+        --input "data/processed/clean.csv" \
+        --output "output/reports/business/report.xlsx"
+
+Optimizations:
+    - Efficient column normalization (only existing columns)
+    - Conditional DataFrame copying (copy-on-write)
+    - Top-N limiting for performance
 """
 
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from typing import Dict
 
 import pandas as pd
 
@@ -21,15 +27,22 @@ DEFAULT_INPUT = Path("data/processed/sharepoint_permissions_clean.csv")
 DEFAULT_OUTPUT = Path("output/reports/business/sharepoint_permissions_report.xlsx")
 
 
-def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
+def build_summaries(df: pd.DataFrame) -> Dict[str, pd.DataFrame]:
     """
-    Create summary DataFrames for the report.
+    Create summary DataFrames for Excel report.
+
+    Args:
+        df: Input permissions DataFrame
+
+    Returns:
+        Dictionary mapping summary names to DataFrames
 
     Optimizations:
-    - Avoid unnecessary DataFrame copy by working with view
-    - Use .astype() only on columns that need it
+        - Only normalize existing columns (avoid KeyError)
+        - Conditional DataFrame copying (performance)
+        - Top-N limiting (25 items) for large datasets
     """
-    summaries: dict[str, pd.DataFrame] = {}
+    summaries: Dict[str, pd.DataFrame] = {}
 
     # Normalize string columns efficiently (only those that exist and need normalization)
     str_columns = [
@@ -46,7 +59,7 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
 
     # Only normalize columns that exist in the DataFrame
     existing_str_cols = [col for col in str_columns if col in df.columns]
-    
+
     if existing_str_cols:
         # Create a copy only if we need to modify
         df = df.copy()
@@ -56,19 +69,13 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     # 1) Counts by Item Type
     if "Item Type" in df.columns:
         summaries["by_item_type"] = (
-            df.groupby("Item Type")
-            .size()
-            .reset_index(name="Count")
-            .sort_values("Count", ascending=False)
+            df.groupby("Item Type").size().reset_index(name="Count").sort_values("Count", ascending=False)
         )
 
     # 2) Counts by Permission
     if "Permission" in df.columns:
         summaries["by_permission"] = (
-            df.groupby("Permission")
-            .size()
-            .reset_index(name="Count")
-            .sort_values("Count", ascending=False)
+            df.groupby("Permission").size().reset_index(name="Count").sort_values("Count", ascending=False)
         )
 
     # 3) Top users by occurrences
@@ -96,7 +103,14 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     return summaries
 
 
-def write_excel_report(summaries: dict[str, pd.DataFrame], output_path: Path) -> None:
+def write_excel_report(summaries: Dict[str, pd.DataFrame], output_path: Path) -> None:
+    """
+    Write summaries to multi-sheet Excel workbook.
+
+    Args:
+        summaries: Dictionary of summary DataFrames
+        output_path: Output Excel file path
+    """
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -120,17 +134,18 @@ def write_excel_report(summaries: dict[str, pd.DataFrame], output_path: Path) ->
             summary_dataframe.to_excel(writer, sheet_name=sheet, index=False)
 
 
-def main():
-    parser = argparse.ArgumentParser()
+def main() -> None:
+    """Parse arguments and generate SharePoint permissions report."""
+    parser = argparse.ArgumentParser(description="Generate SharePoint permissions analysis Excel report")
     parser.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Path to cleaned SharePoint CSV")
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Path to Excel report to write")
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Path to Excel report output")
     args = parser.parse_args()
 
     permissions_dataframe = pd.read_csv(args.input)
     summaries = build_summaries(permissions_dataframe)
     write_excel_report(summaries, args.output)
 
-    print("Report written:", args.output)
+    print(f"✅ Report written: {args.output}")
 
 
 if __name__ == "__main__":
