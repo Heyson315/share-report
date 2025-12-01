@@ -1,0 +1,14 @@
+{
+  "name": "MCP Devcontainer",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "workspaceFolder": "/workspace",
+  "extensions": [
+    "ms-python.python"
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "/usr/bin/python3"
+  },
+  "remoteUser": "vscode"
+}

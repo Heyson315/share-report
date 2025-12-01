@@ -90,7 +90,9 @@ class M365SecurityMCPServer:
 
                 # Build PowerShell command
                 script_path = self.toolkit_path / "scripts" / "powershell" / "Invoke-M365CISAudit.ps1"
-                cmd = ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script_path)]
+                # Choose PowerShell executable depending on platform
+                pwsh = "pwsh" if os.name != "nt" else "powershell.exe"
+                cmd = [pwsh, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script_path)]
 
                 if timestamped:
                     cmd.append("-Timestamped")
@@ -294,7 +296,8 @@ class M365SecurityMCPServer:
                 self.logger.info(f"Starting security remediation (preview_only={preview_only})")
 
                 script_path = self.toolkit_path / "scripts" / "powershell" / "PostRemediateM365CIS.ps1"
-                cmd = ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script_path)]
+                pwsh = "pwsh" if os.name != "nt" else "powershell.exe"
+                cmd = [pwsh, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script_path)]
 
                 if preview_only:
                     cmd.append("-WhatIf")
