@@ -33,7 +33,7 @@ pytestmark = pytest.mark.skipif(not MCP_AVAILABLE, reason="MCP SDK not available
 
 
 if MCP_AVAILABLE:
-    from src.mcp.m365_mcp_server import M365MCPServer, PluginInfo, create_mcp_error
+    from src.mcp.m365_mcp_server import M365MCPServer, PluginInfo
 
 
 class TestPluginInfo:
