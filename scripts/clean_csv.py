@@ -13,26 +13,35 @@ from __future__ import annotations
 
 import argparse
 import csv
+from io import StringIO
 from pathlib import Path
 
-DEFAULT_INPUT = Path("data/raw/sharepoint/Hassan Rahman_2025-8-16-20-24-4_1.csv")
-DEFAULT_OUTPUT = Path("data/processed/sharepoint_permissions_clean.csv")
+DEFAULT_INPUT_PATH = Path("data/raw/sharepoint/Hassan Rahman_2025-8-16-20-24-4_1.csv")
+DEFAULT_OUTPUT_PATH = Path("data/processed/sharepoint_permissions_clean.csv")
 
 
-def clean_csv(in_path: Path, out_path: Path) -> dict:
+def clean_csv(input_csv_path: Path, output_csv_path: Path) -> dict:
     """
-    Clean CSV file in a single pass for better performance.
+    Clean CSV file by removing comments, blank lines, and repeated headers.
 
-    Optimizations:
-    - Single-pass processing (no intermediate list storage)
-    - Streaming I/O for memory efficiency
-    - In-place cell stripping to reduce allocations
+    Args:
+        input_csv_path: Path to the input CSV file to clean.
+        output_csv_path: Path where the cleaned CSV will be written.
+
+    Returns:
+        Dictionary containing cleaning statistics with keys:
+        - input_lines: Total lines read from input
+        - output_rows: Data rows written to output
+        - comment_lines: Lines removed as comments
+        - blank_lines: Empty lines removed
+        - skipped_repeated_headers: Duplicate header rows skipped
+        - header: The header row as a list
     """
-    in_path = Path(in_path)
-    out_path = Path(out_path)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
+    input_csv_path = Path(input_csv_path)
+    output_csv_path = Path(output_csv_path)
+    output_csv_path.parent.mkdir(parents=True, exist_ok=True)
 
-    stats = {
+    cleaning_statistics = {
         "input_lines": 0,
         "output_rows": 0,
         "comment_lines": 0,
@@ -41,95 +50,77 @@ def clean_csv(in_path: Path, out_path: Path) -> dict:
         "header": None,
     }
 
-    # Single-pass processing: filter and write simultaneously
-    with in_path.open("r", encoding="utf-8-sig", errors="replace") as fin, out_path.open(
-        "w", encoding="utf-8", newline=""
-    ) as fout:
-
-        writer = csv.writer(fout, lineterminator="\n")
     # First pass: filter out comment and blank lines, keep original quoting intact
-    filtered_lines = []
-    with in_path.open("r", encoding="utf-8-sig", errors="replace") as input_file:
+    non_comment_lines = []
+    with input_csv_path.open("r", encoding="utf-8-sig", errors="replace") as input_file:
         for raw_line in input_file:
-            stats["input_lines"] += 1
-            if not raw_line.strip():
-                stats["blank_lines"] += 1
+            cleaning_statistics["input_lines"] += 1
+            stripped_line = raw_line.strip()
+            if not stripped_line:
+                cleaning_statistics["blank_lines"] += 1
                 continue
-            if raw_line.lstrip().startswith("#"):
-                stats["comment_lines"] += 1
+            if stripped_line.startswith("#"):
+                cleaning_statistics["comment_lines"] += 1
                 continue
-            filtered_lines.append(raw_line)
+            non_comment_lines.append(raw_line)
 
     # Second pass: parse CSV properly respecting quotes
-    string_buffer = StringIO("".join(filtered_lines))
-    reader = csv.reader(string_buffer)
+    csv_content_buffer = StringIO("".join(non_comment_lines))
+    csv_reader = csv.reader(csv_content_buffer)
 
-    with out_path.open("w", encoding="utf-8", newline="") as output_file:
-        writer = csv.writer(output_file, lineterminator="\n")
+    with output_csv_path.open("w", encoding="utf-8", newline="") as output_file:
+        csv_writer = csv.writer(output_file, lineterminator="\n")
 
-        header = None
+        header_row = None
 
-        # Create a generator that yields filtered lines
-        def filtered_lines():
-            for raw_line in fin:
-                stats["input_lines"] += 1
-                stripped = raw_line.strip()
-                if not stripped:
-                    stats["blank_lines"] += 1
-                    continue
-                if stripped.startswith("#"):
-                    stats["comment_lines"] += 1
-                    continue
-                yield raw_line
+        for data_row in csv_reader:
+            # Normalize whitespace in each cell
+            for cell_index in range(len(data_row)):
+                data_row[cell_index] = data_row[cell_index].strip()
 
-        # Process CSV from filtered generator
-        reader = csv.reader(filtered_lines())
-
-        for row in reader:
-            # Normalize whitespace in each cell (in-place for efficiency)
-            for i in range(len(row)):
-                row[i] = row[i].strip()
-
-            if header is None:
-                header = row
-                # Strip potential BOM from first header col if still present
-                if header and header[0].startswith("\ufeff"):
-                    header[0] = header[0].lstrip("\ufeff")
-                stats["header"] = header
-                writer.writerow(header)
+            if header_row is None:
+                header_row = data_row
+                # Strip potential BOM from first header column if still present
+                if header_row and header_row[0].startswith("\ufeff"):
+                    header_row[0] = header_row[0].lstrip("\ufeff")
+                cleaning_statistics["header"] = header_row
+                csv_writer.writerow(header_row)
                 continue
 
             # Skip repeated header rows
-            if row == header:
-                stats["skipped_repeated_headers"] += 1
+            if data_row == header_row:
+                cleaning_statistics["skipped_repeated_headers"] += 1
                 continue
 
             # Guard against BOM in first data column
-            if row and row[0].startswith("\ufeff"):
-                row[0] = row[0].lstrip("\ufeff")
+            if data_row and data_row[0].startswith("\ufeff"):
+                data_row[0] = data_row[0].lstrip("\ufeff")
 
-            writer.writerow(row)
-            stats["output_rows"] += 1
+            csv_writer.writerow(data_row)
+            cleaning_statistics["output_rows"] += 1
 
-    return stats
+    return cleaning_statistics
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Input CSV path")
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Output CSV path")
-    args = parser.parse_args()
+    """Main entry point for the CSV cleaning script."""
+    argument_parser = argparse.ArgumentParser(
+        description="Clean CSV files by removing comments, blank lines, and repeated headers."
+    )
+    argument_parser.add_argument("--input", type=Path, default=DEFAULT_INPUT_PATH, help="Input CSV path")
+    argument_parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT_PATH, help="Output CSV path")
+    parsed_args = argument_parser.parse_args()
 
-    stats = clean_csv(args.input, args.output)
+    cleaning_statistics = clean_csv(parsed_args.input, parsed_args.output)
 
     print("CSV cleaned successfully:")
-    print(f"  Input lines:            {stats['input_lines']}")
-    print(f"  Comment lines removed:  {stats['comment_lines']}")
-    print(f"  Blank lines removed:    {stats['blank_lines']}")
-    print(f"  Repeated headers skip:  {stats['skipped_repeated_headers']}")
-    print(f"  Output data rows:       {stats['output_rows']}")
-    print(f"  Header:                 {stats['header']}")
-    print(f"  Output file:            {args.output}")
+    print(f"  Input lines:            {cleaning_statistics['input_lines']}")
+    print(f"  Comment lines removed:  {cleaning_statistics['comment_lines']}")
+    print(f"  Blank lines removed:    {cleaning_statistics['blank_lines']}")
+    print(f"  Repeated headers skip:  {cleaning_statistics['skipped_repeated_headers']}")
+    print(f"  Output data rows:       {cleaning_statistics['output_rows']}")
+    print(f"  Header:                 {cleaning_statistics['header']}")
+    print(f"  Output file:            {parsed_args.output}")
 
 
 if __name__ == "__main__":

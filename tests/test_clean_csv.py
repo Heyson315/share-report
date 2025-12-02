@@ -5,7 +5,7 @@ import pandas as pd
 
 from scripts.clean_csv import clean_csv
 
-SAMPLE = """# Comment line should be removed
+SAMPLE_CSV_CONTENT = """# Comment line should be removed
 
 Resource Path,Item Type,Permission,User Name,User Email,User Or Group Type,Link ID,Link Type,AccessViaLinkID
 "parent/path,with,comma",pdf,Contribute,John Doe,john@example.com,Internal,,,
@@ -15,20 +15,22 @@ another/path,docx,Contribute,Jane Doe,jane@example.com,Internal,,,
 
 
 def test_clean_csv_basic():
-    with TemporaryDirectory() as td:
-        td = Path(td)
-        inp = td / "in.csv"
-        out = td / "out.csv"
-        inp.write_text(SAMPLE, encoding="utf-8")
+    """Test basic CSV cleaning functionality with comments, blanks, and repeated headers."""
+    with TemporaryDirectory() as temp_directory:
+        temp_dir_path = Path(temp_directory)
+        input_csv_path = temp_dir_path / "input.csv"
+        output_csv_path = temp_dir_path / "output.csv"
+        input_csv_path.write_text(SAMPLE_CSV_CONTENT, encoding="utf-8")
 
-        stats = clean_csv(inp, out)
-        assert stats["comment_lines"] == 1
-        assert stats["blank_lines"] == 1
-        assert stats["skipped_repeated_headers"] == 1
-        assert stats["output_rows"] == 2
+        cleaning_statistics = clean_csv(input_csv_path, output_csv_path)
 
-        df = pd.read_csv(out)
-        assert list(df.columns) == [
+        assert cleaning_statistics["comment_lines"] == 1
+        assert cleaning_statistics["blank_lines"] == 1
+        assert cleaning_statistics["skipped_repeated_headers"] == 1
+        assert cleaning_statistics["output_rows"] == 2
+
+        cleaned_dataframe = pd.read_csv(output_csv_path)
+        expected_column_names = [
             "Resource Path",
             "Item Type",
             "Permission",
@@ -39,6 +41,7 @@ def test_clean_csv_basic():
             "Link Type",
             "AccessViaLinkID",
         ]
-        assert df.shape == (2, 9)
+        assert list(cleaned_dataframe.columns) == expected_column_names
+        assert cleaned_dataframe.shape == (2, 9)
         # Quoted comma should be preserved as a single field
-        assert df.iloc[0]["Resource Path"] == "parent/path,with,comma"
+        assert cleaned_dataframe.iloc[0]["Resource Path"] == "parent/path,with,comma"
