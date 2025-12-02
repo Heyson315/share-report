@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from typing import Any, List, Union
+from typing import Any, List
 
 # Standard column ordering for CIS audit data
 CIS_AUDIT_COLUMNS = [
@@ -28,7 +28,7 @@ CIS_AUDIT_COLUMNS = [
 ]
 
 
-def load_json_with_bom(json_path: Path, exit_on_error: bool = True) -> Union[Any, None]:
+def load_json_with_bom(json_path: Path, exit_on_error: bool = True) -> Any:
     """
     Load JSON file with UTF-8 BOM handling for PowerShell-generated files.
 
