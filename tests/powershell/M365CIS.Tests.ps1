@@ -2,23 +2,23 @@
 # Run with: Invoke-Pester -Path tests/powershell/
 
 BeforeAll {
-    # Import the M365CIS module
-    $modulePath = Join-Path $PSScriptRoot "../../scripts/powershell/modules/M365CIS.psm1"
-    if (Test-Path $modulePath) {
-        Import-Module $modulePath -Force
+    # Define module path once for all tests
+    $script:ModulePath = Join-Path $PSScriptRoot "../../scripts/powershell/modules/M365CIS.psm1"
+
+    # Import the M365CIS module if it exists
+    if (Test-Path $script:ModulePath) {
+        Import-Module $script:ModulePath -Force
     }
 }
 
 Describe "M365CIS Module Tests" {
     Context "Module Import" {
         It "Should import the M365CIS module without errors" {
-            $modulePath = Join-Path $PSScriptRoot "../../scripts/powershell/modules/M365CIS.psm1"
-            { Import-Module $modulePath -Force } | Should -Not -Throw
+            { Import-Module $script:ModulePath -Force } | Should -Not -Throw
         }
 
         It "Should export expected functions" {
-            $modulePath = Join-Path $PSScriptRoot "../../scripts/powershell/modules/M365CIS.psm1"
-            Import-Module $modulePath -Force
+            Import-Module $script:ModulePath -Force
             $commands = Get-Command -Module M365CIS
             $commands | Should -Not -BeNullOrEmpty
         }
@@ -26,22 +26,19 @@ Describe "M365CIS Module Tests" {
 
     Context "Module File Structure" {
         It "Should have the module file present" {
-            $modulePath = Join-Path $PSScriptRoot "../../scripts/powershell/modules/M365CIS.psm1"
-            Test-Path $modulePath | Should -Be $true
+            Test-Path $script:ModulePath | Should -Be $true
         }
 
         It "Should have valid PowerShell syntax" {
-            $modulePath = Join-Path $PSScriptRoot "../../scripts/powershell/modules/M365CIS.psm1"
             $errors = $null
-            $null = [System.Management.Automation.PSParser]::Tokenize((Get-Content $modulePath -Raw), [ref]$errors)
+            $null = [System.Management.Automation.PSParser]::Tokenize((Get-Content $script:ModulePath -Raw), [ref]$errors)
             $errors.Count | Should -Be 0
         }
     }
 
     Context "New-CISResult Function" {
         It "Should create a CIS result object when function exists" {
-            $modulePath = Join-Path $PSScriptRoot "../../scripts/powershell/modules/M365CIS.psm1"
-            Import-Module $modulePath -Force
+            Import-Module $script:ModulePath -Force
             $command = Get-Command -Name "New-CISResult" -ErrorAction SilentlyContinue
             if ($command) {
                 $result = New-CISResult -ControlId "TEST-001" -Title "Test Control" -Severity "Medium" -Expected "Expected Value" -Actual "Actual Value" -Status "Pass"

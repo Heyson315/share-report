@@ -100,12 +100,16 @@ jobs:
     - name: Run mypy type checking
       run: |
         echo "🔬 Running mypy static type checking..."
-        mypy src/ scripts/ --ignore-missing-imports --no-strict-optional --show-error-codes || true
+        mypy src/ scripts/ --ignore-missing-imports --no-strict-optional --show-error-codes 2>&1 | tee mypy-output.txt
+        # Allow failures for now as this is informational
+        exit 0
 
     - name: Run pylint deep analysis
       run: |
         echo "🔍 Running pylint deep static analysis..."
-        pylint src/ scripts/ --rcfile=.pylintrc --output-format=text --reports=yes || true
+        pylint src/ scripts/ --rcfile=.pylintrc --output-format=text --reports=yes 2>&1 | tee pylint-output.txt
+        # Allow failures for now as this is informational
+        exit 0
 
     - name: Generate static analysis report
       if: always()
@@ -113,10 +117,14 @@ jobs:
         echo "## 📊 Static Analysis Report" > static-analysis-report.md
         echo "" >> static-analysis-report.md
         echo "### mypy Type Checking" >> static-analysis-report.md
-        mypy src/ scripts/ --ignore-missing-imports --no-strict-optional 2>&1 | head -50 >> static-analysis-report.md || echo "mypy completed" >> static-analysis-report.md
+        echo '```' >> static-analysis-report.md
+        cat mypy-output.txt >> static-analysis-report.md || echo "mypy output not available" >> static-analysis-report.md
+        echo '```' >> static-analysis-report.md
         echo "" >> static-analysis-report.md
         echo "### pylint Analysis" >> static-analysis-report.md
-        pylint src/ scripts/ --rcfile=.pylintrc --output-format=text 2>&1 | tail -30 >> static-analysis-report.md || echo "pylint completed" >> static-analysis-report.md
+        echo '```' >> static-analysis-report.md
+        cat pylint-output.txt >> static-analysis-report.md || echo "pylint output not available" >> static-analysis-report.md
+        echo '```' >> static-analysis-report.md
 
     - name: Upload static analysis report
       uses: actions/upload-artifact@v4
