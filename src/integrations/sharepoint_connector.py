@@ -46,7 +46,7 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
 
     # Only normalize columns that exist in the DataFrame
     existing_str_cols = [col for col in str_columns if col in df.columns]
-    
+
     if existing_str_cols:
         # Create a copy only if we need to modify
         df = df.copy()
@@ -56,19 +56,13 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     # 1) Counts by Item Type
     if "Item Type" in df.columns:
         summaries["by_item_type"] = (
-            df.groupby("Item Type")
-            .size()
-            .reset_index(name="Count")
-            .sort_values("Count", ascending=False)
+            df.groupby("Item Type").size().reset_index(name="Count").sort_values("Count", ascending=False)
         )
 
     # 2) Counts by Permission
     if "Permission" in df.columns:
         summaries["by_permission"] = (
-            df.groupby("Permission")
-            .size()
-            .reset_index(name="Count")
-            .sort_values("Count", ascending=False)
+            df.groupby("Permission").size().reset_index(name="Count").sort_values("Count", ascending=False)
         )
 
     # 3) Top users by occurrences
