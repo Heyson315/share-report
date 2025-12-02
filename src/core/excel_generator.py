@@ -25,6 +25,9 @@ def create_project_management_workbook(filename=None):
     # Create a new workbook
     workbook = openpyxl.Workbook()
 
+    # Cache current date string to avoid repeated datetime.now() calls
+    current_date = datetime.now().strftime("%Y-%m-%d")
+
     # Financial Transactions Sheet
     transactions_sheet = workbook.active
     transactions_sheet.title = "Financial Transactions"
@@ -60,9 +63,9 @@ def create_project_management_workbook(filename=None):
 
     # Sample transactions
     sample_transactions = [
-        [datetime.now().strftime("%Y-%m-%d"), "Initial Budget", "Budget", INITIAL_BUDGET, 0, INITIAL_BUDGET],
+        [current_date, "Initial Budget", "Budget", INITIAL_BUDGET, 0, INITIAL_BUDGET],
         [
-            datetime.now().strftime("%Y-%m-%d"),
+            current_date,
             "Office Supplies",
             "Expenses",
             0,
@@ -82,8 +85,8 @@ def create_project_management_workbook(filename=None):
         [
             1,
             "Design",
-            datetime.now().strftime("%Y-%m-%d"),
-            datetime.now().strftime("%Y-%m-%d"),
+            current_date,
+            current_date,
             "In Progress",
             "Alice",
             "",
@@ -91,8 +94,8 @@ def create_project_management_workbook(filename=None):
         [
             2,
             "Development",
-            datetime.now().strftime("%Y-%m-%d"),
-            datetime.now().strftime("%Y-%m-%d"),
+            current_date,
+            current_date,
             "Not Started",
             "Bob",
             "",

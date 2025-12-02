@@ -376,7 +376,8 @@ def generate_html_dashboard(
                 <tbody>
 """
 
-    # Add table rows
+    # Add table rows - use list and join for O(n) instead of O(n²) string concatenation
+    table_rows = []
     for result in sorted_results:
         control_id = result.get("ControlId", "N/A")
         title = result.get("Title", "N/A")
@@ -384,19 +385,23 @@ def generate_html_dashboard(
         status = result.get("Status", "Unknown")
         actual = result.get("Actual", "N/A")
 
-        status_class = f"status-{status.lower()}"
-        severity_class = f"severity-{severity.lower()}"
+        status_lower = status.lower()
+        severity_lower = severity.lower()
+        status_class = f"status-{status_lower}"
+        severity_class = f"severity-{severity_lower}"
 
-        html_content += f"""
-                    <tr data-status="{status.lower()}" data-severity="{severity.lower()}">
+        table_rows.append(
+            f"""
+                    <tr data-status="{status_lower}" data-severity="{severity_lower}">
                         <td><strong>{control_id}</strong></td>
                         <td class="control-title">{title}</td>
                         <td class="{severity_class}">{severity}</td>
                         <td><span class="status-badge {status_class}">{status}</span></td>
                         <td>{actual}</td>
-                    </tr>
-"""
+                    </tr>"""
+        )
 
+    html_content += "".join(table_rows)
     html_content += f"""
                 </tbody>
             </table>
