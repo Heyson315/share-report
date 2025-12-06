@@ -68,7 +68,29 @@ This project is optimized for **AI coding agents** with comprehensive developmen
 - Real compliance requirements (SOX, AICPA standards)
 - Integration with accounting software ecosystems
 
-### Installation
+### Installation Options
+
+#### Option 1: GitHub Action (Recommended for CI/CD)
+
+Use our pre-built GitHub Action in your workflows:
+
+```yaml
+- name: Run M365 Security Audit
+  uses: Heyson315/Easy-Ai@v1
+  with:
+    tenant-id: ${{ secrets.M365_TENANT_ID }}
+    client-id: ${{ secrets.M365_CLIENT_ID }}
+    client-secret: ${{ secrets.M365_CLIENT_SECRET }}
+    generate-dashboard: true
+```
+
+📖 See [Action Usage Examples](.github/ACTION_USAGE_EXAMPLES.md) for complete workflow patterns including:
+- Monthly scheduled audits
+- Pull request compliance gates
+- Multi-tenant audits
+- Teams notifications
+
+#### Option 2: Local Installation
 
 ```bash
 # Clone the repository

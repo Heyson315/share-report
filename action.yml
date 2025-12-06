@@ -1,0 +1,261 @@
+name: "M365 Security & Compliance Audit"
+description: "Automated Microsoft 365 CIS compliance auditing with comprehensive reporting and SharePoint permissions analysis"
+author: "Heyson315"
+
+branding:
+  icon: "shield"
+  color: "blue"
+
+inputs:
+  tenant-id:
+    description: "Azure AD Tenant ID for authentication"
+    required: true
+  client-id:
+    description: "Service Principal Application (Client) ID"
+    required: true
+  client-secret:
+    description: "Service Principal Client Secret"
+    required: true
+  spo-admin-url:
+    description: "SharePoint Admin URL (e.g., https://tenant-admin.sharepoint.com)"
+    required: false
+    default: ""
+  timestamped:
+    description: "Include timestamp in output filenames for versioning"
+    required: false
+    default: "true"
+  skip-purview:
+    description: "Skip Purview compliance checks if not licensed"
+    required: false
+    default: "false"
+  generate-dashboard:
+    description: "Generate interactive HTML dashboard after audit"
+    required: false
+    default: "true"
+  output-path:
+    description: "Custom output path for audit reports"
+    required: false
+    default: "output/reports/security"
+  artifact-retention-days:
+    description: "Number of days to retain audit artifacts (1-90)"
+    required: false
+    default: "90"
+
+outputs:
+  audit-report-json:
+    description: "Path to JSON audit report"
+    value: ${{ steps.audit.outputs.json-report }}
+  audit-report-excel:
+    description: "Path to Excel audit report"
+    value: ${{ steps.audit.outputs.excel-report }}
+  dashboard-html:
+    description: "Path to HTML dashboard"
+    value: ${{ steps.audit.outputs.dashboard }}
+  compliance-score:
+    description: "Overall compliance percentage (Pass/Total)"
+    value: ${{ steps.audit.outputs.compliance-score }}
+  controls-passed:
+    description: "Number of controls that passed"
+    value: ${{ steps.audit.outputs.controls-passed }}
+  controls-failed:
+    description: "Number of controls that failed"
+    value: ${{ steps.audit.outputs.controls-failed }}
+  controls-manual:
+    description: "Number of controls requiring manual review"
+    value: ${{ steps.audit.outputs.controls-manual }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Validate Inputs
+      shell: pwsh
+      run: |
+        if ([string]::IsNullOrWhiteSpace("${{ inputs.tenant-id }}")) {
+          Write-Error "tenant-id is required"
+          exit 1
+        }
+        if ([string]::IsNullOrWhiteSpace("${{ inputs.client-id }}")) {
+          Write-Error "client-id is required"
+          exit 1
+        }
+        if ([string]::IsNullOrWhiteSpace("${{ inputs.client-secret }}")) {
+          Write-Error "client-secret is required"
+          exit 1
+        }
+        Write-Host "✓ Input validation passed"
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+        cache: "pip"
+
+    - name: Install Python Dependencies
+      shell: pwsh
+      run: |
+        Write-Host "Installing Python dependencies..."
+        pip install -r ${{ github.action_path }}/requirements.txt
+        Write-Host "✓ Python dependencies installed"
+
+    - name: Install PowerShell Modules
+      shell: pwsh
+      run: |
+        Write-Host "Installing required PowerShell modules..."
+        Install-Module ExchangeOnlineManagement -Scope CurrentUser -Force -AllowClobber
+        Install-Module Microsoft.Graph.Authentication -Scope CurrentUser -Force -AllowClobber
+        Install-Module Microsoft.Graph.Identity.DirectoryManagement -Scope CurrentUser -Force -AllowClobber
+        Install-Module Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser -Force -AllowClobber
+        Write-Host "✓ PowerShell modules installed"
+
+    - name: Authenticate to M365
+      shell: pwsh
+      env:
+        TENANT_ID: ${{ inputs.tenant-id }}
+        CLIENT_ID: ${{ inputs.client-id }}
+        CLIENT_SECRET: ${{ inputs.client-secret }}
+      run: |
+        Write-Host "Authenticating to Microsoft 365..."
+        $secureSecret = ConvertTo-SecureString $env:CLIENT_SECRET -AsPlainText -Force
+        $credential = New-Object System.Management.Automation.PSCredential($env:CLIENT_ID, $secureSecret)
+
+        # Connect to Exchange Online
+        Connect-ExchangeOnline -AppId $env:CLIENT_ID -CertificateThumbprint $env:CLIENT_SECRET -Organization $env:TENANT_ID -ErrorAction Stop
+
+        # Connect to Microsoft Graph
+        Connect-MgGraph -ClientId $env:CLIENT_ID -TenantId $env:TENANT_ID -ClientSecretCredential $credential -NoWelcome
+
+        Write-Host "✓ Successfully authenticated to M365"
+
+    - name: Run M365 CIS Security Audit
+      id: audit
+      shell: pwsh
+      run: |
+        Write-Host "Starting M365 CIS compliance audit..."
+
+        $auditParams = @{
+            Timestamped = $${{ inputs.timestamped }}
+        }
+
+        if ("${{ inputs.spo-admin-url }}" -ne "") {
+            $auditParams.SPOAdminUrl = "${{ inputs.spo-admin-url }}"
+        }
+
+        if ($${{ inputs.skip-purview }}) {
+            $auditParams.SkipPurview = $true
+        }
+
+        # Execute audit
+        & "${{ github.action_path }}/scripts/powershell/Invoke-M365CISAudit.ps1" @auditParams
+
+        # Find the generated JSON report
+        $jsonReport = Get-ChildItem "${{ inputs.output-path }}" -Filter "m365_cis_audit*.json" | 
+                      Sort-Object LastWriteTime -Descending | 
+                      Select-Object -First 1
+
+        if (-not $jsonReport) {
+            Write-Error "Audit report not found"
+            exit 1
+        }
+
+        # Parse results
+        $auditData = Get-Content $jsonReport.FullName | ConvertFrom-Json
+        $controls = $auditData.Controls
+
+        $passed = ($controls | Where-Object { $_.Status -eq "Pass" }).Count
+        $failed = ($controls | Where-Object { $_.Status -eq "Fail" }).Count
+        $manual = ($controls | Where-Object { $_.Status -eq "Manual" }).Count
+        $total = $controls.Count
+
+        $complianceScore = if ($total -gt 0) { [math]::Round(($passed / $total) * 100, 2) } else { 0 }
+
+        # Set outputs
+        echo "json-report=$($jsonReport.FullName)" >> $env:GITHUB_OUTPUT
+        echo "compliance-score=$complianceScore" >> $env:GITHUB_OUTPUT
+        echo "controls-passed=$passed" >> $env:GITHUB_OUTPUT
+        echo "controls-failed=$failed" >> $env:GITHUB_OUTPUT
+        echo "controls-manual=$manual" >> $env:GITHUB_OUTPUT
+
+        Write-Host "✓ Audit completed: $passed/$total controls passed ($complianceScore%)"
+
+    - name: Generate Excel Report
+      shell: pwsh
+      run: |
+        Write-Host "Generating Excel report..."
+        python "${{ github.action_path }}/scripts/m365_cis_report.py"
+
+        $excelReport = Get-ChildItem "${{ inputs.output-path }}" -Filter "*.xlsx" | 
+                       Sort-Object LastWriteTime -Descending | 
+                       Select-Object -First 1
+
+        if ($excelReport) {
+            echo "excel-report=$($excelReport.FullName)" >> $env:GITHUB_OUTPUT
+            Write-Host "✓ Excel report generated: $($excelReport.Name)"
+        }
+
+    - name: Generate Interactive Dashboard
+      if: inputs.generate-dashboard == 'true'
+      shell: pwsh
+      run: |
+        Write-Host "Generating interactive HTML dashboard..."
+        python "${{ github.action_path }}/scripts/generate_security_dashboard.py"
+
+        $dashboard = Get-ChildItem "${{ inputs.output-path }}" -Filter "dashboard*.html" | 
+                     Sort-Object LastWriteTime -Descending | 
+                     Select-Object -First 1
+
+        if ($dashboard) {
+            echo "dashboard=$($dashboard.FullName)" >> $env:GITHUB_OUTPUT
+            Write-Host "✓ Dashboard generated: $($dashboard.Name)"
+        }
+
+    - name: Upload Audit Reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: m365-audit-reports-${{ github.run_id }}
+        path: |
+          ${{ inputs.output-path }}/*.json
+          ${{ inputs.output-path }}/*.xlsx
+          ${{ inputs.output-path }}/*.html
+        retention-days: ${{ inputs.artifact-retention-days }}
+        if-no-files-found: warn
+
+    - name: Create Summary
+      shell: pwsh
+      run: |
+        Write-Host "Creating GitHub Actions summary..."
+
+        $passed = "${{ steps.audit.outputs.controls-passed }}"
+        $failed = "${{ steps.audit.outputs.controls-failed }}"
+        $manual = "${{ steps.audit.outputs.controls-manual }}"
+        $score = "${{ steps.audit.outputs.compliance-score }}"
+
+        @"
+        ## 🛡️ M365 Security Audit Results
+
+        ### Compliance Score: **$score%**
+
+        | Status | Count |
+        |--------|-------|
+        | ✅ Passed | $passed |
+        | ❌ Failed | $failed |
+        | ⚠️ Manual Review | $manual |
+
+        ### Artifacts
+        - 📄 JSON Report: ``${{ steps.audit.outputs.json-report }}``
+        - 📊 Excel Report: ``${{ steps.audit.outputs.excel-report }}``
+        - 🌐 Dashboard: ``${{ steps.audit.outputs.dashboard }}``
+
+        ---
+        *Generated by [M365 Security Toolkit](https://github.com/Heyson315/Easy-Ai)*
+        "@ >> $env:GITHUB_STEP_SUMMARY
+
+        Write-Host "✓ Summary created"
+
+    - name: Disconnect M365 Sessions
+      if: always()
+      shell: pwsh
+      run: |
+        Write-Host "Cleaning up M365 sessions..."
+        Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
+        Disconnect-MgGraph -ErrorAction SilentlyContinue
+        Write-Host "✓ Sessions disconnected"
