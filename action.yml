@@ -235,13 +235,13 @@ runs:
         
         # Get OAuth2 access token using client credentials
         $body = @{
-            Grant_Type    = "client_credentials"
-            Scope         = "https://graph.microsoft.com/.default"
-            Client_Id     = $env:CLIENT_ID
-            Client_Secret = $env:CLIENT_SECRET
+            grant_type    = "client_credentials"
+            scope         = "https://graph.microsoft.com/.default"
+            client_id     = $env:CLIENT_ID
+            client_secret = $env:CLIENT_SECRET
         }
         
-        $tokenResponse = Invoke-RestMethod -Uri "https://login.microsoftonline.com/$($env:TENANT_ID)/oauth2/v2.0/token" -Method POST -Body $body
+        $tokenResponse = Invoke-RestMethod -Uri "https://login.microsoftonline.com/$($env:TENANT_ID)/oauth2/v2.0/token" -Method POST -Body $body -ContentType "application/x-www-form-urlencoded"
         $accessToken = $tokenResponse.access_token | ConvertTo-SecureString -AsPlainText -Force
         
         Connect-MgGraph -AccessToken $accessToken -NoWelcome        
