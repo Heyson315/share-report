@@ -152,3 +152,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: gitleaks.sarif
+# No code changes required. Rename file to `.github/agents/code-quality.patrol_agent.md`.
