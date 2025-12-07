@@ -5,7 +5,7 @@
 # For format details, see: https://gh.io/customagents/config
 
 name: PATROL AGENT
-description: provides Code quality control
+description: Provides code quality and security improvements.
 ---
 
 # Code Quality & Security Improvement Agent
