@@ -144,6 +144,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run Gitleaks secret scan
-        uses: gitleaks/gitleaks-action@v2
+        uses: gitleaks/gitleaks-action@v3
         with:
           args: detect --source . --verbose
