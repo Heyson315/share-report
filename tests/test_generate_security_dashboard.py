@@ -546,8 +546,6 @@ def test_calculate_statistics_edge_cases():
 
 def test_load_historical_data_with_valid_files():
     """Test loading historical data from timestamped JSON files."""
-    import json
-
     from scripts.generate_security_dashboard import load_historical_data
 
     with TemporaryDirectory() as td:
