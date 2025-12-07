@@ -227,7 +227,6 @@ def test_dashboard_html_escaping_attribute_injection():
 
         # Assert attribute injection is prevented
         assert '"><script>' not in html_content, "Attribute injection should be prevented"
-        assert not ('"><script>' in html_content), "Unescaped attribute break should not exist"
 
 
 def test_dashboard_html_escaping_all_fields():
