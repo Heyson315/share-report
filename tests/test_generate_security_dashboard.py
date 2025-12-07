@@ -184,7 +184,7 @@ def test_dashboard_html_escaping_svg_tags():
         assert "&lt;svg" in html_content, "SVG tag should be escaped"
 
         # Assert unescaped SVG does NOT exist
-        assert "<svg" not in html_content or "&lt;svg" in html_content, "Unescaped SVG tag should not exist"
+        assert "<svg>" not in html_content and "<svg " not in html_content, "Unescaped SVG tag should not exist"
         assert "<svg/onload" not in html_content, "Unescaped SVG with onload should not exist"
 
 
@@ -227,7 +227,6 @@ def test_dashboard_html_escaping_attribute_injection():
 
         # Assert attribute injection is prevented
         assert '"><script>' not in html_content, "Attribute injection should be prevented"
-        assert not ('"><script>' in html_content), "Unescaped attribute break should not exist"
 
 
 def test_dashboard_html_escaping_all_fields():
@@ -393,15 +392,6 @@ def test_dashboard_special_characters():
         html_content = output_html.read_text(encoding="utf-8")
 
         # Check ampersands are escaped (unless they're part of an escape sequence)
-        # Count raw & vs escaped &amp;
-        raw_ampersand_count = (
-            html_content.count("&")
-            - html_content.count("&amp;")
-            - html_content.count("&lt;")
-            - html_content.count("&gt;")
-            - html_content.count("&quot;")
-        )
-
         # Check angle brackets are escaped
         assert "&lt;" in html_content, "< should be escaped to &lt;"
         assert "&gt;" in html_content, "> should be escaped to &gt;"
@@ -556,8 +546,6 @@ def test_calculate_statistics_edge_cases():
 
 def test_load_historical_data_with_valid_files():
     """Test loading historical data from timestamped JSON files."""
-    import json
-
     from scripts.generate_security_dashboard import load_historical_data
 
     with TemporaryDirectory() as td:
@@ -666,12 +654,6 @@ def test_load_historical_data_empty_directory():
         historical = load_historical_data(td)
         assert historical == []
 
-        # Empty directory
-        historical = load_historical_data(td)
-        assert historical == []
-        # Empty directory
-        historical = load_historical_data(td)
-        assert historical == []
         # Empty directory
         historical = load_historical_data(td)
         assert historical == []
