@@ -392,15 +392,6 @@ def test_dashboard_special_characters():
         html_content = output_html.read_text(encoding="utf-8")
 
         # Check ampersands are escaped (unless they're part of an escape sequence)
-        # Count raw & vs escaped &amp;
-        raw_ampersand_count = (
-            html_content.count("&")
-            - html_content.count("&amp;")
-            - html_content.count("&lt;")
-            - html_content.count("&gt;")
-            - html_content.count("&quot;")
-        )
-
         # Check angle brackets are escaped
         assert "&lt;" in html_content, "< should be escaped to &lt;"
         assert "&gt;" in html_content, "> should be escaped to &gt;"
