@@ -184,7 +184,7 @@ def test_dashboard_html_escaping_svg_tags():
         assert "&lt;svg" in html_content, "SVG tag should be escaped"
 
         # Assert unescaped SVG does NOT exist
-        assert "<svg" not in html_content or "&lt;svg" in html_content, "Unescaped SVG tag should not exist"
+        assert "<svg>" not in html_content and "<svg " not in html_content, "Unescaped SVG tag should not exist"
         assert "<svg/onload" not in html_content, "Unescaped SVG with onload should not exist"
 
 
