@@ -23,9 +23,7 @@ Environment Variables:
 
 import asyncio
 import json
-import logging
 import os
-import sys
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -34,6 +32,8 @@ try:
     from mcp import McpError
     from mcp.server import Server
 except ImportError:
+    import sys
+
     print("Error: MCP SDK not installed. Install with: pip install mcp", file=sys.stderr)
     sys.exit(1)
 
@@ -42,6 +42,8 @@ try:
     from azure.identity import ClientSecretCredential
     from microsoft.graph import GraphServiceClient
 except ImportError:
+    import sys
+
     print("Warning: Microsoft Graph SDK not installed. Some features may be limited.", file=sys.stderr)
 
 
@@ -57,15 +59,9 @@ class M365SecurityMCPServer:
 
     def setup_logging(self):
         """Configure logging for the MCP server"""
-        log_dir = Path.home() / ".aitk" / "logs"
-        log_dir.mkdir(parents=True, exist_ok=True)
+        from src.core.logging_utils import setup_logging
 
-        logging.basicConfig(
-            level=logging.INFO,
-            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[logging.FileHandler(log_dir / "m365_mcp_server.log"), logging.StreamHandler()],
-        )
-        self.logger = logging.getLogger(__name__)
+        self.logger = setup_logging(__name__, "m365_mcp_server.log")
         self.logger.info("M365 Security MCP Server initializing...")
 
     def setup_tools(self):
@@ -86,30 +82,28 @@ class M365SecurityMCPServer:
             Returns:
                 Audit results summary and file location
             """
+            from src.core.subprocess_utils import run_powershell_script
+
             try:
                 self.logger.info("Starting M365 CIS security audit...")
 
                 # Build PowerShell command
                 script_path = self.toolkit_path / "scripts" / "powershell" / "Invoke-M365CISAudit.ps1"
-                # Choose PowerShell executable depending on platform
-                pwsh = "pwsh" if os.name != "nt" else "powershell.exe"
-                cmd = [pwsh, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script_path)]
+                args = []
 
                 if timestamped:
-                    cmd.append("-Timestamped")
+                    args.append("-Timestamped")
                 if spo_admin_url:
-                    cmd.extend(["-SPOAdminUrl", spo_admin_url])
+                    args.extend(["-SPOAdminUrl", spo_admin_url])
                 if skip_purview:
-                    cmd.append("-SkipPurview")
+                    args.append("-SkipPurview")
 
                 # Execute audit
-                result = await asyncio.create_subprocess_exec(
-                    *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, cwd=str(self.toolkit_path)
+                returncode, stdout, stderr = await run_powershell_script(
+                    script_path, args=args, cwd=self.toolkit_path
                 )
 
-                stdout, stderr = await result.communicate()
-
-                if result.returncode == 0:
+                if returncode == 0:
                     # Parse results
                     output_file = self.toolkit_path / "output" / "reports" / "security" / "m365_cis_audit.json"
                     if output_file.exists():
@@ -138,8 +132,7 @@ class M365SecurityMCPServer:
                     else:
                         raise McpError("Audit completed but output file not found")
                 else:
-                    error_msg = stderr.decode() if stderr else "Unknown error"
-                    raise McpError(f"Audit failed: {error_msg}")
+                    raise McpError(f"Audit failed: {stderr}")
 
             except Exception as e:
                 self.logger.error(f"Security audit failed: {str(e)}")
@@ -157,72 +150,16 @@ class M365SecurityMCPServer:
             Returns:
                 Analysis summary and report location
             """
+            from src.core.sharepoint_utils import analyze_sharepoint_permissions as analyze_sp
+
             try:
                 self.logger.info(f"Analyzing SharePoint permissions from {input_file}")
+                success, message = await analyze_sp(input_file, self.toolkit_path, generate_excel)
 
-                # First clean the CSV
-                clean_script = self.toolkit_path / "scripts" / "clean_csv.py"
-                cleaned_file = self.toolkit_path / "data" / "processed" / "sharepoint_permissions_clean.csv"
+                if not success:
+                    raise McpError(message)
 
-                cmd = [sys.executable, str(clean_script), "--input", input_file, "--output", str(cleaned_file)]
-
-                result = await asyncio.create_subprocess_exec(
-                    *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-                )
-
-                stdout, stderr = await result.communicate()
-
-                if result.returncode != 0:
-                    raise McpError(f"CSV cleaning failed: {stderr.decode()}")
-
-                # Generate analysis report
-                if generate_excel:
-                    output_file = (
-                        self.toolkit_path / "output" / "reports" / "business" / "sharepoint_permissions_report.xlsx"
-                    )
-
-                    cmd = [
-                        sys.executable,
-                        "-m",
-                        "src.integrations.sharepoint_connector",
-                        "--input",
-                        str(cleaned_file),
-                        "--output",
-                        str(output_file),
-                    ]
-
-                    result = await asyncio.create_subprocess_exec(
-                        *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, cwd=str(self.toolkit_path)
-                    )
-
-                    stdout, stderr = await result.communicate()
-
-                    if result.returncode == 0:
-                        return f"""✅ SharePoint Permissions Analysis Complete!
-
-📊 **Analysis Results:**
-• Input File: {input_file}
-• Cleaned Data: {cleaned_file}
-• Excel Report: {output_file}
-
-🔍 **Analysis includes:**
-• Permission summaries by site
-• User access patterns
-• External sharing risks
-• Recommendations for optimization
-
-📁 Open the Excel report for detailed insights!"""
-                    else:
-                        raise McpError(f"Report generation failed: {stderr.decode()}")
-                else:
-                    return f"""✅ SharePoint Permissions Analysis Complete!
-
-📊 **Analysis Results:**
-• Input File: {input_file}
-• Cleaned Data: {cleaned_file}
-
-🔍 **CSV cleaning completed successfully.**
-📁 Use generate_excel=True for detailed Excel report."""
+                return message
 
             except Exception as e:
                 self.logger.error(f"SharePoint analysis failed: {str(e)}")
@@ -240,24 +177,21 @@ class M365SecurityMCPServer:
             Returns:
                 Dashboard location and summary
             """
+            from src.core.subprocess_utils import run_python_script
+
             try:
                 self.logger.info("Generating security dashboard...")
 
                 script_path = self.toolkit_path / "scripts" / "generate_security_dashboard.py"
                 output_file = self.toolkit_path / "output" / "reports" / "security" / f"dashboard.{output_format}"
 
-                cmd = [sys.executable, str(script_path), "--output", str(output_file)]
-
+                args = ["--output", str(output_file)]
                 if include_historical:
-                    cmd.append("--include-historical")
+                    args.append("--include-historical")
 
-                result = await asyncio.create_subprocess_exec(
-                    *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-                )
+                returncode, stdout, stderr = await run_python_script(script_path, args=args)
 
-                stdout, stderr = await result.communicate()
-
-                if result.returncode == 0:
+                if returncode == 0:
                     return f"""🎯 Security Dashboard Generated!
 
 📊 **Dashboard Features:**
@@ -275,7 +209,7 @@ class M365SecurityMCPServer:
 • Review security trends
 • Identify areas for improvement"""
                 else:
-                    raise McpError(f"Dashboard generation failed: {stderr.decode()}")
+                    raise McpError(f"Dashboard generation failed: {stderr}")
 
             except Exception as e:
                 self.logger.error(f"Dashboard generation failed: {str(e)}")
@@ -293,32 +227,30 @@ class M365SecurityMCPServer:
             Returns:
                 Remediation summary and actions taken
             """
+            from src.core.subprocess_utils import run_powershell_script
+
             try:
                 self.logger.info(f"Starting security remediation (preview_only={preview_only})")
 
                 script_path = self.toolkit_path / "scripts" / "powershell" / "PostRemediateM365CIS.ps1"
-                pwsh = "pwsh" if os.name != "nt" else "powershell.exe"
-                cmd = [pwsh, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script_path)]
+                args = []
 
                 if preview_only:
-                    cmd.append("-WhatIf")
+                    args.append("-WhatIf")
                 elif force_apply:
-                    cmd.append("-Force")
+                    args.append("-Force")
 
-                result = await asyncio.create_subprocess_exec(
-                    *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, cwd=str(self.toolkit_path)
+                returncode, stdout, stderr = await run_powershell_script(
+                    script_path, args=args, cwd=self.toolkit_path
                 )
 
-                stdout, stderr = await result.communicate()
-
-                if result.returncode == 0:
-                    output = stdout.decode()
+                if returncode == 0:
                     mode = "Preview" if preview_only else "Applied"
 
                     return f"""🛠️ Security Remediation {mode}!
 
 📋 **Remediation Summary:**
-{output}
+{stdout}
 
 ⚠️ **Important Notes:**
 • {'Preview mode - no changes applied' if preview_only else 'Changes have been applied to your M365 tenant'}
@@ -329,8 +261,7 @@ class M365SecurityMCPServer:
 • {'Run with force_apply=True to apply changes' if preview_only else 'Monitor for any unexpected impacts'}
 • Document changes for compliance audit trail"""
                 else:
-                    error_msg = stderr.decode() if stderr else "Unknown error"
-                    raise McpError(f"Remediation failed: {error_msg}")
+                    raise McpError(f"Remediation failed: {stderr}")
 
             except Exception as e:
                 self.logger.error(f"Security remediation failed: {str(e)}")

@@ -21,8 +21,9 @@ from typing import Any, Dict, List
 
 def load_audit_results(json_path: Path) -> List[Dict[str, Any]]:
     """Load audit results from JSON file."""
-    with open(json_path, "r", encoding="utf-8-sig") as f:
-        return json.load(f)
+    from src.core.file_io import load_json_with_bom
+
+    return load_json_with_bom(json_path, exit_on_error=False)
 
 
 def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:

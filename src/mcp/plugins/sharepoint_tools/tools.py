@@ -5,8 +5,6 @@ Provides tools for analyzing SharePoint Online sites and permissions.
 This plugin is loaded dynamically by the MCP server.
 """
 
-import asyncio
-import sys
 from pathlib import Path
 
 
@@ -34,68 +32,15 @@ def register_tools(server, toolkit_path: Path = None) -> None:
         Returns:
             Analysis summary and report location
         """
+        from src.core.sharepoint_utils import analyze_sharepoint_permissions as analyze_sp
+
         try:
-            # First clean the CSV
-            clean_script = toolkit_path / "scripts" / "clean_csv.py"
-            cleaned_file = toolkit_path / "data" / "processed" / "sharepoint_permissions_clean.csv"
+            success, message = await analyze_sp(input_file, toolkit_path, generate_excel)
 
-            cmd = [sys.executable, str(clean_script), "--input", input_file, "--output", str(cleaned_file)]
+            if not success:
+                raise Exception(message)
 
-            result = await asyncio.create_subprocess_exec(
-                *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-            )
-
-            stdout, stderr = await result.communicate()
-
-            if result.returncode != 0:
-                raise Exception(f"CSV cleaning failed: {stderr.decode()}")
-
-            # Generate analysis report
-            if generate_excel:
-                output_file = toolkit_path / "output" / "reports" / "business" / "sharepoint_permissions_report.xlsx"
-
-                cmd = [
-                    sys.executable,
-                    "-m",
-                    "src.integrations.sharepoint_connector",
-                    "--input",
-                    str(cleaned_file),
-                    "--output",
-                    str(output_file),
-                ]
-
-                result = await asyncio.create_subprocess_exec(
-                    *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, cwd=str(toolkit_path)
-                )
-
-                stdout, stderr = await result.communicate()
-
-                if result.returncode == 0:
-                    return f"""✅ SharePoint Permissions Analysis Complete!
-
-📊 **Analysis Results:**
-• Input File: {input_file}
-• Cleaned Data: {cleaned_file}
-• Excel Report: {output_file}
-
-🔍 **Analysis includes:**
-• Permission summaries by site
-• User access patterns
-• External sharing risks
-• Recommendations for optimization
-
-📁 Open the Excel report for detailed insights!"""
-                else:
-                    raise Exception(f"Report generation failed: {stderr.decode()}")
-            else:
-                return f"""✅ SharePoint Permissions Analysis Complete!
-
-📊 **Analysis Results:**
-• Input File: {input_file}
-• Cleaned Data: {cleaned_file}
-
-🔍 **CSV cleaning completed successfully.**
-📁 Use generate_excel=True for detailed Excel report."""
+            return message
 
         except Exception as e:
             raise Exception(f"SharePoint analysis failed: {str(e)}")

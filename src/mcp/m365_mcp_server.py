@@ -26,8 +26,6 @@ Environment Variables:
 import asyncio
 import importlib
 import json
-import logging
-import sys
 from pathlib import Path
 from typing import Any, Dict, List, Set
 
@@ -36,6 +34,8 @@ try:
     from mcp import ErrorData, McpError
     from mcp.server import FastMCP
 except ImportError:
+    import sys
+
     print("Error: MCP SDK not installed. Install with: pip install mcp", file=sys.stderr)
     sys.exit(1)
 
@@ -86,15 +86,9 @@ class M365MCPServer:
 
     def setup_logging(self) -> None:
         """Configure logging for the MCP server."""
-        log_dir = Path.home() / ".aitk" / "logs"
-        log_dir.mkdir(parents=True, exist_ok=True)
+        from src.core.logging_utils import setup_logging
 
-        logging.basicConfig(
-            level=logging.INFO,
-            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[logging.FileHandler(log_dir / "m365_mcp_server.log"), logging.StreamHandler()],
-        )
-        self.logger = logging.getLogger(__name__)
+        self.logger = setup_logging(__name__, "m365_mcp_server.log")
         self.logger.info("M365 MCP Server initializing...")
 
     def _discover_plugins(self) -> None:
