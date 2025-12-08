@@ -22,8 +22,8 @@ def inspect_cis_report(report_path: Path) -> None:
     except ValueError as e:
         print(f"ERROR: Invalid Excel file: {e}", file=sys.stderr)
         sys.exit(1)
-    except Exception as e:
-        print(f"ERROR: Failed to open Excel file: {e}", file=sys.stderr)
+    except (PermissionError, OSError) as e:
+        print(f"ERROR: Failed to open Excel file {report_path}: {e}", file=sys.stderr)
         sys.exit(1)
     
     print(f"Report: {report_path}")
