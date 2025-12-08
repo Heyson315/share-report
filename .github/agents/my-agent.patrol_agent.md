@@ -75,6 +75,11 @@ When invoked without specific instructions:
 
 ## Example GitHub Action for Python (Tests + Linting + Coverage + Dependency Scan + Secret Scan)
 
+**Note:** This workflow assumes a `requirements-dev.txt` file exists with development dependencies (flake8, pytest, coverage, etc.). 
+If your project doesn't have this file, either:
+- Create it with: `flake8>=5.0.0`, `pytest>=7.0.0`, `pytest-cov>=3.0.0`
+- Or install dependencies directly: `pip install flake8 pytest coverage`
+
 ### Option 1: Single Python Version (Simple)
 Use this approach for projects that target a specific Python version.
 ```yaml
@@ -104,7 +109,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install -r requirements-dev.txt  # Contains pinned versions of flake8, coverage, pytest
+          # Install dev dependencies if file exists, otherwise install individually
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt
+          else
+            pip install flake8 pytest coverage
+          fi
       - name: Lint with flake8
         run: flake8 .
       - name: Run tests with coverage
@@ -132,7 +142,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install -r requirements-dev.txt  # Optional: audit dev dependencies too
+          # Optionally audit dev dependencies if file exists
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt
+          fi
       - name: Run dependency audit
         run: pip-audit
 
