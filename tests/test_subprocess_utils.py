@@ -32,10 +32,12 @@ async def test_run_python_script_with_args():
     with TemporaryDirectory() as tmpdir:
         tmpdir = Path(tmpdir)
         script = tmpdir / "test_script.py"
-        script.write_text("""
+        script.write_text(
+            """
 import sys
 print(f"Args: {' '.join(sys.argv[1:])}")
-""")
+"""
+        )
 
         returncode, stdout, stderr = await run_python_script(script, args=["arg1", "arg2"])
 
@@ -73,10 +75,12 @@ async def test_run_python_script_with_cwd():
     with TemporaryDirectory() as tmpdir:
         tmpdir = Path(tmpdir)
         script = tmpdir / "test_script.py"
-        script.write_text("""
+        script.write_text(
+            """
 import os
 print(f"CWD: {os.getcwd()}")
-""")
+"""
+        )
 
         returncode, stdout, stderr = await run_python_script(script, cwd=tmpdir)
 

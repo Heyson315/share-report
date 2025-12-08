@@ -54,7 +54,9 @@ async def analyze_sharepoint_permissions(
             )
 
             if returncode == 0:
-                return True, f"""✅ SharePoint Permissions Analysis Complete!
+                return (
+                    True,
+                    f"""✅ SharePoint Permissions Analysis Complete!
 
 📊 **Analysis Results:**
 • Input File: {input_file}
@@ -67,18 +69,22 @@ async def analyze_sharepoint_permissions(
 • External sharing risks
 • Recommendations for optimization
 
-📁 Open the Excel report for detailed insights!"""
+📁 Open the Excel report for detailed insights!""",
+                )
             else:
                 return False, f"Report generation failed: {stderr}"
         else:
-            return True, f"""✅ SharePoint Permissions Analysis Complete!
+            return (
+                True,
+                f"""✅ SharePoint Permissions Analysis Complete!
 
 📊 **Analysis Results:**
 • Input File: {input_file}
 • Cleaned Data: {cleaned_file}
 
 🔍 **CSV cleaning completed successfully.**
-📁 Use generate_excel=True for detailed Excel report."""
+📁 Use generate_excel=True for detailed Excel report.""",
+            )
 
     except Exception as e:
         return False, f"SharePoint analysis failed: {str(e)}"
