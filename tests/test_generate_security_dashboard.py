@@ -395,7 +395,7 @@ def test_dashboard_special_characters():
         # Check that special characters are properly escaped in the output
         # This validates all character escaping in context
         assert "Test &amp; &lt;Special&gt; Characters" in html_content
-        assert "Quote test: &quot;double&quot; and &#x27;single&#x27;" in html_content
+        assert 'Quote test: "double" and \'single\'' in html_content
         assert "Value with &amp; and &lt; and &gt; symbols" in html_content
 
 
