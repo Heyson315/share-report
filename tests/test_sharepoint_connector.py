@@ -1,12 +1,13 @@
-
-import pytest
-import pandas as pd
 from pathlib import Path
 from tempfile import TemporaryDirectory
-import openpyxl
 
-from src.integrations.sharepoint_connector import build_summaries, write_excel_report, main
+import openpyxl
+import pandas as pd
+import pytest
+
 from src.core.excel_generator import create_project_management_workbook
+from src.integrations.sharepoint_connector import build_summaries, main, write_excel_report
+
 
 @pytest.fixture
 def sample_dataframe():
@@ -23,6 +24,7 @@ def sample_dataframe():
         "AccessViaLinkID": ["", "", "", ""],
     }
     return pd.DataFrame(data)
+
 
 class TestBuildSummaries:
     """Tests for the build_summaries function."""
@@ -74,6 +76,25 @@ class TestBuildSummaries:
         assert summaries["top_users"].shape[0] == 1
         assert summaries["top_resources"].shape[0] == 1
 
+    def test_build_summaries_normalization(self):
+        """Test that string columns are normalized (stripped and converted)."""
+        data = {
+            "Item Type": [" File ", "Folder"],  # Whitespace
+            "Permission": [123, " Read "],  # Non-string and whitespace
+        }
+        df = pd.DataFrame(data)
+        summaries = build_summaries(df)
+
+        # Check Item Type normalization
+        item_types = summaries["by_item_type"]
+        assert "File" in item_types["Item Type"].values
+        assert " File " not in item_types["Item Type"].values
+
+        # Check Permission normalization
+        permissions = summaries["by_permission"]
+        assert "123" in permissions["Permission"].values
+        assert "Read" in permissions["Permission"].values
+
 
 class TestWriteExcelReport:
     """Tests for the write_excel_report function."""
@@ -92,13 +113,33 @@ class TestWriteExcelReport:
         with TemporaryDirectory() as td:
             output_path = Path(td) / "report.xlsx"
             write_excel_report(summaries, output_path)
-            
+
             workbook = openpyxl.load_workbook(output_path)
             assert "Overview" in workbook.sheetnames
             assert "by_item_type" in workbook.sheetnames
             assert "by_permission" in workbook.sheetnames
             assert "top_users" in workbook.sheetnames
             assert "top_resources" in workbook.sheetnames
+
+    def test_write_excel_report_overview_content(self, sample_dataframe):
+        """Test that the Overview sheet contains correct summary statistics."""
+        summaries = build_summaries(sample_dataframe)
+        with TemporaryDirectory() as td:
+            output_path = Path(td) / "report.xlsx"
+            write_excel_report(summaries, output_path)
+
+            # Read back the Overview sheet
+            overview_df = pd.read_excel(output_path, sheet_name="Overview")
+
+            # Check columns
+            assert "Summary" in overview_df.columns
+            assert "Rows" in overview_df.columns
+            assert "Columns" in overview_df.columns
+
+            # Check that we have rows for each summary
+            assert len(overview_df) == len(summaries)
+            assert "by_item_type" in overview_df["Summary"].values
+
 
 class TestMainFunction:
     """Tests for the main function."""
