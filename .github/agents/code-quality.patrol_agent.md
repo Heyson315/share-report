@@ -102,7 +102,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install -r requirements-dev.txt  # Contains pinned versions of flake8, coverage, pytest
+          pip install -r requirements-dev.txt  # Installs development tools (flake8, coverage, pytest); both files are installed per project pattern
       - name: Lint with flake8
         run: flake8 .
       - name: Run tests with coverage
