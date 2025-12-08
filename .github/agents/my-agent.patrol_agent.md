@@ -104,7 +104,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install -r requirements-dev.txt  # Contains pinned versions of flake8, coverage, pytest
+          # Install dev dependencies (create requirements-dev.txt with: flake8, pytest, coverage, pylint, black, mypy)
+          # Alternative if file doesn't exist: pip install flake8 pytest coverage
+          pip install -r requirements-dev.txt
       - name: Lint with flake8
         run: flake8 .
       - name: Run tests with coverage
@@ -132,7 +134,8 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install -r requirements-dev.txt  # Optional: audit dev dependencies too
+          # Optional: audit dev dependencies too (skip if file doesn't exist)
+          pip install -r requirements-dev.txt || echo "Skipping dev dependencies"
       - name: Run dependency audit
         run: pip-audit
 
