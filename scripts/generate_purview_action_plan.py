@@ -3,10 +3,8 @@
 from datetime import datetime
 from pathlib import Path
 
-import pandas as pd
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
-from openpyxl.utils import get_column_letter
+from openpyxl.styles import Alignment, Font, PatternFill
 
 
 def create_purview_action_plan():
