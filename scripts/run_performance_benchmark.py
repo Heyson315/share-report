@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Simple Performance Benchmark Script
 Tests key functionality with timing and memory monitoring
@@ -21,3 +21,4 @@ if __name__ == "__main__":
     except Exception as e:
         print(f" Benchmark failed: {str(e)}")
         sys.exit(1)
+
