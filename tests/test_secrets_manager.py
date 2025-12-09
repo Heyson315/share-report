@@ -368,7 +368,7 @@ class TestSecretNameValidation:
             "has$special",
             "has@symbols",
             "has.dots",
-            "has_underscores",  # Azure Key Vault supports this but we restrict it
+            "has_underscores",  # Underscores not allowed in Azure Key Vault secret names
             "",
             "has/slashes",
         ]

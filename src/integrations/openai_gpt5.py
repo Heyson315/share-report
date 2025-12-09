@@ -82,8 +82,9 @@ class GPT5Client:
             try:
                 secrets = SecretsManager(enable_fallback=True)
                 self.api_key = secrets.get_secret("AZURE-OPENAI-API-KEY")
-            except Exception:  # noqa: S110
+            except (Exception,):  # Broad catch for any Key Vault issues, falls back to env var
                 # Fall back to environment variable if Key Vault fails
+                # This includes VaultConfigurationError, SecretNotFoundError, network issues, etc.
                 self.api_key = os.getenv("AZURE_OPENAI_API_KEY")
         else:
             self.api_key = os.getenv("AZURE_OPENAI_API_KEY")

@@ -446,8 +446,9 @@ Run a security audit first to get compliance status:
                 try:
                     secrets = SecretsManager(enable_fallback=True)
                     client_secret = secrets.get_secret("M365-CLIENT-SECRET")
-                except Exception as e:
-                    self.logger.warning(f"Key Vault unavailable, using environment variable: {e}")
+                except (Exception,):  # Broad catch for any Key Vault issues, falls back to env var
+                    # This includes VaultConfigurationError, SecretNotFoundError, network issues, etc.
+                    self.logger.warning(f"Key Vault unavailable, using environment variable")
                     client_secret = os.getenv("M365_CLIENT_SECRET")
             else:
                 client_secret = os.getenv("M365_CLIENT_SECRET")
