@@ -109,13 +109,13 @@ class TestGPT5CostTracker:
             assert tracker.get_weekly_cost() == pytest.approx(3.0)  # 1.0 + 2.0
 
             # The monthly cost should only include entries from the current calendar month.
-            # Based on the mock data, this is the sum of `now` and `two_days_ago`.
-            # The entry from `eight_days_ago` might be in the previous month.
-            monthly_cost = 0.0
-            if now.month == (now - timedelta(days=2)).month:
-                monthly_cost += 2.0
-            if now.month == now.month:
-                monthly_cost += 1.0
+            # Calculate expected based on which entries fall in current month/year.
+            monthly_cost = 1.0  # 'now' is always in current month
+            if (now - timedelta(days=2)).month == now.month and (now - timedelta(days=2)).year == now.year:
+                monthly_cost += 2.0  # 'two_days_ago'
+            if (now - timedelta(days=8)).month == now.month and (now - timedelta(days=8)).year == now.year:
+                monthly_cost += 3.0  # 'eight_days_ago'
+            # 'last_month' (35 days ago) is never in current month
 
             assert tracker.get_monthly_cost() == pytest.approx(monthly_cost)
 
