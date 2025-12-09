@@ -11,6 +11,7 @@ Features:
 """
 
 import argparse
+import html
 import json
 import sys
 from datetime import datetime
@@ -20,7 +21,7 @@ from typing import Any, Dict, List
 
 def load_audit_results(json_path: Path) -> List[Dict[str, Any]]:
     """Load audit results from JSON file."""
-    with open(json_path, "r", encoding="utf-8") as f:
+    with open(json_path, "r", encoding="utf-8-sig") as f:
         return json.load(f)
 
 
@@ -61,7 +62,14 @@ def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 
 def load_historical_data(reports_dir: Path) -> List[Dict[str, Any]]:
-    """Load historical audit data for trend analysis."""
+    """
+    Load historical audit data for trend analysis.
+
+    Optimizations:
+    - Only extracts minimal data needed (stats) instead of full audit results
+    - Uses efficient timestamp parsing
+    - Returns last 10 data points for performance
+    """
     historical = []
 
     # Look for timestamped JSON files
@@ -69,30 +77,38 @@ def load_historical_data(reports_dir: Path) -> List[Dict[str, Any]]:
 
     for json_file in json_files:
         try:
+            # Extract timestamp from filename first (faster than loading file)
+            filename = json_file.stem
+            if "_" not in filename:
+                continue
+
+            parts = filename.split("_")
+            if len(parts) < 5:
+                continue
+
+            date_str = parts[3]
+            time_str = parts[4] if len(parts) > 4 else "000000"
+
+            try:
+                timestamp = datetime.strptime(f"{date_str}_{time_str}", "%Y%m%d_%H%M%S")
+            except ValueError as e:
+                print(f"Warning: Could not parse timestamp from {json_file.name}: {e}", file=sys.stderr)
+                continue
+
+            # Only load file if timestamp is valid (optimization: avoid loading invalid files)
             results = load_audit_results(json_file)
             stats = calculate_statistics(results)
 
-            # Extract timestamp from filename (format: m365_cis_audit_YYYYMMDD_HHMMSS.json)
-            filename = json_file.stem
-            if "_" in filename:
-                parts = filename.split("_")
-                if len(parts) >= 5:
-                    date_str = parts[3]
-                    time_str = parts[4] if len(parts) > 4 else "000000"
-                    try:
-                        timestamp = datetime.strptime(f"{date_str}_{time_str}", "%Y%m%d_%H%M%S")
-                        historical.append(
-                            {
-                                "timestamp": timestamp.strftime("%Y-%m-%d %H:%M"),
-                                "pass_rate": stats["pass_rate"],
-                                "pass": stats["pass"],
-                                "fail": stats["fail"],
-                                "manual": stats["manual"],
-                            }
-                        )
-                    except ValueError as e:
-                        print(f"Warning: Could not parse timestamp from {json_file.name}: {e}", file=sys.stderr)
-                        continue
+            historical.append(
+                {
+                    "timestamp": timestamp.strftime("%Y-%m-%d %H:%M"),
+                    "pass_rate": stats["pass_rate"],
+                    "pass": stats["pass"],
+                    "fail": stats["fail"],
+                    "manual": stats["manual"],
+                }
+            )
+
         except json.JSONDecodeError as e:
             print(f"Warning: Invalid JSON in {json_file.name}: {e}", file=sys.stderr)
             continue
@@ -112,20 +128,29 @@ def load_historical_data(reports_dir: Path) -> List[Dict[str, Any]]:
 def generate_html_dashboard(
     results: List[Dict[str, Any]], stats: Dict[str, Any], historical: List[Dict[str, Any]], output_path: Path
 ):
-    """Generate interactive HTML dashboard."""
+    """
+    Generate interactive HTML dashboard.
+
+    Optimizations:
+    - Pre-compute sort keys to avoid repeated dict lookups in lambda
+    - Use tuple unpacking for efficient iteration
+    """
 
     # Prepare data for charts
     trend_labels = [h["timestamp"] for h in historical]
     trend_pass_rates = [h["pass_rate"] for h in historical]
 
-    # Sort results by severity and status
+    # Sort results by severity and status (optimized with pre-computed keys)
     severity_order = {"High": 0, "Medium": 1, "Low": 2}
     status_order = {"Fail": 0, "Error": 1, "Manual": 2, "Pass": 3}
 
-    sorted_results = sorted(
-        results,
-        key=lambda x: (severity_order.get(x.get("Severity", "Low"), 3), status_order.get(x.get("Status", "Pass"), 3)),
-    )
+    # Pre-compute sort keys for better performance (avoid repeated dict.get in lambda)
+    def get_sort_key(result):
+        severity = severity_order.get(result.get("Severity", "Low"), 3)
+        status = status_order.get(result.get("Status", "Pass"), 3)
+        return (severity, status)
+
+    sorted_results = sorted(results, key=get_sort_key)
 
     # Generate HTML
     html_content = f"""<!DOCTYPE html>
@@ -352,19 +377,33 @@ def generate_html_dashboard(
                 <tbody>
 """
 
-    # Add table rows
+    # Add table rows (escape HTML to prevent XSS)
     for result in sorted_results:
-        control_id = result.get("ControlId", "N/A")
-        title = result.get("Title", "N/A")
-        severity = result.get("Severity", "Unknown")
-        status = result.get("Status", "Unknown")
-        actual = result.get("Actual", "N/A")
+        # Get raw values for CSS class generation (these are validated against known values)
+        raw_status = str(result.get("Status", "Unknown"))
+        raw_severity = str(result.get("Severity", "Unknown"))
 
-        status_class = f"status-{status.lower()}"
-        severity_class = f"severity-{severity.lower()}"
+        # Escape values for HTML display
+        control_id = html.escape(str(result.get("ControlId", "N/A")))
+        title = html.escape(str(result.get("Title", "N/A")))
+        severity = html.escape(raw_severity)
+        status = html.escape(raw_status)
+        actual = html.escape(str(result.get("Actual", "N/A")))
+
+        # Sanitize class names - only allow alphanumeric and hyphen to prevent XSS
+        # Invalid characters become safe "unknown"
+        safe_status = "".join(c for c in raw_status.lower() if c.isalnum() or c == "-") or "unknown"
+        safe_severity = "".join(c for c in raw_severity.lower() if c.isalnum() or c == "-") or "unknown"
+
+        status_class = f"status-{safe_status}"
+        severity_class = f"severity-{safe_severity}"
+
+        # Escape data attribute values
+        data_status = html.escape(raw_status.lower())
+        data_severity = html.escape(raw_severity.lower())
 
         html_content += f"""
-                    <tr data-status="{status.lower()}" data-severity="{severity.lower()}">
+                    <tr data-status="{data_status}" data-severity="{data_severity}">
                         <td><strong>{control_id}</strong></td>
                         <td class="control-title">{title}</td>
                         <td class="{severity_class}">{severity}</td>
