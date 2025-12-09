@@ -31,7 +31,7 @@ def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
     
     Optimized for performance:
     - Single pass through results (O(n))
-    - Cached dictionary lookups
+    - Cached dictionary lookups for nested dicts
     - Pre-allocated counters
     """
     stats = {
@@ -44,8 +44,7 @@ def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         "failed_by_severity": {"High": 0, "Medium": 0, "Low": 0},
     }
 
-    # Cache dict references for faster lookups
-    by_severity = stats["by_severity"]
+    # Cache nested dict reference for faster lookups (avoids repeated dict["key"] lookups)
     failed_by_severity = stats["failed_by_severity"]
 
     for result in results:
@@ -65,18 +64,14 @@ def calculate_statistics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         elif status == "Error":
             stats["error"] += 1
 
-        # Process severity
-        if severity in by_severity:
-            by_severity[severity] += 1
+        # Process severity (using stats directly as it's only accessed once per iteration)
+        if severity in stats["by_severity"]:
+            stats["by_severity"][severity] += 1
 
     # Calculate rates
     total = stats["total"]
-    if total > 0:
-        stats["pass_rate"] = round((stats["pass"] / total) * 100, 2)
-        stats["fail_rate"] = round((stats["fail"] / total) * 100, 2)
-    else:
-        stats["pass_rate"] = 0
-        stats["fail_rate"] = 0
+    stats["pass_rate"] = round((stats["pass"] / total) * 100, 2) if total > 0 else 0
+    stats["fail_rate"] = round((stats["fail"] / total) * 100, 2) if total > 0 else 0
 
     return stats
 

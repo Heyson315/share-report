@@ -19,6 +19,9 @@ import pandas as pd
 
 # Enable copy-on-write for better memory efficiency (Pandas 2.0+)
 # This prevents unnecessary DataFrame copies and reduces memory usage by 30-50%
+# NOTE: This is a global setting that affects all pandas operations in this process.
+# It is safe for our use case as copy-on-write is the recommended default in pandas 2.0+
+# and will become the default behavior in pandas 3.0.
 pd.options.mode.copy_on_write = True
 
 DEFAULT_INPUT = Path("data/processed/sharepoint_permissions_clean.csv")
@@ -53,8 +56,9 @@ def build_summaries(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     existing_str_cols = [col for col in str_columns if col in df.columns]
 
     if existing_str_cols:
-        # With copy-on-write enabled, this modifies columns without full copy
-        # Pandas automatically creates efficient views and copies only when needed
+        # With copy-on-write enabled, pandas creates efficient views and only copies
+        # data when actual modifications occur. Column assignments still create copies
+        # of the modified columns, but avoid full DataFrame duplication.
         for col in existing_str_cols:
             df[col] = df[col].astype(str).str.strip()
 
