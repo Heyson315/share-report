@@ -6,7 +6,7 @@ max-line-length=120
 notes=TODO,FIXME,XXX
 
 # Set minimum acceptable score (allow current 8.77/10 to pass)
-fail-under=8.0
+fail-under=8
 
 # Ignore optional dependencies that may not be installed
 ignored-modules=pandas,openpyxl,pytest,openai,azure,azure.identity,msal,msgraph,mcp
