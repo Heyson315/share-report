@@ -30,6 +30,7 @@ Usage:
 
 import logging
 import os
+import sys
 from pathlib import Path
 from typing import Dict, List, Any
 
@@ -394,10 +395,18 @@ def check_workspace(root: Path) -> Dict[str, Any]:
     }
 
     if verbose:
+        # Safely check if cwd is relative to root (compatible with Python 3.8+)
+        cwd = Path.cwd()
+        try:
+            cwd_relative = str(cwd.relative_to(root))
+        except ValueError:
+            # Not relative to root
+            cwd_relative = str(cwd)
+
         result['verbose'] = {
-            'python_version': os.sys.version.split()[0],
-            'platform': os.sys.platform,
-            'cwd': str(Path.cwd().relative_to(root) if Path.cwd().is_relative_to(root) else Path.cwd()),
+            'python_version': sys.version.split()[0],
+            'platform': sys.platform,
+            'cwd': cwd_relative,
         }
 
     return result

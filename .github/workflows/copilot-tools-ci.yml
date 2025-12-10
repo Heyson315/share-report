@@ -49,29 +49,28 @@ jobs:
       - name: Run flake8
         run: |
           # Run flake8 on copilot_tools module
-          # Allow non-zero exit for repo-wide issues
-          flake8 scripts/copilot_tools tests/test_copilot_toolbox.py --max-line-length 120 --statistics || true
-        continue-on-error: true
+          # Strict mode for new code - should fail on any issues
+          flake8 scripts/copilot_tools tests/test_copilot_toolbox.py --max-line-length 120 --statistics
       
       - name: Run bandit security scan
         run: |
           # Run bandit on copilot_tools module
-          # Allow non-zero exit for repo-wide issues
-          bandit -r scripts/copilot_tools -f json -o bandit-report.json || true
-          
+          # Continue on error but report results
+          bandit -r scripts/copilot_tools -f json -o bandit-report.json || echo "Bandit found issues (see artifacts)"
+
           # Show results if file exists
           if [ -f bandit-report.json ]; then
             echo "Bandit scan completed"
             cat bandit-report.json
           fi
         continue-on-error: true
-      
+
       - name: Run pip-audit
         run: |
           # Check for known vulnerabilities in dependencies
-          # Allow non-zero exit for repo-wide issues
-          pip-audit --format json --output pip-audit-report.json || true
-          
+          # Continue on error since we don't control all dependencies
+          pip-audit --format json --output pip-audit-report.json || echo "pip-audit found issues (see artifacts)"
+
           # Show results if file exists
           if [ -f pip-audit-report.json ]; then
             echo "pip-audit scan completed"

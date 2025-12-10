@@ -387,15 +387,19 @@ class TestCLIIntegration:
             root = Path(td)
             (root / '.git').mkdir()
 
-            # Change to temp directory
+            # Change to temp directory with proper cleanup
             import os
             original_cwd = os.getcwd()
+            detected_root = None
             try:
                 os.chdir(root)
                 detected_root = find_repo_root()
-                assert detected_root == root
             finally:
                 os.chdir(original_cwd)
+
+            # Assert outside the try/finally block
+            assert detected_root is not None
+            assert detected_root == root
 
 
 class TestSecurityFeatures:
