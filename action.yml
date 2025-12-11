@@ -188,7 +188,7 @@ runs:
             JsonPath = "${{ steps.audit.outputs.audit-report-json }}"
             Controls = "${{ inputs.remediation-controls }}"
         }
-        if ($${{ inputs.auto-approve-remediation }}) {
+        if ('${{ inputs.auto-approve-remediation }}' -eq 'true') {
             $params.Force = $true
         } else {
             $params.WhatIf = $true
