@@ -1,0 +1,311 @@
+@{
+    ViewBag.Title = "Security Dashboard - Admin";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@using qwe.Services
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>
+                <i class="fa fa-shield"></i> Security Dashboard
+                <button class="btn btn-primary pull-right" onclick="runSecurityAudit()">
+                    <i class="fa fa-refresh"></i> Run Audit Now
+                </button>
+            </h1>
+            <p class="text-muted">Real-time security monitoring powered by Easy-Ai</p>
+            <hr />
+        </div>
+    </div>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            <i class="fa fa-exclamation-triangle"></i> @ViewBag.Error
+        </div>
+    }
+
+    @{
+        var dashboard = ViewBag.Dashboard as SecurityDashboard;
+        var alerts = ViewBag.Alerts as SecurityAlerts;
+        var compliance = ViewBag.Compliance as ComplianceStatus;
+    }
+
+    <!-- Summary Cards -->
+    <div class="row">
+        <!-- Total Alerts Card -->
+        <div class="col-md-3">
+            <div class="card security-card">
+                <div class="card-body">
+                    <h4>Total Alerts</h4>
+                    <h2>@dashboard.TotalAlerts</h2>
+                    <p class="text-muted">Active security alerts</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Critical Alerts Card -->
+        <div class="col-md-3">
+            <div class="card security-card @(dashboard.CriticalAlerts > 0 ? "border-danger" : "")">
+                <div class="card-body">
+                    <h4 class="text-danger">Critical</h4>
+                    <h2>@dashboard.CriticalAlerts</h2>
+                    <p class="text-muted">Immediate action required</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- High Alerts Card -->
+        <div class="col-md-3">
+            <div class="card security-card @(dashboard.HighAlerts > 0 ? "border-warning" : "")">
+                <div class="card-body">
+                    <h4 class="text-warning">High Priority</h4>
+                    <h2>@dashboard.HighAlerts</h2>
+                    <p class="text-muted">Action needed soon</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compliance Score Card -->
+        <div class="col-md-3">
+            <div class="card security-card @(compliance.Score >= 80 ? "border-success" : compliance.Score >= 60 ? "border-warning" : "border-danger")">
+                <div class="card-body">
+                    <h4>Compliance Score</h4>
+                    <h2>@compliance.Score%</h2>
+                    <p class="text-muted">M365 CIS Controls</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts and Details -->
+    <div class="row mt-4">
+        <!-- Alerts by Severity Chart -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Alerts by Severity</h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="alertsSeverityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compliance Trend Chart -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Compliance Status</h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="complianceChart"></canvas>
+                    <div class="mt-3">
+                        <p><strong>Passed:</strong> @compliance.PassedControls controls</p>
+                        <p><strong>Failed:</strong> @compliance.FailedControls controls</p>
+                        <p><strong>Manual Review:</strong> @compliance.ManualControls controls</p>
+                        <p class="text-muted">
+                            <small>Last audit: @compliance.LastAudit.ToString("yyyy-MM-dd HH:mm")</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Alerts Table -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Recent Security Alerts</h4>
+                    <a href="@Url.Action("Alerts")" class="btn btn-sm btn-secondary pull-right">
+                        View All Alerts
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if (alerts != null && alerts.Alerts.Length > 0)
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Severity</th>
+                                    <th>Source</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var alert in alerts.Alerts.Take(10))
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="badge badge-@GetSeverityClass(alert.Severity)">
+                                                @alert.Severity
+                                            </span>
+                                        </td>
+                                        <td>@alert.Source</td>
+                                        <td>@alert.Title</td>
+                                        <td>@alert.Status</td>
+                                        <td>@alert.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-success">
+                            <i class="fa fa-check-circle"></i> No active security alerts
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Recent Security Activities</h4>
+                </div>
+                <div class="card-body">
+                    @if (dashboard.RecentActivities != null && dashboard.RecentActivities.Length > 0)
+                    {
+                        <ul class="list-unstyled">
+                            @foreach (var activity in dashboard.RecentActivities)
+                            {
+                                <li class="mb-2">
+                                    <i class="fa fa-circle text-info"></i> @activity
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No recent activities</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Alerts by Severity Chart
+        const severityCtx = document.getElementById('alertsSeverityChart').getContext('2d');
+        new Chart(severityCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Critical', 'High', 'Medium', 'Low'],
+                datasets: [{
+                    data: [@dashboard.CriticalAlerts, @dashboard.HighAlerts, @dashboard.MediumAlerts, @dashboard.LowAlerts],
+                    backgroundColor: ['#dc3545', '#ffc107', '#17a2b8', '#28a745']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true
+            }
+        });
+
+        // Compliance Chart
+        const complianceCtx = document.getElementById('complianceChart').getContext('2d');
+        new Chart(complianceCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Passed', 'Failed', 'Manual Review'],
+                datasets: [{
+                    label: 'Controls',
+                    data: [@compliance.PassedControls, @compliance.FailedControls, @compliance.ManualControls],
+                    backgroundColor: ['#28a745', '#dc3545', '#6c757d']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Run Security Audit
+        function runSecurityAudit() {
+            if (confirm('Start a new security audit? This may take several minutes.')) {
+                $.ajax({
+                    url: '@Url.Action("RunAudit")',
+                    type: 'POST',
+                    success: function(response) {
+                        alert('Security audit started successfully!');
+                        location.reload();
+                    },
+                    error: function() {
+                        alert('Failed to start security audit. Please try again.');
+                    }
+                });
+            }
+        }
+
+        // Auto-refresh every 5 minutes
+        setInterval(function() {
+            location.reload();
+        }, 300000);
+    </script>
+}
+
+@functions {
+    string GetSeverityClass(string severity)
+    {
+        switch (severity?.ToUpper())
+        {
+            case "CRITICAL":
+                return "danger";
+            case "HIGH":
+                return "warning";
+            case "MEDIUM":
+                return "info";
+            case "LOW":
+                return "secondary";
+            default:
+                return "secondary";
+        }
+    }
+}
+
+<style>
+    .security-card {
+        border-left: 4px solid #007bff;
+        margin-bottom: 20px;
+    }
+
+    .security-card.border-danger {
+        border-left-color: #dc3545;
+    }
+
+    .security-card.border-warning {
+        border-left-color: #ffc107;
+    }
+
+    .security-card.border-success {
+        border-left-color: #28a745;
+    }
+
+    .card {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+</style>

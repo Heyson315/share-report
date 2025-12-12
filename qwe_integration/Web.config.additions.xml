@@ -1,0 +1,29 @@
+<!--
+  Add these settings to your qwe/Web.config file in the <appSettings> section
+-->
+
+<appSettings>
+  <!-- Easy-Ai Security Integration Settings -->
+  
+  <!-- MCP Server URL (default: http://localhost:8080) -->
+  <add key="EasyAi:McpServerUrl" value="http://localhost:8080" />
+  
+  <!-- Enable/disable security integration -->
+  <add key="EasyAi:Enabled" value="true" />
+  
+  <!-- Auto-refresh interval for dashboard (milliseconds) -->
+  <add key="EasyAi:DashboardRefreshInterval" value="300000" />
+  
+  <!-- Security service timeout (seconds) -->
+  <add key="EasyAi:ServiceTimeout" value="30" />
+  
+  <!-- Enable CORS for cross-origin requests (true/false) -->
+  <add key="EasyAi:EnableCors" value="false" />
+  
+  <!-- Alert notification settings -->
+  <add key="EasyAi:AlertNotificationEmail" value="security@hhrcpa.com" />
+  <add key="EasyAi:CriticalAlertThreshold" value="1" />
+  
+  <!-- Cache duration for security data (minutes) -->
+  <add key="EasyAi:CacheDuration" value="5" />
+</appSettings>
